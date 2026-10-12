@@ -49,3 +49,7 @@
   font-variant-numeric: tabular-nums;
   font-weight: var(--weight-semibold);
 }
+/* Links on graphite use the signal colour: cobalt is 3.7:1 on this surface, short of AA for small text. */
+.card a {
+  color: var(--color-signal);
+}

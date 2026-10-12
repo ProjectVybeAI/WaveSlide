@@ -90,15 +90,20 @@ export function LivePage() {
                 <h2 id="monitor-title" className="visually-hidden">
                   Camera
                 </h2>
-                <figure className={styles.monitor} data-live={live && connected}>
+                <figure
+                  className={styles.monitor}
+                  data-live={live && connected && (snapshot.data?.camera_ok ?? true)}
+                >
                   <div className={styles.picture}>
                     <CameraView frame={frame} size="large" />
                   </div>
                   <figcaption className={styles.umd}>
-                    <PoseChip
-                      frame={frame}
-                      emptyLabel={frame ? "No hand in view" : "Waiting for the engine"}
-                    />
+                    <span className={styles.pose}>
+                      <PoseChip
+                        frame={frame}
+                        emptyLabel={frame ? "No hand in view" : "Waiting for the engine"}
+                      />
+                    </span>
                     <span className={styles.source}>
                       {replaying
                         ? `Replay: ${snapshot.data?.session_id ?? "session"}`

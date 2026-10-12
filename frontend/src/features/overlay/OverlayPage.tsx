@@ -149,7 +149,7 @@ export function OverlayPage() {
             <Skeleton shape="block" className={styles.skeletonCam} />
           </div>
           <div className={styles.cue}>
-            <Skeleton shape="circle" className={styles.skeletonRing} />
+            <Skeleton shape="block" className={styles.skeletonRing} />
             <Skeleton shape="heading" width="1/2" />
             <Skeleton shape="text" lines={2} />
           </div>

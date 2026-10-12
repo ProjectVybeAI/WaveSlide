@@ -169,6 +169,7 @@
   aspect-ratio: 4 / 3;
 }
 .skeletonRing {
+  border-radius: var(--radius-full);
   width: 6.5rem;
   height: 6.5rem;
 }

@@ -48,6 +48,12 @@
   line-height: 1;
   background: var(--color-surface-sunken);
 }
+.pose {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  min-width: 0;
+}
 .source {
   min-width: 0;
   overflow: hidden;
