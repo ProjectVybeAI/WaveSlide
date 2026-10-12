@@ -49,7 +49,8 @@ from app.dataset.synthetic import PARTICIPANTS, TEMPLATES, hand_points, place
 def _hand(pose: str) -> HandLandmarks:
     rng = np.random.default_rng(7)
     points = hand_points(TEMPLATES[pose], PARTICIPANTS[0], rng)
-    return place(points, (400.0, 250.0), 70.0, TEMPLATES[pose].roll_deg, False, rng, noise_px=0)
+    # An upright hand about 60% of the frame height, left of the presenter's face (right of centre).
+    return place(points, (210.0, 348.0), 140.0, TEMPLATES[pose].roll_deg, False, rng, noise_px=0)
 
 
 COMMAND = CommandLogEntry(

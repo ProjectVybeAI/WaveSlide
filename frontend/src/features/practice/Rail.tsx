@@ -49,27 +49,6 @@ export function Rail({ slide, ack }: { slide: number; ack: Ack | null }) {
 
   return (
     <aside className={styles.rail} aria-label="Gestures to try">
-      {notPractice ? (
-        <Callout
-          tone="warning"
-          title="Gestures are going to another app"
-          action={
-            <Button
-              size="sm"
-              pending={save.isPending}
-              pendingLabel="Switching"
-              onClick={() => save.mutate({ ...values, profile_id: "practice" })}
-            >
-              Use the practice deck
-            </Button>
-          }
-        >
-          Your app profile sends keys to your presentation app, so this deck ignores them. Switch to the
-          practice deck profile to drive it with gestures.
-        </Callout>
-      ) : null}
-      {save.error ? <p className={styles.error}>{save.error.message}</p> : null}
-
       <div className={styles.ack} aria-live="polite">
         {ack ? (
           <>
@@ -103,6 +82,27 @@ export function Rail({ slide, ack }: { slide: number; ack: Ack | null }) {
           </>
         )}
       </div>
+
+      {notPractice ? (
+        <Callout
+          tone="warning"
+          title="Gestures are going to another app"
+          action={
+            <Button
+              size="sm"
+              pending={save.isPending}
+              pendingLabel="Switching"
+              onClick={() => save.mutate({ ...values, profile_id: "practice" })}
+            >
+              Use the practice deck
+            </Button>
+          }
+        >
+          Your app profile sends keys to your presentation app, so this deck ignores them. Switch to the
+          practice deck profile to drive it with gestures.
+        </Callout>
+      ) : null}
+      {save.error ? <p className={styles.error}>{save.error.message}</p> : null}
 
       <section aria-labelledby="try-title">
         <h2 id="try-title" className={styles.title}>

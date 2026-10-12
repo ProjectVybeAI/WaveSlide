@@ -53,7 +53,7 @@ export function CommandLog({ entries }: { entries: CommandLogEntry[] }) {
             </TableEmpty>
           ) : (
             entries.map((entry) => (
-              <Tr key={entry.id}>
+              <Tr key={entry.id} className={entry.blocked_reason ? styles.blocked : undefined}>
                 <Td align="end" className={styles.muted}>
                   {entry.id}
                 </Td>

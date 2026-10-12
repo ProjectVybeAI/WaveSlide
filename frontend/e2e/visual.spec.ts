@@ -14,6 +14,7 @@ for (const screen of DEMO_SCREENS) {
       await page.setViewportSize(size);
       await page.goto(screen.path);
       await page.waitForLoadState("networkidle");
+      await screen.setup?.(page);
       await expect(page).toHaveScreenshot(`${screen.name}-${size.width}.png`, { fullPage: true });
     });
   }

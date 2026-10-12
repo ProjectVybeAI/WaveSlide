@@ -62,6 +62,38 @@ function frame() {
   }
 }
 
+/** A morning's worth of commands for the default state: 14 in all, one held back because WaveSlide had focus. */
+function sessionHistory(): Array<{ after: number; event: object }> {
+  const row = (id: number, action: string, gesture: string, keys: string[], extra: object = {}) => ({
+    ...COMMAND,
+    id,
+    t: COMMAND.t - (14 - id) * 11,
+    action,
+    gesture,
+    keys,
+    slide: null,
+    pipeline_ms: 21 + ((id * 7) % 13) + 0.4,
+    ...extra,
+  });
+  const commands = [
+    row(1, "toggle_active", "THUMBS_UP", []),
+    row(2, "next", "SWIPE_RIGHT", ["right"]),
+    row(3, "next", "SWIPE_RIGHT", ["right"]),
+    row(4, "next", "SWIPE_RIGHT", ["right"]),
+    row(5, "previous", "SWIPE_LEFT", ["left"]),
+    row(6, "jump", "COUNT_5", ["5", "enter"], { slide: 5 }),
+    row(7, "next", "SWIPE_RIGHT", ["right"]),
+    row(8, "blank_toggle", "OPEN_PALM", ["b"]),
+    row(9, "blank_toggle", "OPEN_PALM", ["b"]),
+    row(10, "next", "SWIPE_RIGHT", ["right"], { blocked_reason: "focus: WaveSlide had focus" }),
+    row(11, "next", "SWIPE_RIGHT", ["right"]),
+    row(12, "previous", "SWIPE_LEFT", ["left"]),
+    row(13, "jump", "COUNT_2", ["2", "enter"], { slide: 2 }),
+    COMMAND,
+  ];
+  return commands.map((command) => ({ after: 200, event: { kind: "command", command } }));
+}
+
 /** Events a state plays shortly after the socket opens (the deck and the overlay follow them). */
 function events(): Array<{ after: number; event: object }> {
   const state = currentMockState();
@@ -105,6 +137,9 @@ function events(): Array<{ after: number; event: object }> {
           }),
         },
       ];
+    case "default":
+      // Only the Live screen shows a log; the overlay and deck do not need the history.
+      return window.location.pathname === "/" ? sessionHistory() : [];
     default:
       return [];
   }
@@ -193,7 +228,8 @@ function settings() {
   const state = currentMockState();
   const base = examples.settings;
   if (state === "compact") return { ...base, overlay: { ...base.overlay, compact: true } };
-  if (state === "practice-profile") return { ...base, profile_id: "practice" };
+  if (state === "practice-profile" || state === "jumped" || state === "blanked")
+    return { ...base, profile_id: "practice" };
   return base;
 }
 
@@ -250,9 +286,23 @@ export const handlers = [
     const send = () => client.send(JSON.stringify(frame()));
     send();
     const timer = setInterval(send, currentMockState() === "cancelled" ? 100 : 500);
-    const timers = events().map(({ after, event }) =>
+    const planned = events();
+    const timers = planned.map(({ after, event }) =>
       setTimeout(() => client.send(JSON.stringify({ type: "event", event })), after),
     );
+    // Like the engine: once the deck acknowledges a command, publish it again with the measured time.
+    client.addEventListener("message", ({ data }) => {
+      if (typeof data !== "string") return;
+      const message = JSON.parse(data) as { type: string; command_id?: number };
+      if (message.type !== "deck_ack") return;
+      for (const { event } of planned) {
+        const command = (event as { command?: { id: number } }).command;
+        if (command?.id !== message.command_id) continue;
+        client.send(
+          JSON.stringify({ type: "event", event: { kind: "command", command: { ...command, ack_ms: 31 } } }),
+        );
+      }
+    });
     client.addEventListener("close", () => {
       clearInterval(timer);
       timers.forEach(clearTimeout);

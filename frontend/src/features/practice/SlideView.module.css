@@ -60,3 +60,10 @@
   font-size: 1.6cqi;
   color: var(--color-slide-muted);
 }
+
+/* A narrow slide has no room for the footer line. */
+@container (max-width: 560px) {
+  .foot {
+    display: none;
+  }
+}

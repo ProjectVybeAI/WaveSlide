@@ -13,3 +13,11 @@
   color: var(--color-text-muted);
   text-align: center;
 }
+/* A held-back command is hatched, so it differs from a sent one in pattern and not only in hue. */
+.blocked {
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 var(--space-2),
+    color-mix(in oklch, var(--color-warning) 16%, transparent) var(--space-2) calc(var(--space-2) + 2px)
+  );
+}

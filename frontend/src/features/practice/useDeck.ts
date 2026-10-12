@@ -9,6 +9,8 @@ import { deckReducer, START, type DeckMove } from "./deck";
 
 /** What the rail shows after the last gesture. */
 export type Ack = {
+  /** The command this is about, so the engine's measured time can be matched to it. */
+  commandId: number;
   title: string;
   /** Frame capture to key sent. */
   captureToKey: number;
@@ -48,6 +50,13 @@ export function useDeck() {
   const onEvent = useCallback((event: EngineEvent) => {
     if (event.kind !== "command" || !event.command.dry_run || event.command.blocked_reason) return;
     const command = event.command;
+    // The engine republishes a command once the deck has acknowledged it (ack_ms filled in). That is
+    // not a new gesture: the deck does not move again, it only takes over the engine's measured time.
+    if (command.ack_ms !== null && command.ack_ms !== undefined) {
+      const measured = command.ack_ms;
+      setAck((last) => (last?.commandId === command.id ? { ...last, keyToSlide: measured } : last));
+      return;
+    }
     const next = moveFor(command);
     if (!next) return;
     move(next);
@@ -56,6 +65,7 @@ export function useDeck() {
       const elapsed = Date.now() - command.t * 1000;
       engineSocket.send({ type: "deck_ack", command_id: command.id, t: Date.now() / 1000 });
       setAck({
+        commandId: command.id,
         title: commandLabel(command),
         captureToKey: command.pipeline_ms,
         keyToSlide: elapsed >= 0 && elapsed < MAX_PLAUSIBLE_MS ? elapsed : null,

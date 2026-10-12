@@ -46,9 +46,9 @@ export function Layout() {
         </nav>
         <EngineFacts />
       </aside>
-      <div className={styles.page} id="main">
+      <main className={styles.page} id="main">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 }

@@ -13,11 +13,15 @@ test("the practice deck follows the synthetic replay gestures", async ({ page })
   // Record every heading text the deck shows, so a fast change between polls is not missed.
   await page.addInitScript(() => {
     const seen: string[] = [];
-    (window as unknown as { __seen: string[] }).__seen = seen;
+    const tally: string[] = [];
+    (window as unknown as { __seen: string[]; __tally: string[] }).__seen = seen;
+    (window as unknown as { __seen: string[]; __tally: string[] }).__tally = tally;
     const watch = () => {
       const heading = document.getElementById("deck-title");
       const text = heading?.textContent?.replace(/\s+/g, " ").trim();
       if (text && seen[seen.length - 1] !== text) seen.push(text);
+      const word = document.querySelector('[aria-label="Gesture control"] p')?.textContent?.trim();
+      if (word && tally[tally.length - 1] !== word) tally.push(word);
     };
     new MutationObserver(watch).observe(document, { subtree: true, childList: true, characterData: true });
   });
@@ -46,6 +50,17 @@ test("the practice deck follows the synthetic replay gestures", async ({ page })
       { timeout: 60_000, intervals: [500] },
     )
     .toBe(expected.length);
+
+  // The scripted session ends with a held thumbs up: the engine goes from Live to Paused.
+  await expect
+    .poll(
+      async () => {
+        const words = await page.evaluate(() => (window as unknown as { __tally: string[] }).__tally);
+        return words.indexOf("Paused", words.indexOf("Live") + 1) > words.indexOf("Live") && words.includes("Live");
+      },
+      { timeout: 30_000, intervals: [500] },
+    )
+    .toBe(true);
 });
 
 test("the deck also answers the keyboard", async ({ page }) => {

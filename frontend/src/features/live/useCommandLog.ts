@@ -11,8 +11,12 @@ export function useCommandLog(seed: CommandLogEntry | null | undefined): Command
   const [entries, setEntries] = useState<CommandLogEntry[]>([]);
   const onEvent = useCallback((event: EngineEvent) => {
     if (event.kind !== "command") return;
+    const command = event.command;
+    // A command can be republished with its ack time filled in: that replaces its row.
     setEntries((previous) =>
-      [event.command, ...previous.filter((entry) => entry.id !== event.command.id)].slice(0, MAX_ENTRIES),
+      previous.some((entry) => entry.id === command.id)
+        ? previous.map((entry) => (entry.id === command.id ? command : entry))
+        : [command, ...previous].slice(0, MAX_ENTRIES),
     );
   }, []);
   useEngineEvents(onEvent);

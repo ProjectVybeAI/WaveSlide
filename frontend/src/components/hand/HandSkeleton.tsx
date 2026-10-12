@@ -52,6 +52,12 @@ function Hand({ hand, extended, marks }: { hand: HandLandmarks; extended?: boole
     const point = tip === undefined ? undefined : points[tip];
     return point ? [{ n: i + 1, x: point[0], y: point[1] }] : [];
   });
+  // Badges shrink to fit when the counted fingertips are close together, so they never overlap.
+  const tipSpacing = Math.min(
+    ...numbers.flatMap((a, i) => numbers.slice(i + 1).map((b) => Math.hypot(a.x - b.x, a.y - b.y))),
+  );
+  const badge = Math.min(marks.badge, tipSpacing * 0.42);
+  const text = marks.text * (badge / marks.badge);
   const numbered = new Set(
     numbers.length ? COUNT_ORDER.filter((f) => extended?.[f]).map((f) => FINGERS[f]?.[3]) : [],
   );
@@ -87,11 +93,11 @@ function Hand({ hand, extended, marks }: { hand: HandLandmarks; extended?: boole
         ),
       )}
       {numbers.map(({ n, x, y }) => (
-        <g key={n} transform={`translate(${x} ${y - marks.badge * 0.9})`}>
-          <circle className={styles.badge} r={marks.badge} />
+        <g key={n} transform={`translate(${x} ${y - badge * 1.2})`}>
+          <circle className={styles.badge} r={badge} />
           <text
             className={styles.badgeText}
-            fontSize={marks.text}
+            fontSize={text}
             textAnchor="middle"
             dominantBaseline="central"
           >
