@@ -16,10 +16,8 @@ import webview
 
 from app.config import get_config
 from app.main import create_app
+from app.platform.overlay import overlay_geometry
 
-OVERLAY_FULL = (340, 280)
-OVERLAY_COMPACT = (220, 56)
-SCREEN_MARGIN = 16
 SURFACE = "#1D2125"  # --color-surface, so a frameless window never flashes white
 
 
@@ -37,6 +35,12 @@ def wait_for(url: str, seconds: float = 20.0) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dev", action="store_true", help="load the UI from the Vite dev server")
+    parser.add_argument(
+        "--overlay-focus",
+        action="store_true",
+        help="let the overlay take focus (fallback if its buttons cannot be clicked; the focus guard "
+        "then keeps keys out of it)",
+    )
     args = parser.parse_args()
     config = get_config()
     app = create_app(config)
@@ -55,32 +59,36 @@ def main() -> None:
         background_color=SURFACE,
     )
     screen = webview.screens[0] if webview.screens else None
-    width, height = OVERLAY_FULL
-    x = screen.width - width - SCREEN_MARGIN if screen else None
+    screen_width = screen.width if screen else None
+    overlay_settings = app.state.waveslide.settings.get().overlay
+    start_mode = "compact" if overlay_settings.compact else "full"
+    width, height, x, y = overlay_geometry(start_mode, screen_width)
     overlay = webview.create_window(
         "WaveSlide overlay",
         f"{ui_url}/overlay",
         width=width,
         height=height,
         x=x,
-        y=SCREEN_MARGIN,
+        y=y,
         frameless=True,
         on_top=True,
-        focus=False,
+        focus=args.overlay_focus,  # False: showing the overlay never steals focus from the slides
         resizable=False,
         easy_drag=True,
+        hidden=not overlay_settings.visible,
         background_color=SURFACE,
     )
 
     def set_overlay(mode: str) -> None:
+        """Called by POST /api/overlay: resize and re-dock the overlay, or hide it."""
         if mode == "hidden":
             overlay.hide()
             return
-        w, h = OVERLAY_COMPACT if mode == "compact" else OVERLAY_FULL
-        overlay.show()
+        w, h, new_x, new_y = overlay_geometry(mode, screen_width)
         overlay.resize(w, h)
-        if screen:
-            overlay.move(screen.width - w - SCREEN_MARGIN, SCREEN_MARGIN)
+        if new_x is not None:
+            overlay.move(new_x, new_y)
+        overlay.show()
 
     app.state.waveslide.overlay_controller = set_overlay
     webview.start()  # blocks until the windows close

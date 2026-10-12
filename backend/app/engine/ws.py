@@ -37,7 +37,7 @@ async def engine_socket(websocket: WebSocket) -> None:
                 client.has_focus = message.has_focus
                 client.route = message.route
             elif isinstance(message, DeckAckMessage):
-                pass  # Phase 1: key-to-slide latency for the command log
+                state.engine.record_ack(message.command_id)  # key-to-slide latency for the command log
 
     async def send() -> None:
         while True:

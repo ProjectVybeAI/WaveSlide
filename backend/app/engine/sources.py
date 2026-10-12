@@ -102,7 +102,8 @@ class CameraLandmarkSource(LandmarkSource):
         if captured_at - self._last_jpeg_at > 1 / 15:  # preview at 15 fps is plenty
             self._jpeg = _encode_preview(self._cv2, bgr)
             self._last_jpeg_at = captured_at
-        return FrameInput(t=t, captured_at=captured_at, hands=hands)
+        height, width = bgr.shape[:2]
+        return FrameInput(t=t, captured_at=captured_at, hands=hands, aspect=width / height)
 
     def latest_jpeg(self) -> bytes | None:
         return self._jpeg
