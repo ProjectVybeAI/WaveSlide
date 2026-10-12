@@ -82,7 +82,7 @@ export function DatasetPage() {
   const plan = trainingSources(list);
   const blockedReason =
     sessions.data === undefined
-      ? null
+      ? "Loading sessions."
       : plan.participants < 2
         ? `Training needs at least two participants. There ${plan.participants === 1 ? "is" : "are"} ${plan.participants} so far.`
         : null;

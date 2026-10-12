@@ -30,26 +30,34 @@ test("the practice deck follows the synthetic replay gestures", async ({ page })
   await expectNoSeriousViolations(page);
 
   const seen = () => page.evaluate(() => (window as unknown as { __seen: string[] }).__seen);
-  // Slide 2, 3, back to 2, jump to 3, blank, unblank (the replay loops, so any lap contains them).
-  const expected = [
-    "Slide 2 of 10",
-    "Slide 3 of 10",
-    "Slide 2 of 10",
+  // One lap of the replay: next, next, previous, jump to 3, blank, unblank. The deck keeps its slide
+  // between laps (after lap 1 it sits on 3), so the three moves are checked from whichever slide the lap
+  // starts on; the jump always lands on 3.
+  const lap = (start: number) => [
+    `Slide ${start + 1} of 10`,
+    `Slide ${start + 2} of 10`,
+    `Slide ${start + 1} of 10`,
     "Slide 3 of 10",
     "Slide 3 of 10, screen blanked",
     "Slide 3 of 10",
   ];
+  const starts = [1, 2, 3, 4, 5, 6, 7, 8];
   await expect
     .poll(
       async () => {
         const log = await seen();
-        let next = 0;
-        for (const entry of log) if (entry === expected[next]) next += 1;
-        return next;
+        let best = 0;
+        for (const start of starts) {
+          const expected = lap(start);
+          let next = 0;
+          for (const entry of log) if (entry === expected[next]) next += 1;
+          best = Math.max(best, next);
+        }
+        return best;
       },
       { timeout: 60_000, intervals: [500] },
     )
-    .toBe(expected.length);
+    .toBe(6);
 
   // The scripted session ends with a held thumbs up: the engine goes from Live to Paused.
   await expect

@@ -8,7 +8,7 @@ parse this file, so keep the headings and field names exactly as they are.
 |---|---|---|---|
 | 0 | Contract and scaffold | done | chore: scaffold WaveSlide (phase 0) |
 | 1 | Live gesture control: pipeline, overlay, practice deck and settings | done | feat(phase-1): live gesture control |
-| 2 | Two-hand counting, dataset, classifier and evaluation lab | todo | |
+| 2 | Two-hand counting, dataset, classifier and evaluation lab | done | feat(phase-2): counting, dataset, classifier and evaluation lab |
 | 3 | Polish, evaluation and ship | todo | |
 
 States: `todo`, `in-progress`, `done`, `blocked: <reason>`.
@@ -149,13 +149,13 @@ and the ship bar are scoped to these. The overlay is captured at its window size
   - `frontend`: owns `frontend/src/features/dataset/**`, `frontend/src/features/evaluation/**`, `frontend/src/components/charts/**`. Dataset: sessions table (kind, participant, distance, lighting, luminance, frames, source badge), delete with confirm, "Record session" dialog (protocol, participant, distance, lighting) then a full recorder view: large prompt ("Hold up 3 fingers"), countdown, live skeleton (reusing `components/hand`), progress through the protocol, stop. "Train model" with job progress and the resulting model card (LOPO macro-F1, classes, participants). Evaluation: run button with job progress; run picker; synthetic-data banner; sections E1-E8 + ablation in report order: per-gesture accuracy table by participant, finger-count jump confusion, false triggers/min (active vs paused), latency distribution and p50/p95, accuracy and detection rate by distance and by lighting, rules vs ML confusion matrices side by side (CSS grid heat map with numbers, accessible table fallback) with macro-F1 and inference time, ablation bars, user ratings. Component tests for the confusion matrix and the recorder prompt flow.
 - **Integration:** swap placeholders for `/dataset` and `/evaluation` in `router.tsx`; `npm run contract` if report shapes changed; MSW fixtures for every Demo screen state of both routes (a full synthetic report as the default fixture); add both to `shots.spec.ts`; `docs/PROFILE_CHECKS.md` Phase 2 column (record, train, switch to ML live).
 - **Acceptance:**
-  - [ ] `npm run seed && npm run eval -- --sources synthetic` writes `docs/EVALUATION.md` with sections E1-E8 and the ablation, each marked synthetic, plus the PNGs it links
-  - [ ] `POST /api/model/train` on seed data returns a job; `GET /api/model` then shows LOPO macro-F1 and 3 participants; with one participant it returns 422 `NOT_ENOUGH_DATA`
-  - [ ] After training, `PUT /api/settings` with `recogniser: ml` succeeds and the overlay badge reads "ML" with a confidence; replaying `synthetic-demo` in ML mode produces the same command list
-  - [ ] Two-hand on: replaying `synthetic-two-hand` jumps to slide 7; two-hand off: the same replay produces no jump above 5
-  - [ ] `POST /api/recordings` in replay mode returns 409 `CAMERA_REQUIRED`; with a webcam a guided `gestures` session records and appears in the list with its luminance (manual)
-  - [ ] Evaluation screen shows rules and ML confusion matrices side by side and every section, with empty, running and synthetic-data states
-  - [ ] Screens have loading, empty and error states
+  - [x] `npm run seed && npm run eval -- --sources synthetic` writes `docs/EVALUATION.md` with sections E1-E8 and the ablation, each marked synthetic, plus the PNGs it links
+  - [x] `POST /api/model/train` on seed data returns a job; `GET /api/model` then shows LOPO macro-F1 and 3 participants; with one participant it returns 422 `NOT_ENOUGH_DATA`
+  - [ ] After training, `PUT /api/settings` with `recogniser: ml` succeeds and the overlay badge reads "ML" with a confidence; replaying `synthetic-demo` in ML mode produces the same command list (ML replay equals rules and the PUT succeeds in tests; overlay "ML" badge not yet checked live)
+  - [x] Two-hand on: replaying `synthetic-two-hand` jumps to slide 7; two-hand off: the same replay produces no jump above 5
+  - [ ] `POST /api/recordings` in replay mode returns 409 `CAMERA_REQUIRED`; with a webcam a guided `gestures` session records and appears in the list with its luminance (manual) (409 verified in tests; the webcam recording is manual, not yet run)
+  - [x] Evaluation screen shows rules and ML confusion matrices side by side and every section, with empty, running and synthetic-data states
+  - [x] Screens have loading, empty and error states
 - **Demo:** record 30 seconds of the guided protocol, train the model and read its macro-F1, flip Settings to ML and keep presenting, then open the Evaluation lab and compare the two confusion matrices and the ablation chart.
 
 ### Phase 3: Polish, evaluation and ship
@@ -178,3 +178,5 @@ and the ship bar are scoped to these. The overlay is captured at its window size
 | Settings | Timing dial previews: "hold other poses" has no target; cooldown previews are bare circles | Settings 4.7 | Phase 1 critique |
 | Live, Settings, Practice | At 390 px the tally block is a ~70 px card; make it one row under 960 px | 4.3 / 4.7 / 4.1 | Phase 1 critique |
 | Overlay compact | Only the standby state is baselined; add compact-paused and compact-cooldown | 4.5 | Phase 1 critique |
+| Dataset | Live check of the guided recorder, frame rate from the hub is at most 30 fps and can be irregular; a direct engine frame feed would be cleaner | n/a | Phase 2 backend |
+| e2e | Training and settings tests mutate the shared replay engine; keep them out of parallel runs with the deck journey | n/a | Phase 2 gate |
