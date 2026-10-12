@@ -1,0 +1,53 @@
+/* inline: a two-column grid; each item uses subgrid so every label lines up in one column. */
+.list {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+}
+.inline {
+  grid-template-columns: minmax(auto, max-content) minmax(0, 1fr);
+}
+.inline .item {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  column-gap: var(--space-6);
+  padding-block: var(--space-2);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+.inline .item:last-child {
+  border-bottom: 0;
+}
+.stacked {
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--space-16) * 2), max-content));
+  gap: var(--space-4) var(--space-8);
+}
+.item {
+  min-width: 0;
+}
+.label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.stacked .label {
+  font-size: var(--text-xs);
+}
+.value {
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  overflow-wrap: anywhere;
+}
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+/* Phones: label above value, so long values get the full width. */
+@media (max-width: 480px) {
+  .inline {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .inline .item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

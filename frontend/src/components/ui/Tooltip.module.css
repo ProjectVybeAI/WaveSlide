@@ -1,0 +1,18 @@
+/* Dark-on-light inverse chip: reads as "hint", not as content. */
+.content {
+  z-index: var(--z-dropdown);
+  max-width: calc(var(--space-16) * 4);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  color: var(--color-surface);
+  background: var(--color-text);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-overlay);
+  animation: fade var(--duration-fast) var(--ease-out);
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}

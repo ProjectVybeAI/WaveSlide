@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-tabs="segmented" data-button="ink" data-pill="dot" data-table="ruled" data-input="filled" data-header="banded">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Overlay over PowerPoint, holding three fingers (direction A, Cue) · WaveSlide prototype</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="slide.css" />
+  </head>
+  <body class="screen-page">
+    <main>
+      <h1 class="visually-hidden">WaveSlide overlay over a PowerPoint slideshow</h1>
+      <div class="screen-fit" id="fit">
+        <div class="screen" id="screen">
+          <!-- Someone else's slide: PowerPoint slideshow, 16:9 letterboxed on a 16:10 laptop screen -->
+          <div class="pp-slide" aria-label="PowerPoint slide 5 of 12" role="img">
+            <div class="pp-rule"></div>
+            <p class="pp-kicker">CS-302 Operating Systems, Lecture 7</p>
+            <p class="pp-title">Page replacement: FIFO against LRU</p>
+            <p class="pp-sub">Reference string 7 0 1 2 0 3 0 4 2 3, three frames. Shaded columns are page faults.</p>
+            <div class="pp-tables" id="pp-tables"></div>
+            <div class="pp-take">
+              <p class="pp-take-n">8 <span>faults with LRU</span></p>
+              <p class="pp-take-n pp-dim">9 <span>faults with FIFO</span></p>
+              <p class="pp-take-t">LRU keeps page 0, which the string keeps asking for. FIFO evicts it at step 7 only because it is the oldest.</p>
+            </div>
+            <p class="pp-foot">Dept. of Computer Engineering</p>
+            <p class="pp-num">5</p>
+          </div>
+
+          <!-- WaveSlide overlay window: frameless, always on top, 340 x 280, top right -->
+          <section class="ov ov-on-screen" data-state="standby" aria-label="WaveSlide overlay">
+            <header class="ov-band">
+              <span class="ov-lamp" aria-hidden="true"></span>
+              <span class="ov-state">Live</span>
+              <span class="ov-sub">PowerPoint</span>
+              <div class="ov-tools">
+                <button type="button" aria-label="Pause gestures" data-tip><i data-icon="pause"></i></button>
+                <button type="button" aria-label="Make the overlay compact"><i data-icon="minimize-2"></i></button>
+                <button type="button" aria-label="Hide the overlay"><i data-icon="eye-off"></i></button>
+              </div>
+            </header>
+            <div class="ov-body">
+              <figure class="ov-cam">
+                <div id="cam"></div>
+                <figcaption class="umd"><span>Three fingers</span><span class="umd-dim">Rules 0.94</span></figcaption>
+              </figure>
+              <div class="ov-cue" aria-live="polite">
+                <div id="dial"></div>
+                <p class="cue-word">Standby</p>
+                <p class="cue-target">Jump to slide 3<br /><span class="num">0.3 s</span> left, keep still</p>
+              </div>
+            </div>
+            <footer class="ov-last">
+              <span class="lbl">Last</span>
+              <span class="act">Next slide</span>
+              <kbd aria-label="Right arrow">→</kbd>
+              <span class="lat"><span class="num">23</span> ms</span>
+            </footer>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script src="js/icons.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/dial.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/slide.js"></script>
+    <script>
+      WSIcons.hydrate();
+      document.getElementById("cam").outerHTML = WSScene.cam({ pose: "COUNT_3", label: "Camera, mirrored: the presenter holds up three fingers" });
+      document.getElementById("dial").outerHTML = WSDial.dial({ size: 104, progress: 0.7, holdMs: 1000, numeral: "3", caption: "Slide", state: "standby", label: "Standby, jump to slide 3, 70 percent held" });
+      WSSlide.tables(document.getElementById("pp-tables"));
+      WSSlide.fit();
+    </script>
+  </body>
+</html>

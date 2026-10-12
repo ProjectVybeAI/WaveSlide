@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" data-tabs="segmented" data-button="ink" data-pill="dot" data-table="ruled" data-input="filled" data-header="banded">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Live · WaveSlide prototype</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side" id="side"></aside>
+      <div class="page">
+        <header class="page-head">
+          <div>
+            <h1>Live</h1>
+            <p>What the camera sees, what WaveSlide recognises, and every key it sends.</p>
+          </div>
+          <div class="actions">
+            <div class="seg" role="radiogroup" aria-label="Landmark source">
+              <button type="button" role="radio" aria-checked="true"><i data-icon="video"></i>Camera</button>
+              <button type="button" role="radio" aria-checked="false"><i data-icon="history"></i>Replay a session</button>
+            </div>
+            <button class="btn" type="button"><i data-icon="panel-top"></i>Show overlay</button>
+          </div>
+        </header>
+        <main class="page-body">
+          <section aria-labelledby="setup-h">
+            <h2 id="setup-h" class="visually-hidden">Setup check</h2>
+            <ul class="checks">
+              <li><span class="pill success">Camera ready</span><small>FaceTime HD Camera, 640 × 480 at <span class="num">29.8</span> fps</small></li>
+              <li><span class="pill success">Keyboard control allowed</span><small>Accessibility permission is on for Terminal</small></li>
+              <li><span class="pill info">PowerPoint profile</span><small>macOS keys. Blank is <kbd>B</kbd>, jump is number then <kbd>Enter</kbd></small></li>
+              <li><span class="pill warning">Keys go to the front app</span><small>Click your slides once before you present</small></li>
+            </ul>
+          </section>
+
+          <div class="live-grid">
+            <section aria-labelledby="cam-h">
+              <h2 id="cam-h" class="visually-hidden">Camera</h2>
+              <figure class="monitor is-live">
+                <div id="cam"></div>
+                <figcaption class="umd"><span>Three fingers</span><span class="umd-dim">Camera 0, mirrored</span></figcaption>
+              </figure>
+            </section>
+
+            <section class="cue-panel" aria-labelledby="now-h">
+              <h2 id="now-h" class="visually-hidden">Now</h2>
+              <div class="cue-now" aria-live="polite">
+                <div id="dial"></div>
+                <div>
+                  <p class="cue-word">Standby</p>
+                  <p class="cue-target">Jump to slide 3</p>
+                  <p class="cue-target"><span class="num">0.3 s</span> left. Keep still, or change pose to cancel.</p>
+                </div>
+              </div>
+              <div>
+                <h3 class="panel-title">What the recogniser sees</h3>
+                <dl class="kv">
+                  <dt>Pose</dt><dd>Three fingers <span class="muted">index, middle, ring extended</span></dd>
+                  <dt>Agreement</dt><dd>5 of the last 5 frames <span class="muted">needs 4</span></dd>
+                  <dt>Confidence</dt><dd>0.94 <span class="muted">rules</span></dd>
+                  <dt>Palm speed</dt><dd>0.4 hand lengths/s <span class="muted">still below 1.0</span></dd>
+                  <dt>Finger spread</dt><dd>0.31 <span class="muted">palm above 0.45 counts as five</span></dd>
+                </dl>
+              </div>
+              <div>
+                <h3 class="panel-title">Engine</h3>
+                <div class="figures">
+                  <div><span class="fig-n">29.8<small>fps</small></span><span class="fig-l">Camera</span></div>
+                  <div><span class="fig-n">23<small>ms</small></span><span class="fig-l">Capture to key, p50</span></div>
+                  <div><span class="fig-n">38<small>ms</small></span><span class="fig-l">Capture to key, p95</span></div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="section" aria-labelledby="log-h">
+            <div class="section-head">
+              <h2 id="log-h">Sent this session</h2>
+              <p>14 commands, 1 not sent. Newest first. Saved to <code>logs/commands-2026-10-12.jsonl</code>.</p>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption class="visually-hidden">Commands sent this session</caption>
+                <thead>
+                  <tr><th class="end">#</th><th>Time</th><th>Gesture</th><th>Action</th><th>Keys</th><th class="end">Capture to key</th><th>Result</th></tr>
+                </thead>
+                <tbody id="log"></tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script src="js/icons.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/dial.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/shell.js"></script>
+    <script>
+      document.getElementById("side").innerHTML = WSShell.shell("Live");
+      WSIcons.hydrate();
+      document.getElementById("cam").outerHTML = WSScene.cam({ pose: "COUNT_3", label: "Camera, mirrored: the presenter holds up three fingers, numbered 1 to 3 at the fingertips" });
+      document.getElementById("dial").outerHTML = WSDial.dial({ size: 168, progress: 0.7, holdMs: 1000, numeral: "3", caption: "Slide", state: "standby", label: "Standby, jump to slide 3, 70 percent held" });
+      const rows = [
+        [14, "10:42:31", "COUNT_2", "Two fingers, held", "Jump to slide 2", ["2", "Enter"], 27, "success", "Sent"],
+        [13, "10:42:18", "SWIPE_RIGHT", "Swipe right", "Next slide", ["→"], 19, "success", "Sent"],
+        [12, "10:42:02", "SWIPE_RIGHT", "Swipe right", "Next slide", ["→"], 21, "success", "Sent"],
+        [11, "10:41:47", "OPEN_PALM", "Open palm, held", "Unblank", ["B"], 24, "success", "Sent"],
+        [10, "10:41:21", "OPEN_PALM", "Open palm, held", "Blank screen", ["B"], 22, "success", "Sent"],
+        [9, "10:40:58", "SWIPE_LEFT", "Swipe left", "Previous slide", ["←"], 20, "success", "Sent"],
+        [8, "10:40:40", "SWIPE_RIGHT", "Swipe right", "Next slide", ["→"], 18, "warning", "Not sent: WaveSlide had focus"],
+        [7, "10:40:31", "FIST", "Fist, held", "Start slideshow", ["⇧", "⌘", "Enter"], 26, "success", "Sent"],
+        [6, "10:40:12", "THUMBS_UP", "Thumbs up, held", "Go live", [], 23, "live", "Live"],
+      ];
+      document.getElementById("log").innerHTML = rows
+        .map(([n, t, g, gl, a, k, ms, tone, res]) => `<tr><td class="end num muted">${n}</td><td class="num">${t}</td><td><span class="gcell">${WSHand.glyph(g, 24, gl)}${gl}</span></td><td>${a}</td><td><span class="keys">${k.length ? k.map((x) => `<kbd>${x}</kbd>`).join("") : '<span class="muted">none</span>'}</span></td><td class="end num">${ms} ms</td><td><span class="pill ${tone}">${res}</span></td></tr>`)
+        .join("");
+    </script>
+  </body>
+</html>

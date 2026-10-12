@@ -1,0 +1,42 @@
+[project]
+name = "waveslide-engine"
+version = "0.1.0"
+description = "WaveSlide engine: webcam hand gestures to presentation keys"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "cv2-enumerate-cameras>=1.4.0",
+    "fastapi[standard]>=0.143.0",
+    "matplotlib>=3.11.2",
+    "mediapipe>=1.1.0",
+    "numpy>=2.5.4",
+    "opencv-contrib-python>=5.0.0.93",
+    "pyautogui>=0.9.54",
+    "pydantic-settings>=2.15.0",
+    "pyobjc-framework-avfoundation>=12.2.2 ; sys_platform == 'darwin'",
+    "pyobjc-framework-quartz>=12.2.2 ; sys_platform == 'darwin'",
+    "pywebview>=6.2.1",
+    "scikit-learn>=1.9.1",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "httpx2>=2.13.1",
+    "pytest>=9.1.1",
+    "pytest-timeout>=2.4.0",
+    "ruff>=0.17.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+timeout = 20
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

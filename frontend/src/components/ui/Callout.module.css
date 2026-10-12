@@ -1,0 +1,57 @@
+/* Tinted block, icon in the tone colour, text in the text colour (AA on every *-subtle). */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+}
+.icon {
+  flex: none;
+  width: var(--space-4);
+  height: var(--space-4);
+  margin-top: calc((1lh - var(--space-4)) / 2); /* centred on the first line */
+}
+.text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.title {
+  font-weight: var(--weight-semibold);
+}
+.action {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+.info {
+  background: var(--color-info-subtle);
+}
+.info .icon {
+  color: var(--color-info);
+}
+.warning {
+  background: var(--color-warning-subtle);
+}
+.warning .icon {
+  color: var(--color-warning);
+}
+.danger {
+  background: var(--color-danger-subtle);
+}
+.danger .icon {
+  color: var(--color-danger);
+}
+.success {
+  background: var(--color-success-subtle);
+}
+.success .icon {
+  color: var(--color-success);
+}

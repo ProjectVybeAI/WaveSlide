@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Overlay over PowerPoint, holding three fingers (direction B, Rig) · WaveSlide prototype</title>
+    <link rel="stylesheet" href="slide.css" />
+    <style>
+      /* Direction B, "Rig": the motion-capture bench. Rejected; kept for the record. */
+      @font-face {
+        font-family: "Martian Mono";
+        src: url("fonts/martian-mono-latin-standard-normal.woff2") format("woff2-variations");
+        font-weight: 100 800;
+        font-stretch: 75% 112.5%;
+      }
+      @font-face {
+        font-family: "Hanken Grotesk";
+        src: url("fonts/hanken-grotesk-latin-wght-normal.woff2") format("woff2-variations");
+        font-weight: 100 900;
+      }
+      :root {
+        --b-bg: oklch(20% 0.008 50);
+        --b-surface: oklch(23.5% 0.009 50);
+        --b-sunken: oklch(15.5% 0.007 50);
+        --b-border: oklch(34% 0.01 50);
+        --b-border-strong: oklch(55% 0.012 50);
+        --b-text: oklch(94% 0.006 70);
+        --b-muted: oklch(74% 0.01 60);
+        --b-accent: oklch(72% 0.17 50);
+        --b-accent-dim: oklch(40% 0.09 50);
+        --b-ok: oklch(76% 0.13 155);
+        --mono: "Martian Mono", ui-monospace, monospace;
+        --sans: "Hanken Grotesk", system-ui, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+      }
+      .rig {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 340px;
+        height: 280px;
+        display: grid;
+        grid-template-rows: 30px 146px 1fr;
+        color: var(--b-text);
+        background: var(--b-surface);
+        outline: 2px solid var(--b-accent);
+        outline-offset: -2px;
+        box-shadow: 0 18px 44px rgb(0 0 0 / 0.5);
+        font-family: var(--sans);
+      }
+      .rig-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 4px 0 10px;
+        font-family: var(--mono);
+        font-stretch: 87.5%;
+        font-size: 11px;
+        border-bottom: 1px solid var(--b-border);
+      }
+      .rig-head .armed {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--b-accent);
+        font-weight: 700;
+      }
+      .rig-head .armed::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: var(--b-accent);
+      }
+      .rig-head .meta {
+        color: var(--b-muted);
+      }
+      .rig-head .tools {
+        margin-left: auto;
+        display: flex;
+      }
+      .rig-head button {
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        background: none;
+        border: 0;
+        color: var(--b-muted);
+        padding: 0;
+      }
+      .rig-cam {
+        position: relative;
+        background: var(--b-sunken);
+        border-bottom: 1px solid var(--b-border);
+      }
+      .rig-cam svg {
+        display: block;
+        width: 340px;
+        height: 145px;
+      }
+      .rig-hold {
+        display: grid;
+        gap: 5px;
+        padding: 7px 10px 6px;
+      }
+      .hold-line {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        font-size: 13px;
+      }
+      .hold-line b {
+        font-weight: 650;
+      }
+      .hold-line .t {
+        font-family: var(--mono);
+        font-stretch: 87.5%;
+        font-size: 12px;
+        color: var(--b-accent);
+      }
+      .track {
+        position: relative;
+        height: 14px;
+        background: var(--b-sunken);
+        border: 1px solid var(--b-border);
+      }
+      .track .fill {
+        position: absolute;
+        inset: 0 30% 0 0;
+        background: repeating-linear-gradient(90deg, var(--b-accent) 0 calc(10% / 0.7 - 2px), transparent calc(10% / 0.7 - 2px) calc(10% / 0.7));
+      }
+      .readouts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        font-family: var(--mono);
+        font-stretch: 87.5%;
+        font-size: 10.5px;
+        color: var(--b-muted);
+      }
+      .readouts b {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--b-text);
+      }
+      .readouts .ok b {
+        color: var(--b-ok);
+      }
+      .hand-casing {
+        stroke: rgb(0 0 0 / 0.8);
+        stroke-linecap: round;
+        fill: none;
+      }
+      .hand-bone {
+        stroke: oklch(88% 0.006 70 / 0.7);
+        stroke-linecap: round;
+        fill: none;
+      }
+      .hand-bone.lit {
+        stroke: var(--b-accent);
+      }
+      .hand-joint {
+        fill: oklch(88% 0.006 70 / 0.8);
+      }
+      .hand-joint.lit {
+        fill: var(--b-accent);
+      }
+      .hand-tip {
+        fill: var(--b-sunken);
+        stroke: var(--b-accent);
+      }
+      .hand-tip-n {
+        font-family: var(--mono);
+        font-weight: 700;
+        fill: var(--b-accent);
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+      .cam-blur {
+        filter: blur(3px);
+      }
+      .meas {
+        font-family: var(--mono);
+        font-stretch: 87.5%;
+        fill: var(--b-text);
+      }
+      .meas-line {
+        stroke: var(--b-text);
+        fill: none;
+      }
+      .meas-acc {
+        stroke: var(--b-accent);
+        fill: none;
+      }
+    </style>
+  </head>
+  <body class="screen-page">
+    <main>
+      <h1 class="visually-hidden">WaveSlide overlay over a PowerPoint slideshow, direction B</h1>
+      <div class="screen-fit" id="fit">
+        <div class="screen" id="screen">
+          <div class="pp-slide" aria-label="PowerPoint slide 5 of 12" role="img">
+            <div class="pp-rule"></div>
+            <p class="pp-kicker">CS-302 Operating Systems, Lecture 7</p>
+            <p class="pp-title">Page replacement: FIFO against LRU</p>
+            <p class="pp-sub">Reference string 7 0 1 2 0 3 0 4 2 3, three frames. Shaded columns are page faults.</p>
+            <div class="pp-tables" id="pp-tables"></div>
+            <div class="pp-take">
+              <p class="pp-take-n">8 <span>faults with LRU</span></p>
+              <p class="pp-take-n pp-dim">9 <span>faults with FIFO</span></p>
+              <p class="pp-take-t">LRU keeps page 0, which the string keeps asking for. FIFO evicts it at step 7 only because it is the oldest.</p>
+            </div>
+            <p class="pp-foot">Dept. of Computer Engineering</p>
+            <p class="pp-num">5</p>
+          </div>
+
+          <section class="rig" aria-label="WaveSlide overlay">
+            <header class="rig-head">
+              <span class="armed">Armed</span>
+              <span class="meta">rules · COUNT_3 · p 0.94</span>
+              <div class="tools">
+                <button type="button" aria-label="Disarm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="14" y="3" width="5" height="18" rx="1" /><rect x="5" y="3" width="5" height="18" rx="1" /></svg></button>
+                <button type="button" aria-label="Compact"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20" /><polyline points="20 10 14 10 14 4" /></svg></button>
+                <button type="button" aria-label="Hide"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg></button>
+              </div>
+            </header>
+            <div class="rig-cam" id="cam"></div>
+            <div class="rig-hold" aria-live="polite">
+              <p class="hold-line"><span><b>Hold</b> to jump to slide 3</span><span class="t">0.70 / 1.00 s</span></p>
+              <div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="700" aria-label="Hold progress"><div class="fill"></div></div>
+              <div class="readouts">
+                <span class="ok">palm speed<b>0.4 s/s</b></span>
+                <span>spread<b>0.31</b></span>
+                <span>pipeline<b>11 ms</b></span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script src="js/hand.js"></script>
+    <script src="js/slide.js"></script>
+    <script>
+      // Camera with measurement overlays: hand-length ruler (1 s), joint bend angles, crop marks.
+      const w = 340, h = 145, cx = 104, cy = 134, s = 52, tilt = -7;
+      let svg = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Camera, mirrored: three fingers, measured">`;
+      svg += `<rect width="${w}" height="${h}" fill="oklch(22% 0.01 50)"/>`;
+      svg += `<g class="cam-blur"><rect x="236" y="-10" width="120" height="96" fill="oklch(32% 0.01 50)"/><path d="M140 170 C144 132 164 118 210 116 C256 118 276 132 280 170 Z" fill="oklch(26% 0.012 40)"/><ellipse cx="210" cy="62" rx="27" ry="33" fill="oklch(36% 0.02 55)"/><path d="M150 140 C136 142 120 146 ${cx} ${cy + 16}" stroke="oklch(26% 0.012 40)" stroke-width="22" fill="none" stroke-linecap="round"/></g>`;
+      for (let x = 0; x <= w; x += 34) svg += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="oklch(100% 0 0 / 0.05)"/>`;
+      for (let y = 0; y <= h; y += 34) svg += `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="oklch(100% 0 0 / 0.05)"/>`;
+      svg += WSHand.counted("COUNT_3", { cx, cy, s, tilt, numbered: true, stroke: 3, tipR: 9 });
+      // 1 s ruler from wrist to middle knuckle
+      const rad = (d) => (d * Math.PI) / 180;
+      const mx = cx + (-0.04 * Math.cos(rad(tilt)) + 1.0 * Math.sin(rad(tilt))) * s, my = cy + (-0.04 * Math.sin(rad(tilt)) - 1.0 * Math.cos(rad(tilt))) * s;
+      const ox = 44;
+      svg += `<path class="meas-acc" d="M${cx + ox} ${cy} h6 M${mx + ox} ${my} h6 M${cx + ox + 3} ${cy} L${mx + ox + 3} ${my}" stroke-width="1.5"/>`;
+      svg += `<text class="meas" x="${mx + ox + 10}" y="${(cy + my) / 2 + 4}" font-size="10">1 s = ${s} px</text>`;
+      svg += `<text class="meas" x="56" y="22" font-size="9.5" fill-opacity="0.8">bend 8°  6°  11°</text>`;
+      svg += `<path class="meas-line" d="M6 18 v-12 h12 M${w - 18} 6 h12 v12 M6 ${h - 18} v12 h12 M${w - 18} ${h - 6} h12 v-12" stroke-width="1.5" stroke-opacity="0.7"/>`;
+      svg += `</svg>`;
+      document.getElementById("cam").innerHTML = svg;
+      WSSlide.tables(document.getElementById("pp-tables"));
+      WSSlide.fit();
+    </script>
+  </body>
+</html>

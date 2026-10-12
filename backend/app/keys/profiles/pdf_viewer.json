@@ -1,0 +1,24 @@
+{
+  "id": "pdf_viewer",
+  "name": "PDF viewer",
+  "description": "Adobe Acrobat Reader in full screen mode.",
+  "jump_strategy": "step_from_home",
+  "unsupported": ["blank_toggle"],
+  "notes": "Jump goes to the first page, then steps right. Blank screen is not available in PDF viewers.",
+  "keys": {
+    "darwin": {
+      "next": ["right"],
+      "previous": ["left"],
+      "start_show": ["command+l"],
+      "exit_show": ["esc"],
+      "jump": ["home"]
+    },
+    "win32": {
+      "next": ["right"],
+      "previous": ["left"],
+      "start_show": ["ctrl+l"],
+      "exit_show": ["esc"],
+      "jump": ["home"]
+    }
+  }
+}

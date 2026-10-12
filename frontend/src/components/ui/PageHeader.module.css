@@ -1,0 +1,120 @@
+/* Title block and actions share a wrapping row: no media query needed, they wrap when tight. */
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  min-width: 0;
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+.backIcon {
+  flex: none;
+  width: var(--space-4);
+  height: var(--space-4);
+}
+/* The link itself is the 24 px target. */
+.back > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-6);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+.back > a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+}
+.text {
+  display: grid;
+  gap: var(--space-2);
+  flex: 1 1 calc(var(--space-16) * 5);
+  min-width: 0;
+}
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.title {
+  min-width: 0;
+  font-size: var(--text-2xl);
+  overflow-wrap: anywhere; /* a long record name wraps instead of overflowing on phones */
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.description {
+  color: var(--color-text-muted);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ---- Looks: <html data-header="banded | split">. No attribute = inline (above). ---- */
+
+/* banded: a full-width surface band with a rule under it, even inside a centred page
+   container. The band is a huge box-shadow clipped to the header's height and the rule is a
+   border-image pushed out sideways: both are paint only, so they never cause sideways scroll. */
+:global(:root[data-header="banded"]) .header {
+  padding-block: var(--space-6);
+  background: var(--color-surface);
+  border-bottom: var(--border-width) solid var(--color-border);
+  border-image: linear-gradient(var(--color-border), var(--color-border)) 0 0 1 0 / 0 0 var(--border-width) 0 / 0
+    100vmax;
+  box-shadow: 0 0 0 100vmax var(--color-surface);
+  clip-path: inset(0 -100vmax);
+}
+
+/* split: title block on the left; description and actions in the right column. Stacks when
+   narrow. .text uses display: contents so its children can take their own grid areas. */
+:global(:root[data-header="split"]) .main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-areas:
+    "title description"
+    "title actions";
+  align-items: start;
+  gap: var(--space-3) var(--space-8);
+}
+:global(:root[data-header="split"]) .text {
+  display: contents;
+}
+:global(:root[data-header="split"]) .titleRow {
+  grid-area: title;
+}
+:global(:root[data-header="split"]) .description {
+  grid-area: description;
+  padding-top: var(--space-2);
+}
+:global(:root[data-header="split"]) .actions {
+  grid-area: actions;
+}
+@media (max-width: 720px) {
+  :global(:root[data-header="split"]) .main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "title" "description" "actions";
+  }
+  :global(:root[data-header="split"]) .description {
+    padding-top: 0;
+  }
+}

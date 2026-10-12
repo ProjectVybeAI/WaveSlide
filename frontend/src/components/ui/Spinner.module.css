@@ -1,0 +1,21 @@
+/* The turn takes 4 x --duration-base, so reduced motion (duration 0) stops it with no extra rule. */
+.wrap {
+  display: inline-flex;
+}
+.spinner {
+  flex: none;
+  animation: spin calc(var(--duration-base) * 4) linear infinite;
+}
+.sm {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+.md {
+  width: var(--space-5);
+  height: var(--space-5);
+}
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}

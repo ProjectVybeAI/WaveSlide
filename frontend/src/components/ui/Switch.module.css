@@ -1,0 +1,111 @@
+/* Label and description on the left, the switch and its state word on the right.
+   Track: 40 x 24 px. Thumb: 16 px, inset equally on every side (the "inset" calc below). */
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--space-6);
+  align-items: center;
+}
+.label {
+  grid-column: 1;
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  cursor: pointer;
+}
+.description {
+  grid-column: 1;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.control {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  width: var(--space-10);
+  height: var(--space-6);
+  padding: 0;
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-sunken);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+.switch:hover:not(:disabled) {
+  border-color: var(--color-text-muted);
+}
+.switch[data-state="checked"] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.switch:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.switch:disabled {
+  cursor: not-allowed;
+  background: var(--color-surface-sunken);
+  border-color: var(--color-border);
+}
+.switch:disabled .thumb {
+  background: var(--color-text-subtle);
+}
+.thumb {
+  display: block;
+  width: var(--space-4);
+  height: var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-text-muted);
+  /* inset = (track height - borders - thumb) / 2 */
+  transform: translateX(calc((var(--space-6) - 2 * var(--border-width) - var(--space-4)) / 2));
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+.thumb[data-state="checked"] {
+  background: var(--color-on-accent);
+  /* track width - borders - thumb - inset */
+  transform: translateX(
+    calc(
+      var(--space-10) - 2 * var(--border-width) - var(--space-4) -
+        (var(--space-6) - 2 * var(--border-width) - var(--space-4)) / 2
+    )
+  );
+}
+/* Both words sit in one cell, so the row does not shift when "Off" becomes "On". */
+.state {
+  display: inline-grid;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+.state::before,
+.state::after {
+  grid-area: 1 / 1;
+}
+.state::before {
+  content: attr(data-on);
+  visibility: hidden;
+}
+.state::after {
+  content: attr(data-off);
+}
+.switch[data-state="checked"] + .state::before {
+  visibility: visible;
+}
+.switch[data-state="checked"] + .state::after {
+  visibility: hidden;
+}
+.switch:disabled + .state {
+  color: var(--color-text-subtle);
+}

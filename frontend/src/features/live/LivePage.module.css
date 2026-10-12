@@ -1,0 +1,26 @@
+.monitor {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  max-width: 720px;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-video);
+  border: 2px solid var(--color-border);
+}
+.monitor[data-live="true"] {
+  border-color: var(--color-accent);
+}
+.umd {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  background: var(--color-surface-sunken);
+}
+.dim {
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,79 @@
+/* Box in the first column, label and description in the second, aligned to the label's first line. */
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-2);
+  align-items: start;
+}
+/* The button is the 24 px hit area; ::before draws the visible 18 px square inside it. */
+.box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-on-accent);
+  cursor: pointer;
+}
+.box::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-1) - var(--border-width));
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+.box:hover:not(:disabled)::before {
+  border-color: var(--color-text-muted);
+}
+.box[data-state="checked"]::before,
+.box[data-state="indeterminate"]::before {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.box:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 0;
+}
+.box:disabled {
+  cursor: not-allowed;
+}
+.box:disabled::before {
+  background: var(--color-surface-sunken);
+  border-color: var(--color-border);
+}
+.box:disabled[data-state="checked"]::before {
+  background: var(--color-text-subtle);
+  border-color: var(--color-text-subtle);
+}
+.indicator {
+  position: relative; /* above the ::before square */
+  display: inline-flex;
+}
+.indicator svg {
+  width: var(--space-4);
+  height: var(--space-4);
+  stroke-width: 3;
+}
+.label {
+  align-self: center;
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+  cursor: pointer;
+}
+.box:disabled + .label {
+  color: var(--color-text-subtle);
+  cursor: not-allowed;
+}
+.description {
+  grid-column: 2;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

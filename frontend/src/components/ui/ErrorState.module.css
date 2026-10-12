@@ -1,0 +1,39 @@
+/* A tinted block with a danger edge: visible, but not a red alarm across the page. */
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--color-danger-subtle);
+  border: var(--border-width) solid var(--color-border);
+  border-inline-start: var(--space-1) solid var(--color-danger);
+  border-radius: var(--radius-md);
+}
+.icon {
+  flex: none;
+  width: var(--space-5);
+  height: var(--space-5);
+  color: var(--color-danger);
+}
+.text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.title {
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+}
+.message {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}

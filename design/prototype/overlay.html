@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-tabs="segmented" data-button="ink" data-pill="dot" data-table="ruled" data-input="filled" data-header="banded">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Overlay states · WaveSlide prototype</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <header class="page-head">
+      <div>
+        <h1>Overlay states</h1>
+        <p>The always-on-top window at real size (340 × 280, compact 220 × 56), over a white slide unless noted. Route <code>/overlay</code>; states switch with <code>?state=</code>.</p>
+      </div>
+    </header>
+    <main class="page-body">
+      <div class="sheet" id="sheet"></div>
+    </main>
+    <script src="js/icons.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/dial.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/overlay.js"></script>
+    <script>
+      const LAST = { act: "Next slide", keys: ["→"], lat: "23 ms" };
+      const plates = [
+        ["Paused", "The app starts here. Only a held thumbs up is watched; nothing is sent.", "paused",
+          { state: "paused", word: "Paused", sub: "Thumbs up 1 s to go live", cam: { hand: false }, umd: ["No hand", ""], dial: { state: "idle", numeral: "", caption: "" , label: "Paused"}, cueWord: "Hands free", cueTarget: "Talk and move freely", last: null }],
+        ["Going live", "Thumbs up held for 0.5 of 1.0 s. Lowering the hand cancels.", "paused",
+          { state: "paused", word: "Paused", sub: "Thumbs up 1 s to go live", cam: { pose: "THUMBS_UP", numbered: false, cx: 98, cy: 168, s: 64 }, umd: ["Thumbs up", "Rules 0.97"], dial: { state: "standby", progress: 0.5, numeral: "Live", caption: "Go", label: "Standby, go live, half held" }, cueWord: "Standby", cueTarget: "Go live<br><span class=num>0.5 s</span> left", last: null }],
+        ["Live, ready", "Watching for gestures. The band is the tally: blue means gestures act.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { hand: false }, umd: ["No hand", ""], dial: { state: "idle", numeral: "", caption: "", label: "Ready" }, cueWord: "Ready", cueTarget: "Swipe, or hold up fingers to jump", last: LAST }],
+        ["Standby", "Three fingers held still for 0.7 of 1.0 s. Each tick is 100 ms. Change pose or move to cancel.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { pose: "COUNT_3" }, umd: ["Three fingers", "Rules 0.94"], dial: { state: "standby", progress: 0.7, numeral: "3", caption: "Slide" }, cueWord: "Standby", cueTarget: "Jump to slide 3<br><span class=num>0.3 s</span> left, keep still", last: LAST }],
+        ["Go", "The hold completed: keys sent, latency measured from frame capture.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { pose: "COUNT_3" }, umd: ["Three fingers", "Rules 0.95"], dial: { state: "go", numeral: "3", caption: "Slide" }, cueWord: "Go", cueTarget: "Slide 3 sent", last: { act: "Slide 3", keys: ["3", "Enter"], lat: "27 ms", fresh: true } }],
+        ["Cooldown and re-arm", "0.8 s cooldown drains, then the same pose must be released before it can fire again.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { pose: "COUNT_3", lit: false, numbered: false }, umd: ["Three fingers", "Rules 0.95"], dial: { state: "cooldown", cooldown: 0.4, numeral: "3", caption: "Sent" }, cueWord: "Cooldown", cueTarget: "Lower your hand to arm the next gesture", last: { act: "Slide 3", keys: ["3", "Enter"], lat: "27 ms" }, cool: 0.4 }],
+        ["Cancelled", "The pose changed for more than 150 ms. Nothing was sent.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { pose: "COUNT_2" }, umd: ["Two fingers", "Rules 0.88"], dial: { state: "cancel", progress: 0.45, numeral: "3", caption: "Slide" }, cueWord: "Cancelled", cueTarget: "Pose changed. Hold still to try again", last: LAST }],
+        ["Swipe", "Swipes fire mid-motion with no hold; the dial shows the action for the cooldown.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { pose: "SWIPE_RIGHT", numbered: false, cx: 150, cy: 196, s: 58, tilt: 14 }, umd: ["Swipe right", "2.4 hand lengths"], dial: { state: "go", numeral: "Next", caption: "Slide" }, cueWord: "Go", cueTarget: "Next slide sent", last: { act: "Next slide", keys: ["→"], lat: "19 ms", fresh: true } }],
+        ["Blank", "Open palm, fingers together, held 0.8 s: eight ticks.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { pose: "OPEN_PALM", numbered: false, cx: 100, cy: 210, s: 60 }, umd: ["Open palm", "Rules 0.91"], dial: { state: "standby", progress: 0.5, holdMs: 800, numeral: "Blank", caption: "Screen" }, cueWord: "Standby", cueTarget: "Blank the screen<br><span class=num>0.4 s</span> left", last: LAST }],
+        ["No hand in view", "Live, but no hand found for 3 s. Nothing is wrong; this is a hint.", "live",
+          { word: "Live", sub: "PowerPoint", cam: { hand: false }, umd: ["No hand in view", "29.8 fps"], dial: { state: "idle", numeral: "", caption: "", label: "No hand" }, cueWord: "No hand", cueTarget: "Raise your hand into the camera's view", last: LAST }],
+        ["Not sent", "A WaveSlide window has focus, so the keys would land in WaveSlide. Focus guard blocked them.", "blocked",
+          { state: "blocked", word: "Not sent", sub: "Click your slides first", cam: { pose: "SWIPE_RIGHT", numbered: false, cx: 150, cy: 196, s: 58, tilt: 14 }, umd: ["Swipe right", "2.2 hand lengths"], dial: { state: "idle", numeral: "Next", caption: "Blocked", label: "Next slide not sent" }, cueWord: "Not sent", cueTarget: "Click your slides, then swipe again", last: { act: "Next slide", keys: ["→"], lat: "blocked", blocked: true } }],
+        ["Camera unavailable", "The engine lost the camera. Shown until it comes back.", "error",
+          { state: "error", word: "No camera", sub: "Gestures are off", error: { title: "Camera unavailable", message: "Another app may be using it, or it was unplugged. WaveSlide retries every 2 s." }, last: LAST }],
+        ["Standby over a dark slide", "The ink window and keyline carry on dark and photo slides too.", "dark",
+          { word: "Live", sub: "Google Slides", cam: { pose: "COUNT_4" }, umd: ["Four fingers", "ML 0.89"], dial: { state: "standby", progress: 0.3, numeral: "4", caption: "Slide" }, cueWord: "Standby", cueTarget: "Jump to slide 4<br><span class=num>0.7 s</span> left, keep still", last: LAST }],
+      ];
+      const compacts = [
+        ["Compact, live", "220 × 56: tally, dial and the last action.", { word: "Live", sub: "PowerPoint", dial: { state: "idle", numeral: "", caption: "" }, line1: "Next slide", line2: "23 ms" }],
+        ["Compact, standby", "The dial and its target stay readable at 44 px.", { word: "Live", sub: "PowerPoint", dial: { state: "standby", progress: 0.7, numeral: "3", caption: "" }, line1: "Jump to slide 3", line2: "Keep still" }],
+        ["Compact, paused", "Paused shows the way back.", { state: "paused", word: "Paused", sub: "Thumbs up", dial: { state: "idle", numeral: "", caption: "" }, line1: "Hands free", line2: "Thumbs up 1 s" }],
+      ];
+      let html = "";
+      for (const [title, note, bg, o] of plates) {
+        html += `<figure class="plate"><div class="plate-stage ${bg === "dark" ? "dark" : ""}">${WSOverlay.overlay(o)}</div><figcaption><h2>${title}</h2><p>${note}</p></figcaption></figure>`;
+      }
+      for (const [title, note, o] of compacts) {
+        html += `<figure class="plate"><div class="plate-stage small">${WSOverlay.compact(o)}</div><figcaption><h2>${title}</h2><p>${note}</p></figcaption></figure>`;
+      }
+      document.getElementById("sheet").innerHTML = html;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en" data-tabs="segmented" data-button="ink" data-pill="dot" data-table="ruled" data-input="filled" data-header="banded">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluation lab · WaveSlide prototype</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side" id="side"></aside>
+      <div class="page">
+        <header class="page-head">
+          <div>
+            <h1>Evaluation lab</h1>
+            <p>Every test from the brief, replayed through the same pipeline that drives your slides.</p>
+          </div>
+          <div class="actions">
+            <div class="field" style="grid-auto-flow:column;align-items:center;gap:var(--space-2)">
+              <label id="run-l" class="label">Run</label>
+              <button class="select" type="button" aria-labelledby="run-l" aria-haspopup="listbox"><span>12 Oct, 14:20, synthetic</span><i data-icon="chevron-down" class="chev"></i></button>
+            </div>
+            <button class="btn" type="button"><i data-icon="download"></i>Export report</button>
+            <button class="btn btn-primary" type="button"><i data-icon="play"></i>Run evaluation</button>
+          </div>
+        </header>
+        <main class="page-body">
+          <div class="callout warning" role="note">
+            <i data-icon="triangle-alert"></i>
+            <p><strong>Synthetic sessions.</strong> These numbers come from generated hands (seed 42, 3 made-up participants). They show that the harness works, not how WaveSlide performs. Record real participants in Dataset, then run again.</p>
+            <a class="btn btn-sm" href="#dataset">Open Dataset</a>
+          </div>
+
+          <nav class="seg" aria-label="Report sections">
+            <a href="#e1">E1 Gestures</a><a href="#e2">E2 Jumps</a><a href="#e3">E3 False triggers</a><a href="#e4">E4 Response</a><a href="#e5">E5 Distance</a><a href="#e6">E6 Lighting</a><a href="#e7" aria-current="true">E7 Rules vs model</a><a href="#ab">Ablation</a><a href="#e8">E8 Ratings</a>
+          </nav>
+
+          <dl class="headline">
+            <div><dt>Rules, macro-F1 over 10 poses</dt><dd id="f1-rules"></dd></div>
+            <div><dt>Trained model, macro-F1, leave one participant out</dt><dd id="f1-ml"></dd></div>
+            <div><dt>False triggers per minute of talking while live; 0 while paused</dt><dd>0.33<small> /min</small></dd></div>
+            <div><dt>Capture to key, 95th percentile</dt><dd>38<small> ms</small></dd></div>
+            <div><dt>Reliable range, rules at 90% or better</dt><dd>1.5<small> m</small></dd></div>
+          </dl>
+
+          <section class="eval-sec" id="e7" aria-labelledby="e7-h">
+            <div class="section-head">
+              <h2 id="e7-h"><span class="eid">E7</span>Rules against the trained model</h2>
+              <p>Frames from held poses, 400 per pose. Rows are what the hand did, columns what was recognised; cells are % of the row.</p>
+            </div>
+            <div class="eval-grid">
+              <div class="eval-sec"><h3 class="panel-title" id="cm-r-h">Rules <span class="muted" id="cm-r-f1"></span></h3><div id="cm-rules" class="cm-wrap"></div></div>
+              <div class="eval-sec"><h3 class="panel-title" id="cm-m-h">Trained model <span class="muted" id="cm-m-f1"></span></h3><div id="cm-ml" class="cm-wrap"></div></div>
+            </div>
+            <p class="help">Most confusions are four against five and five against an open palm: the thumb and the finger spread decide them. The dial's one-second hold is what lets a presenter catch these before they jump.</p>
+          </section>
+
+          <div class="eval-grid">
+            <section class="eval-sec" id="e5" aria-labelledby="e5-h">
+              <h2 id="e5-h"><span class="eid">E5</span>Accuracy by distance</h2>
+              <ul class="legend"><li><span class="sw line" style="background:var(--color-chart-1)"></span>Rules</li><li><span class="sw line" style="background:var(--color-chart-2)"></span>Trained model</li></ul>
+              <div id="c-dist"></div>
+            </section>
+            <section class="eval-sec" id="e6" aria-labelledby="e6-h">
+              <h2 id="e6-h"><span class="eid">E6</span>Accuracy by lighting</h2>
+              <ul class="legend"><li><span class="sw" style="background:var(--color-chart-1)"></span>Rules</li><li><span class="sw" style="background:var(--color-chart-2)"></span>Trained model</li></ul>
+              <div id="c-light"></div>
+            </section>
+            <section class="eval-sec" id="ab" aria-labelledby="ab-h">
+              <h2 id="ab-h">Ablation: what each control prevents</h2>
+              <p>False triggers per minute in 9 minutes of talking with gestures live, turning off one control at a time.</p>
+              <div id="c-abl"></div>
+            </section>
+            <section class="eval-sec" id="e4" aria-labelledby="e4-h">
+              <h2 id="e4-h"><span class="eid">E4</span>Capture to key</h2>
+              <p>1,284 commands. Held poses add their deliberate 0.8 to 1.0 s hold on top; key to practice-deck render adds a median 31 ms.</p>
+              <div id="c-lat"></div>
+            </section>
+          </div>
+
+          <section class="eval-sec" id="e1" aria-labelledby="e1-h">
+            <div class="section-head">
+              <h2 id="e1-h"><span class="eid">E1</span>Per gesture, per participant</h2>
+              <p>A gesture counts as correct when exactly its command fires between its start and 0.5 s after it ends.</p>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <caption class="visually-hidden">Correct commands per gesture and participant</caption>
+                <thead><tr><th>Gesture</th><th>Action</th><th class="end">P1</th><th class="end">P2</th><th class="end">P3</th><th class="end">All</th><th class="end">Accuracy</th></tr></thead>
+                <tbody id="e1-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script src="js/icons.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/shell.js"></script>
+    <script>
+      document.getElementById("side").innerHTML = WSShell.shell("Evaluation lab");
+      WSIcons.hydrate();
+      const CLASSES = [
+        ["NONE", "None"], ["FIST", "Fist"], ["OPEN_PALM", "Palm"], ["THUMBS_UP", "Up"], ["THUMBS_DOWN", "Down"],
+        ["COUNT_1", "1"], ["COUNT_2", "2"], ["COUNT_3", "3"], ["COUNT_4", "4"], ["COUNT_5", "5"],
+      ];
+      const RULES = [
+        [372, 6, 4, 3, 1, 5, 3, 2, 2, 2], [8, 381, 0, 6, 3, 2, 0, 0, 0, 0], [6, 0, 352, 0, 0, 0, 0, 2, 9, 31],
+        [9, 7, 0, 378, 0, 6, 0, 0, 0, 0], [11, 6, 0, 0, 381, 2, 0, 0, 0, 0], [7, 3, 0, 4, 0, 376, 9, 1, 0, 0],
+        [6, 0, 0, 0, 0, 6, 371, 15, 2, 0], [5, 0, 1, 0, 0, 0, 12, 362, 19, 1], [4, 0, 6, 0, 0, 0, 1, 14, 339, 36],
+        [3, 0, 27, 0, 0, 0, 0, 1, 33, 336],
+      ];
+      const ML = [
+        [366, 5, 4, 4, 3, 6, 4, 3, 3, 2], [6, 386, 0, 4, 2, 2, 0, 0, 0, 0], [4, 0, 377, 0, 0, 0, 0, 1, 4, 14],
+        [7, 5, 0, 383, 0, 5, 0, 0, 0, 0], [10, 9, 0, 0, 376, 5, 0, 0, 0, 0], [6, 2, 0, 3, 0, 381, 7, 1, 0, 0],
+        [5, 0, 0, 0, 0, 5, 378, 11, 1, 0], [4, 0, 0, 0, 0, 0, 9, 372, 14, 1], [3, 0, 3, 0, 0, 0, 1, 10, 361, 22],
+        [2, 0, 12, 0, 0, 0, 0, 1, 20, 365],
+      ];
+      function macroF1(m) {
+        let sum = 0;
+        for (let i = 0; i < m.length; i++) {
+          const tp = m[i][i], fn = m[i].reduce((a, b) => a + b, 0) - tp, fp = m.reduce((a, r) => a + r[i], 0) - tp;
+          sum += (2 * tp) / (2 * tp + fp + fn);
+        }
+        return sum / m.length;
+      }
+      const f1r = macroF1(RULES).toFixed(2), f1m = macroF1(ML).toFixed(2);
+      document.getElementById("f1-rules").textContent = f1r;
+      document.getElementById("f1-ml").textContent = f1m;
+      document.getElementById("cm-r-f1").textContent = `macro-F1 ${f1r}, 0.02 ms per frame`;
+      document.getElementById("cm-m-f1").textContent = `macro-F1 ${f1m}, 0.41 ms per frame`;
+
+      function seq(p) {
+        if (p === 0) return 0;
+        if (p <= 0.02) return 1;
+        if (p <= 0.05) return 2;
+        if (p <= 0.1) return 3;
+        if (p <= 0.25) return 4;
+        if (p <= 0.6) return 5;
+        if (p <= 0.85) return 6;
+        return 7;
+      }
+      function matrix(m, labelId) {
+        let h = `<table class="cm" aria-labelledby="${labelId}"><thead><tr><th></th>${CLASSES.map(([k, l]) => `<th scope="col">${WSHand.glyph(k, 20, l)}${l}</th>`).join("")}</tr></thead><tbody>`;
+        m.forEach((row, i) => {
+          const total = row.reduce((a, b) => a + b, 0);
+          h += `<tr><th scope="row" class="row">${CLASSES[i][1]}${WSHand.glyph(CLASSES[i][0], 20, CLASSES[i][1])}</th>`;
+          row.forEach((v, j) => {
+            const p = v / total, s = seq(p), pct = Math.round(p * 100);
+            const ink = s >= 4 ? "var(--color-ink-on-light)" : "var(--color-text)";
+            h += `<td class="${i === j ? "diag" : ""}" style="background:var(--color-seq-${s});color:${ink}" title="${CLASSES[i][1]} recognised as ${CLASSES[j][1]}: ${v} of ${total} frames">${v === 0 ? "" : pct < 1 ? "<1" : pct}</td>`;
+          });
+          h += `</tr>`;
+        });
+        return h + `</tbody></table><p class="cm-axis">Rows: the pose shown. Columns: the pose recognised.</p>`;
+      }
+      document.getElementById("cm-rules").innerHTML = matrix(RULES, "cm-r-h");
+      document.getElementById("cm-ml").innerHTML = matrix(ML, "cm-m-h");
+
+      // ---- charts (inline SVG, dataviz mark specs) ----
+      const W = 560;
+      function lineChart() {
+        const H = 236, L = 44, R = 64, T = 12, B = 54, xs = [0.5, 1, 1.5, 2], rules = [97, 96, 92, 76], ml = [98, 97, 95, 81], found = [100, 100, 98, 86];
+        const x = (i) => L + 36 + (i * (W - L - R - 36)) / 3, y = (v) => T + ((100 - v) * (H - T - B)) / 40;
+        let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Accuracy by distance. Rules 97, 96, 92, 76 percent at 0.5, 1, 1.5, 2 m. Trained model 98, 97, 95, 81.">`;
+        for (const v of [60, 70, 80, 90, 100]) s += `<line class="grid-l" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="tick-t" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`;
+        s += `<line class="base-l" x1="${L}" x2="${W - R}" y1="${y(90)}" y2="${y(90)}" stroke-width="1"/><text class="tick-t" x="${W - R + 6}" y="${y(90) + 4}">90% bar</text>`;
+        xs.forEach((d, i) => (s += `<text class="tick-t" x="${x(i)}" y="${H - B + 18}" text-anchor="middle">${d} m</text><text class="tick-t" x="${x(i)}" y="${H - B + 36}" text-anchor="middle">hand found ${found[i]}%</text>`));
+        for (const [data, c, name] of [[rules, "var(--color-chart-1)", "Rules"], [ml, "var(--color-chart-2)", "Model"]]) {
+          s += `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${data.map((v, i) => `${x(i)},${y(v)}`).join(" ")}"/>`;
+          data.forEach((v, i) => (s += `<circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="${c}" stroke="var(--color-bg)" stroke-width="2"><title>${name}, ${xs[i]} m: ${v}%</title></circle>`));
+          s += `<text class="val-t" x="${x(3) + 10}" y="${y(data[3]) + 4}">${data[3]}%</text>`;
+        }
+        return s + `</svg>`;
+      }
+      function groupedBars() {
+        const H = 236, L = 44, R = 16, T = 12, B = 54, cats = [["Bright", 168], ["Normal", 121], ["Dim", 54]], rules = [96, 96, 87], ml = [97, 97, 91];
+        const y = (v) => T + ((100 - v) * (H - T - B)) / 100, bw = 24, band = (W - L - R) / 3;
+        let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Accuracy by lighting. Rules 96, 96, 87 percent; trained model 97, 97, 91 percent for bright, normal, dim.">`;
+        for (const v of [0, 25, 50, 75, 100]) s += `<line class="${v === 0 ? "base-l" : "grid-l"}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="tick-t" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`;
+        cats.forEach(([c, lum], i) => {
+          const cx = L + band * i + band / 2;
+          [[rules[i], "var(--color-chart-1)", -1, "Rules"], [ml[i], "var(--color-chart-2)", 1, "Model"]].forEach(([v, col, side, n]) => {
+            const x0 = side < 0 ? cx - bw - 1 : cx + 1, top = y(v), base = y(0), r = 3;
+            s += `<path d="M${x0} ${base} V${top + r} Q${x0} ${top} ${x0 + r} ${top} H${x0 + bw - r} Q${x0 + bw} ${top} ${x0 + bw} ${top + r} V${base} Z" fill="${col}"><title>${n}, ${c}: ${v}%</title></path>`;
+            s += `<text class="val-t" x="${x0 + bw / 2}" y="${top - 6}" text-anchor="middle">${v}</text>`;
+          });
+          s += `<text class="tick-t" x="${cx}" y="${H - B + 18}" text-anchor="middle">${c}</text><text class="tick-t" x="${cx}" y="${H - B + 36}" text-anchor="middle">frame luminance ${lum}</text>`;
+        });
+        return s + `</svg>`;
+      }
+      function ablation() {
+        const rows = [["All controls on", 0.33], ["No hold to confirm", 4.7], ["No cooldown", 2.3], ["No stillness check", 1.7], ["No re-arm after firing", 1.3]];
+        const H = 216, L = 168, R = 56, T = 4, rowH = 38, max = 5;
+        const x = (v) => L + (v * (W - L - R)) / max;
+        let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="False triggers per minute: all controls 0.33, no hold 4.7, no cooldown 2.3, no stillness 1.7, no re-arm 1.3.">`;
+        for (const v of [0, 1, 2, 3, 4, 5]) s += `<line class="${v === 0 ? "base-l" : "grid-l"}" x1="${x(v)}" x2="${x(v)}" y1="${T}" y2="${T + rows.length * rowH}"/><text class="tick-t" x="${x(v)}" y="${T + rows.length * rowH + 18}" text-anchor="middle">${v}</text>`;
+        s += `<text class="tick-t" x="${W - R}" y="${T + rows.length * rowH + 36}" text-anchor="end">false triggers per minute</text>`;
+        rows.forEach(([n, v], i) => {
+          const yy = T + i * rowH + (rowH - 20) / 2, x1 = x(v), r = 3;
+          s += `<text class="lab-t" x="${L - 12}" y="${yy + 14}" text-anchor="end"${i === 0 ? ' font-weight="650"' : ""}>${n}</text>`;
+          s += `<path d="M${L} ${yy} H${x1 - r} Q${x1} ${yy} ${x1} ${yy + r} V${yy + 20 - r} Q${x1} ${yy + 20} ${x1 - r} ${yy + 20} H${L} Z" fill="var(--color-chart-1)"><title>${n}: ${v} per minute</title></path>`;
+          s += `<text class="val-t" x="${x1 + 8}" y="${yy + 14}">${v.toFixed(v < 1 ? 2 : 1)}</text>`;
+        });
+        return s + `</svg>`;
+      }
+      function latency() {
+        const bins = [[12, 16, 41], [16, 20, 188], [20, 24, 402], [24, 28, 318], [28, 32, 162], [32, 36, 88], [36, 40, 47], [40, 44, 22], [44, 48, 11], [48, 52, 5]];
+        const H = 216, L = 44, R = 16, T = 18, B = 40, max = 420, xMin = 12, xMax = 52;
+        const x = (v) => L + ((v - xMin) * (W - L - R)) / (xMax - xMin), y = (v) => T + ((max - v) * (H - T - B)) / max;
+        let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Capture to key latency histogram: median 23 ms, 95th percentile 38 ms.">`;
+        for (const v of [0, 100, 200, 300, 400]) s += `<line class="${v === 0 ? "base-l" : "grid-l"}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="tick-t" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+        bins.forEach(([a, b, n]) => {
+          const x0 = x(a) + 1, x1 = x(b) - 1, top = y(n), base = y(0), r = 3;
+          s += `<path d="M${x0} ${base} V${top + r} Q${x0} ${top} ${x0 + r} ${top} H${x1 - r} Q${x1} ${top} ${x1} ${top + r} V${base} Z" fill="var(--color-chart-1)"><title>${a} to ${b} ms: ${n} commands</title></path>`;
+        });
+        for (let v = 12; v <= 52; v += 8) s += `<text class="tick-t" x="${x(v)}" y="${H - B + 18}" text-anchor="middle">${v}</text>`;
+        s += `<text class="tick-t" x="${W - R}" y="${H - 4}" text-anchor="end">ms, frame capture to key sent</text>`;
+        for (const [v, n] of [[23, "p50 23 ms"], [38, "p95 38 ms"]]) s += `<line x1="${x(v)}" x2="${x(v)}" y1="${T - 6}" y2="${y(0)}" stroke="var(--color-text)" stroke-width="1.5"/><text class="val-t" x="${x(v) + 6}" y="${T + 2}">${n}</text>`;
+        return s + `</svg>`;
+      }
+      document.getElementById("c-dist").innerHTML = lineChart();
+      document.getElementById("c-light").innerHTML = groupedBars();
+      document.getElementById("c-abl").innerHTML = ablation();
+      document.getElementById("c-lat").innerHTML = latency();
+
+      const e1 = [
+        ["SWIPE_RIGHT", "Swipe right", "Next slide", [30, 29, 30], 30],
+        ["SWIPE_LEFT", "Swipe left", "Previous slide", [29, 30, 28], 30],
+        ["OPEN_PALM", "Open palm", "Blank or unblank", [12, 11, 12], 12],
+        ["THUMBS_UP", "Thumbs up", "Pause or go live", [12, 12, 12], 12],
+        ["FIST", "Fist", "Start slideshow", [12, 12, 11], 12],
+        ["THUMBS_DOWN", "Thumbs down", "Exit slideshow", [11, 12, 12], 12],
+        ["COUNT_3", "1 to 5 fingers", "Jump to slide", [57, 56, 55], 60],
+      ];
+      document.getElementById("e1-body").innerHTML = e1
+        .map(([g, n, a, ps, per]) => {
+          const tot = ps.reduce((x, y) => x + y, 0), acc = (tot / (per * 3)) * 100;
+          return `<tr><td><span class="gcell">${WSHand.glyph(g, 24, n)}${n}</span></td><td>${a}</td>${ps.map((p) => `<td class="end num">${p}/${per}</td>`).join("")}<td class="end num">${tot}/${per * 3}</td><td class="end num"><strong>${acc.toFixed(1)}%</strong></td></tr>`;
+        })
+        .join("");
+    </script>
+  </body>
+</html>

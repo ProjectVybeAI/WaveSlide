@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-tabs="segmented" data-button="ink" data-pill="dot" data-table="ruled" data-input="filled" data-header="banded">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Practice deck · WaveSlide prototype</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side" id="side"></aside>
+      <div class="page">
+        <header class="page-head">
+          <div>
+            <h1>Practice deck</h1>
+            <p>Ten slides to try every gesture before you open PowerPoint. The keyboard works here too.</p>
+          </div>
+          <div class="actions">
+            <span class="keys muted" style="font-size:var(--text-sm)"><i data-icon="keyboard"></i>&nbsp;<kbd>←</kbd><kbd>→</kbd><kbd>1</kbd>…<kbd>9</kbd><kbd>Enter</kbd><kbd>B</kbd></span>
+            <button class="btn" type="button"><i data-icon="rotate-ccw"></i>Back to slide 1</button>
+            <button class="btn btn-primary" type="button"><i data-icon="maximize-2"></i>Present full screen</button>
+          </div>
+        </header>
+        <main class="page-body">
+          <div class="practice">
+            <section class="stage" aria-labelledby="slide-h">
+              <h2 id="slide-h" class="visually-hidden">Slide 3 of 10</h2>
+              <div class="deck-slide" aria-live="polite">
+                <p class="s-num">3</p>
+                <p class="s-title">Jump here from anywhere</p>
+                <p class="s-body">Hold up three fingers and keep still. The dial fills for one second, then this slide appears. Let go before it fills and nothing happens.</p>
+                <div class="s-hand" id="s-hand"></div>
+                <p class="s-foot">Practice deck, slide 3 of 10</p>
+              </div>
+              <ol class="deck-strip" id="strip" aria-label="Slides in the practice deck"></ol>
+            </section>
+            <aside class="rail" aria-label="Gestures to try">
+              <div class="ack" aria-live="polite">
+                <span class="pill live">Jumped to slide 3</span>
+                <div class="figures" style="border-top:0">
+                  <div style="padding-top:0"><span class="fig-n">27<small>ms</small></span><span class="fig-l">Capture to key</span></div>
+                  <div style="padding-top:0"><span class="fig-n">31<small>ms</small></span><span class="fig-l">Key to slide on screen</span></div>
+                </div>
+              </div>
+              <div>
+                <h3 class="panel-title">Try on this slide</h3>
+                <ul class="try" id="try"></ul>
+              </div>
+              <p class="help">Gestures drive this deck through the same keys PowerPoint gets, but WaveSlide never sends keys to another app while you practise here.</p>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="js/icons.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/shell.js"></script>
+    <script>
+      document.getElementById("side").innerHTML = WSShell.shell("Practice deck");
+      WSIcons.hydrate();
+      document.getElementById("s-hand").innerHTML = WSHand.glyph("COUNT_3", 300, "Three fingers held up").replace('class="glyph"', 'class="glyph" style="width:100%;height:auto"');
+      const titles = ["Start", "Swipe", "Jump", "Swipe back", "Blank", "Fingers", "Pause", "Two hands", "Exit", "Done"];
+      document.getElementById("strip").innerHTML = titles
+        .map((t, i) => {
+          const n = i + 1, cur = n === 3, from = n === 5;
+          return `<li class="${cur ? "is-current" : ""} ${from ? "is-from" : ""}"${cur ? ' aria-current="step"' : ""}><span class="thumb">${n}</span><small>${cur ? "Here now" : from ? "Jumped from" : t}</small></li>`;
+        })
+        .join("");
+      const tries = [
+        ["SWIPE_RIGHT", "Swipe right", "Next slide, slide 4"],
+        ["SWIPE_LEFT", "Swipe left", "Previous slide, slide 2"],
+        ["COUNT_5", "Hold up 1 to 5 fingers", "Jump to that slide"],
+        ["OPEN_PALM", "Open palm, held 0.8 s", "Blank the screen, and back"],
+        ["THUMBS_UP", "Thumbs up, held 1 s", "Pause, so you can talk with your hands"],
+      ];
+      document.getElementById("try").innerHTML = tries.map(([g, a, b]) => `<li>${WSHand.glyph(g, 36, a)}<div><b>${a}</b><span>${b}</span></div></li>`).join("");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+.shell {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 100vh;
+  /* keeps the sidebar colour under the sticky sidebar on long pages */
+  background: linear-gradient(90deg, var(--color-surface-sunken) 0 231px, var(--color-border) 231px 232px, var(--color-bg) 232px);
+}
+.skip {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 10;
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-bg);
+  background: var(--color-text);
+  border-radius: var(--radius-md);
+  transform: translateY(-200%);
+}
+.skip:focus {
+  transform: none;
+}
+.side {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100vh;
+  padding: var(--space-4) var(--space-3);
+  background: var(--color-surface-sunken);
+  border-right: var(--border-width) solid var(--color-border);
+  view-transition-name: sidebar;
+}
+.side > :first-child {
+  padding: var(--space-1) var(--space-2);
+}
+.nav {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nav a {
+  position: relative;
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) ease-out, color var(--duration-fast) ease-out;
+}
+.nav a:hover {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+.nav a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+.nav a[aria-current="page"] {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+}
+.nav a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  inset: var(--space-2) auto var(--space-2) 0;
+  width: 3px;
+  background: var(--color-accent);
+}
+.facts {
+  display: grid;
+  gap: var(--space-2);
+  margin: auto 0 0;
+  padding: var(--space-3) var(--space-2) 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  border-top: var(--border-width) solid var(--color-border);
+}
+.facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.facts dt {
+  white-space: nowrap;
+}
+.facts dd {
+  margin: 0;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+.page {
+  min-width: 0;
+  padding-inline: var(--space-8);
+  /* The banded header paints sideways forever; clip it at the page edge so it never covers the sidebar. */
+  overflow-x: clip;
+  view-transition-name: page;
+}
+
+/* Under 960 px the sidebar becomes a top bar: tally first, then scrolling navigation. */
+@media (max-width: 960px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    background: var(--color-bg);
+  }
+  .side {
+    position: static;
+    height: auto;
+    gap: var(--space-3);
+    border-right: 0;
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+  .nav {
+    display: flex;
+    overflow-x: auto;
+  }
+  .nav a {
+    white-space: nowrap;
+  }
+  .facts {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .page {
+    padding-inline: var(--space-4);
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "google_slides",
+  "name": "Google Slides",
+  "description": "Google Slides presenting in a browser.",
+  "jump_strategy": "type_number",
+  "unsupported": [],
+  "notes": "Check jump and blank by hand in docs/PROFILE_CHECKS.md; Google documents them inconsistently.",
+  "keys": {
+    "darwin": {
+      "next": ["right"],
+      "previous": ["left"],
+      "blank_toggle": ["b"],
+      "start_show": ["command+enter"],
+      "exit_show": ["esc"],
+      "jump": ["{n}", "enter"]
+    },
+    "win32": {
+      "next": ["right"],
+      "previous": ["left"],
+      "blank_toggle": ["b"],
+      "start_show": ["ctrl+enter"],
+      "exit_show": ["esc"],
+      "jump": ["{n}", "enter"]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+/* Heights match the line boxes of the text they stand in for. The pulse runs at
+   8 x --duration-base, so reduced motion (duration 0) turns it off with no extra rule. */
+.skeleton {
+  display: block;
+  /* The border colour, not surface-sunken: sunken barely shows on a white panel. */
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+  animation: pulse calc(var(--duration-base) * 8) var(--ease-out) infinite;
+}
+.lines {
+  display: grid;
+}
+.text {
+  /* One line box (1lh) of the surrounding text, minus a little air above and below. */
+  height: calc(1lh - var(--space-2));
+  margin-block: var(--space-1);
+}
+.heading {
+  height: calc(var(--text-lg) * var(--leading-tight));
+}
+.control {
+  height: var(--control-height);
+  border-radius: var(--radius-md);
+}
+.block {
+  height: calc(var(--space-16) * 2);
+  border-radius: var(--radius-md);
+}
+.circle {
+  height: var(--space-10);
+  border-radius: var(--radius-full);
+  aspect-ratio: 1;
+}
+.circle.wFull {
+  width: var(--space-10);
+}
+.wFull {
+  width: 100%;
+}
+.w34 {
+  width: 75%;
+}
+.w12 {
+  width: 50%;
+}
+.w13 {
+  width: 33%;
+}
+.w14 {
+  width: 25%;
+}
+@keyframes pulse {
+  50% {
+    opacity: 50%;
+  }
+}

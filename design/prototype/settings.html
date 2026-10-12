@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-tabs="segmented" data-button="ink" data-pill="dot" data-table="ruled" data-input="filled" data-header="banded">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Settings · WaveSlide prototype</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side" id="side"></aside>
+      <div class="page">
+        <header class="page-head">
+          <div>
+            <h1>Settings</h1>
+            <p>Changes take effect when you save. Stored in <code>data/settings.json</code>.</p>
+          </div>
+          <div class="actions">
+            <button class="btn" type="button"><i data-icon="download"></i>Export</button>
+            <button class="btn" type="button"><i data-icon="upload"></i>Import</button>
+            <button class="btn btn-tertiary" type="button"><i data-icon="rotate-ccw"></i>Reset to defaults</button>
+          </div>
+        </header>
+        <main class="page-body">
+          <div class="settings">
+            <section class="set-sec" aria-labelledby="g-h">
+              <header>
+                <h2 id="g-h">Gestures</h2>
+                <p>Which gesture does what. Each gesture can do one thing. Holding up one to five fingers is kept for jumping to a slide.</p>
+              </header>
+              <div class="controls">
+                <div class="table-wrap">
+                  <table class="map-table">
+                    <caption class="visually-hidden">Gesture for each action</caption>
+                    <thead><tr><th>Action</th><th>Gesture</th><th>Fires</th></tr></thead>
+                    <tbody id="map"></tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section class="set-sec" aria-labelledby="f-h">
+              <header>
+                <h2 id="f-h">Features</h2>
+                <p>Turn off what you do not use; fewer gestures means fewer surprises.</p>
+              </header>
+              <div class="controls" id="features"></div>
+            </section>
+
+            <section class="set-sec" aria-labelledby="s-h">
+              <header>
+                <h2 id="s-h">Sensitivity</h2>
+                <p>Distances are in hand lengths: wrist to the middle knuckle. A swipe of 2 hand lengths is the same gesture at 0.5 m and at 2 m.</p>
+                <figure id="handlen"></figure>
+              </header>
+              <div class="controls two-col" id="sens"></div>
+            </section>
+
+            <section class="set-sec" aria-labelledby="t-h">
+              <header>
+                <h2 id="t-h">Timing</h2>
+                <p>Held gestures fill the dial before they fire, one tick per 100 ms, so there is time to change your mind. Cooldowns stop one gesture from firing twice.</p>
+              </header>
+              <div class="controls" id="timing"></div>
+            </section>
+
+            <section class="set-sec" aria-labelledby="c-h">
+              <header>
+                <h2 id="c-h">Camera and app</h2>
+                <p>WaveSlide presses keys in whichever app is in front. The profile decides which keys.</p>
+              </header>
+              <div class="controls">
+                <div class="two-col">
+                  <div class="field">
+                    <label id="cam-l">Camera</label>
+                    <button class="select" type="button" aria-labelledby="cam-l" aria-haspopup="listbox"><span>FaceTime HD Camera (built-in)</span><i data-icon="chevron-down" class="chev"></i></button>
+                    <p class="help">640 × 480 at 30 fps. Switching restarts the camera for about a second.</p>
+                  </div>
+                  <div class="field">
+                    <label id="prof-l">App profile</label>
+                    <button class="select" type="button" aria-labelledby="prof-l" aria-haspopup="listbox"><span>PowerPoint</span><i data-icon="chevron-down" class="chev"></i></button>
+                    <p class="help">Also: Google Slides in Chrome, PDF viewer (Adobe Acrobat Reader), Practice deck.</p>
+                  </div>
+                </div>
+                <div class="table-wrap">
+                  <table class="keytable">
+                    <caption class="visually-hidden">Keys PowerPoint receives on macOS</caption>
+                    <thead><tr><th>Action</th><th>Keys PowerPoint receives on macOS</th></tr></thead>
+                    <tbody>
+                      <tr><td>Next slide</td><td><span class="keys"><kbd>→</kbd></span></td></tr>
+                      <tr><td>Previous slide</td><td><span class="keys"><kbd>←</kbd></span></td></tr>
+                      <tr><td>Blank or unblank</td><td><span class="keys"><kbd>B</kbd></span></td></tr>
+                      <tr><td>Jump to slide 3</td><td><span class="keys"><kbd>3</kbd><kbd>Enter</kbd></span></td></tr>
+                      <tr><td>Start slideshow</td><td><span class="keys"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>Enter</kbd></span> <span class="muted">from the current slide</span></td></tr>
+                      <tr><td>Exit slideshow</td><td><span class="keys"><kbd>Esc</kbd></span></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section class="set-sec" aria-labelledby="r-h">
+              <header>
+                <h2 id="r-h">Recogniser</h2>
+                <p>Rules are written by hand and need no data. The trained model learns the same poses from recorded sessions. Both read the same landmarks; switch any time.</p>
+              </header>
+              <div class="controls">
+                <div class="seg" role="radiogroup" aria-label="Recogniser">
+                  <button type="button" role="radio" aria-checked="true">Rules</button>
+                  <button type="button" role="radio" aria-checked="false">Trained model</button>
+                </div>
+                <div class="model-card">
+                  <span class="pill success">Trained model available</span>
+                  <p>Random forest, trained 12 Oct 2026 at 14:20 from 3 participants and 41,280 frames. Leave-one-participant-out macro-F1 <span class="num">0.94</span>; rules score <span class="num">0.91</span> on the same sessions. Compare them in the Evaluation lab.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="set-sec" aria-labelledby="o-h">
+              <header>
+                <h2 id="o-h">Overlay</h2>
+                <p>The small window that stays on top of your slides. If your laptop screen is mirrored to the projector, the audience sees it too.</p>
+              </header>
+              <div class="controls" id="overlay"></div>
+            </section>
+          </div>
+        </main>
+        <div class="save-bar" role="region" aria-label="Unsaved changes">
+          <p><strong>2 unsaved changes:</strong> Exit slideshow gesture, swipe distance. <span class="muted">Fix the gesture conflict to save.</span></p>
+          <div class="actions">
+            <button class="btn btn-tertiary" type="button">Discard changes</button>
+            <button class="btn btn-primary" type="button" disabled aria-describedby="conflict-msg">Save settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/icons.js"></script>
+    <script src="js/hand.js"></script>
+    <script src="js/dial.js"></script>
+    <script src="js/shell.js"></script>
+    <script>
+      document.getElementById("side").innerHTML = WSShell.shell("Settings");
+      const G = WSHand.glyph;
+      const sel = (pose, label, invalid, id) =>
+        `<button class="select" type="button" aria-haspopup="listbox" ${id ? `id="${id}"` : ""} ${invalid ? 'aria-invalid="true" aria-describedby="conflict-msg"' : ""}><span class="gcell">${G(pose, 24, label)}${label}</span><i data-icon="chevron-down" class="chev"></i></button>`;
+      const map = [
+        ["Next slide", "SWIPE_RIGHT", "Swipe right", "As the swipe happens"],
+        ["Previous slide", "SWIPE_LEFT", "Swipe left", "As the swipe happens"],
+        ["Blank or unblank", "OPEN_PALM", "Open palm, fingers together", "After a 0.8 s hold"],
+        ["Pause or go live", "THUMBS_UP", "Thumbs up", "After a 1.0 s hold"],
+        ["Start slideshow", "FIST", "Fist", "After a 1.0 s hold"],
+        ["Exit slideshow", "FIST", "Fist", "After a 1.0 s hold", "conflict"],
+      ];
+      let rows = map
+        .map(([a, p, l, f, st]) => {
+          const tr = `<tr class="${st ? "is-changed is-conflict" : ""}"><td>${a}${st ? '<span class="changed-tag">Changed</span>' : ""}</td><td>${sel(p, l, !!st)}</td><td class="muted">${f}</td></tr>`;
+          return st
+            ? tr + `<tr class="conflict-row"><td></td><td colspan="2"><p class="error-text" id="conflict-msg">${WSIcons.icon("circle-alert")}<span>Fist already starts the slideshow. Choose another gesture here, or give Start slideshow a different one first. Thumbs down is free.</span></p></td></tr>`
+            : tr;
+        })
+        .join("");
+      rows += `<tr><td>Jump to slide 1 to 5</td><td><span class="gcell">${G("COUNT_1", 24)}${G("COUNT_3", 24)}${G("COUNT_5", 24)}<span class="muted">One to five fingers, kept for jumping</span></span></td><td class="muted">After a 1.0 s hold</td></tr>`;
+      document.getElementById("map").innerHTML = rows;
+
+      const sw = (label, help, on) =>
+        `<div class="switch-row"><span class="label">${label}</span><p class="help">${help}</p><button class="switch" type="button" role="switch" aria-checked="${on}" aria-label="${label}"><span class="switch-track"></span>${on ? "On" : "Off"}</button></div>`;
+      document.getElementById("features").innerHTML = [
+        sw("Jump to a slide with fingers", "Hold up one to five fingers to go straight to that slide.", true),
+        sw("Blank the screen with an open palm", "Turns the projected screen black, and back. Not available in PDF viewers.", true),
+        sw("Two-hand counting for slides 6 to 10", "One hand shows five, the other adds one to five. Off by default because it is easier to misread.", false),
+        sw("Start paused", "WaveSlide ignores gestures until you show a thumbs up, so setting up never changes a slide.", true),
+      ].join("");
+
+      const slider = ({ label, value, unit, min, max, def, help, changed, fmt = (v) => v.toFixed(1) }) => {
+        const pct = ((value - min) / (max - min)) * 100, dpct = ((def - min) / (max - min)) * 100;
+        return `<div class="slider"><span class="label">${label}${changed ? '<span class="changed-tag">Changed</span>' : ""}</span><span class="value">${fmt(value)} <small>${unit}</small></span>
+          <div class="track" role="slider" tabindex="0" aria-label="${label}" aria-valuemin="${min}" aria-valuemax="${max}" aria-valuenow="${value}" aria-valuetext="${fmt(value)} ${unit}"><span class="track-rail"></span><span class="track-fill" style="width:${pct}%"></span><span class="track-cap" style="left:${pct}%"></span><span class="track-default" style="left:${dpct}%">Default ${fmt(def)}</span></div>
+          <p class="help">${help}</p></div>`;
+      };
+      document.getElementById("sens").innerHTML = [
+        slider({ label: "Swipe distance", value: 2.2, def: 2.0, min: 1, max: 3.5, unit: "hand lengths", changed: true, help: "How far the palm travels sideways for a swipe." }),
+        slider({ label: "Swipe time limit", value: 500, def: 500, min: 250, max: 900, unit: "ms", fmt: (v) => v.toFixed(0), help: "The travel has to happen within this time." }),
+        slider({ label: "Swipe speed", value: 4.0, def: 4.0, min: 2, max: 8, unit: "hand lengths/s", help: "Peak speed. Drifting while you talk stays below it." }),
+        slider({ label: "Keep still for holds", value: 1.0, def: 1.0, min: 0.4, max: 2, unit: "hand lengths/s", help: "A held gesture only fills the dial while the palm is slower than this." }),
+        slider({ label: "Palm or five fingers", value: 0.45, def: 0.45, min: 0.3, max: 0.7, unit: "spread", fmt: (v) => v.toFixed(2), help: "Fingers closer than this are an open palm; wider apart is five." }),
+        slider({ label: "Smoothing", value: 1.0, def: 1.0, min: 0.3, max: 3, unit: "Hz cut-off", help: "Lower is steadier, higher reacts faster." }),
+      ].join("");
+
+      const timing = ({ label, value, unit, min, max, def, help, ticksMs, numeral }) =>
+        `<div class="timing">${WSDial.dial({ size: 64, state: ticksMs ? "idle" : "cooldown", cooldown: 1, holdMs: ticksMs, numeral: numeral || "", caption: "", label: `${label}: ${value} ${unit}` }).replace('class="dial is-idle"', 'class="dial is-preview"')}${slider({ label, value, unit, min, max, def, help, fmt: (v) => (unit === "s" ? v.toFixed(1) : v.toFixed(0)) })}</div>`;
+      document.getElementById("timing").innerHTML = [
+        timing({ label: "Hold to jump to a slide", value: 1.0, def: 1.0, min: 0.4, max: 2, unit: "s", ticksMs: 1000, numeral: "3", help: "Ten ticks. Long enough to see the number and let go if it is wrong." }),
+        timing({ label: "Hold to blank", value: 0.8, def: 0.8, min: 0.4, max: 2, unit: "s", ticksMs: 800, numeral: "B", help: "Eight ticks." }),
+        timing({ label: "Hold other poses", value: 1.0, def: 1.0, min: 0.4, max: 2, unit: "s", ticksMs: 1000, numeral: "", help: "Pause or go live, start and exit the slideshow." }),
+        timing({ label: "Cooldown after a command", value: 800, def: 800, min: 300, max: 2000, unit: "ms", ticksMs: 0, help: "Then the same pose has to be released before it can fire again." }),
+      ].join("");
+
+      document.getElementById("overlay").innerHTML = [
+        sw("Show the overlay", "Hide it if the audience can see your laptop screen.", true),
+        sw("Show the camera image", "Off shows landmarks on a dark background only.", true),
+        sw("Draw the hand landmarks", "The counted fingers are numbered at the tips.", true),
+        `<div class="field"><span class="label" id="size-l">Size</span><div class="seg" role="radiogroup" aria-labelledby="size-l"><button type="button" role="radio" aria-checked="true">Full, 340 × 280</button><button type="button" role="radio" aria-checked="false">Compact, 220 × 56</button></div></div>`,
+      ].join("");
+
+      // the hand-length unit, drawn on the palm glyph
+      document.getElementById("handlen").innerHTML = `<div style="display:flex;gap:12px;align-items:center">${G("OPEN_PALM", 56, "Open palm")}<p class="help" style="margin:0">1 hand length = wrist to the middle knuckle, measured every frame</p></div>`;
+      WSIcons.hydrate();
+    </script>
+  </body>
+</html>

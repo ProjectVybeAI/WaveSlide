@@ -1,0 +1,94 @@
+/* Text controls: control-height tall, strong border (3:1 against the page), danger border when invalid. */
+.control {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+.control::placeholder {
+  color: var(--color-text-subtle);
+  opacity: 1;
+}
+.control:hover:not(:disabled) {
+  border-color: var(--color-text-muted);
+}
+.control:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+/* Invalid: a thicker red edge, so it is not colour alone (the error text says why). */
+.control[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: inset 0 0 0 var(--border-width) var(--color-danger);
+}
+.control:disabled {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-subtle);
+  border-color: var(--color-border);
+  cursor: not-allowed;
+}
+.control:read-only:not(:disabled) {
+  background: var(--color-surface-sunken);
+}
+.numeric {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.textarea {
+  min-height: calc(var(--control-height) * 2);
+  padding: var(--space-2) var(--space-3);
+  line-height: var(--leading-normal);
+  resize: vertical;
+}
+
+/* ---- Looks: <html data-input="underline | filled">. No attribute = boxed (above).
+   Select.module.css repeats these for the Select trigger. ---- */
+
+/* underline: a bottom rule only; focus thickens it (the focus ring still shows). */
+:global(:root[data-input="underline"]) .control {
+  padding-inline: var(--space-1);
+  background: transparent;
+  border: 0;
+  border-bottom: var(--border-width) solid var(--color-border-strong);
+  border-radius: 0;
+}
+:global(:root[data-input="underline"]) .control:focus-visible {
+  border-bottom-width: calc(var(--border-width) * 2);
+  border-bottom-color: var(--color-focus);
+}
+:global(:root[data-input="underline"]) .control[aria-invalid="true"] {
+  border-bottom-color: var(--color-danger);
+  box-shadow: inset 0 calc(var(--border-width) * -1) 0 var(--color-danger);
+}
+:global(:root[data-input="underline"]) .control:disabled {
+  background: transparent;
+  border-bottom-style: dashed;
+}
+
+/* filled: a sunken field with no border until hover or focus. The thin inset line at the
+   bottom keeps the field's edge visible (WCAG 1.4.11) without drawing a box. */
+:global(:root[data-input="filled"]) .control {
+  background: var(--color-surface-sunken);
+  border-color: transparent;
+  box-shadow: inset 0 calc(var(--border-width) * -1) 0 var(--color-border-strong);
+}
+:global(:root[data-input="filled"]) .control:hover:not(:disabled, [aria-invalid="true"]),
+:global(:root[data-input="filled"]) .control:focus-visible {
+  border-color: var(--color-border-strong);
+}
+:global(:root[data-input="filled"]) .control[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: inset 0 0 0 var(--border-width) var(--color-danger);
+}
+:global(:root[data-input="filled"]) .control:disabled {
+  box-shadow: none;
+}

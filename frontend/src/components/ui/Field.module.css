@@ -1,0 +1,44 @@
+/* Label, help, control, error: a tight vertical stack. Space between fields belongs to the form. */
+.field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+/* Margins, not gap: the always-present (live) error slot must take no room while it is empty. */
+.field > * + * {
+  margin-top: var(--space-2);
+}
+.field > .help {
+  margin-top: var(--space-1);
+}
+.field > .errorSlot:empty {
+  margin-top: 0;
+}
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+.optional {
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+}
+.help {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-danger);
+}
+/* Centres the icon on the first line of the message, however many lines it wraps to. */
+.errorIcon {
+  flex: none;
+  width: var(--space-4);
+  height: var(--space-4);
+  margin-top: calc((1lh - var(--space-4)) / 2);
+}

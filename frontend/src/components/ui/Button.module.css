@@ -1,0 +1,166 @@
+/* Button looks: primary (accent fill, one per region), secondary (bordered), tertiary (text),
+   danger (only on the confirm step of a destructive action). Used by Button, IconButton and
+   buttonClassName(), so links styled as buttons get every state too. */
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 100%;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-text);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-align: center;
+  text-decoration: none;
+  /* A label that cannot fit wraps onto balanced lines instead of being cut off; in a wrapping
+     row of buttons the row breaks first, so this only happens to a button alone and too narrow. */
+  text-wrap: balance;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+.md {
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+}
+.sm {
+  min-height: var(--space-8);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+}
+.full {
+  width: 100%;
+}
+
+/* Both faces (idle and pending) share one grid cell: the button is as wide as the wider one. */
+.stack {
+  display: inline-grid;
+  min-width: 0;
+}
+.face {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.inactive {
+  visibility: hidden;
+}
+.label {
+  min-width: 0;
+}
+.icon {
+  flex: none;
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+/* Icon-only: a square of the control height. */
+.iconOnly.md {
+  width: var(--control-height);
+  padding: 0;
+}
+.iconOnly.sm {
+  width: var(--space-8);
+  padding: 0;
+}
+
+.primary {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+.primary:hover {
+  background: var(--color-accent-hover);
+  color: var(--color-on-accent);
+}
+.secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+.secondary:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+.tertiary {
+  background: transparent;
+  color: var(--color-text);
+}
+.tertiary:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+.danger {
+  /* WaveSlide: dark text on this light red (white on it is only 2.9:1). */
+  background: var(--color-danger);
+  color: var(--color-ink-on-light);
+}
+.danger:hover {
+  /* No danger-hover token in the contract: shift the danger colour toward the text colour. */
+  background: color-mix(in oklch, var(--color-danger) 85%, var(--color-text));
+  color: var(--color-ink-on-light);
+}
+
+.button:active:not(:disabled, [aria-disabled="true"]) {
+  transform: translateY(var(--border-width));
+}
+.button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.button:disabled {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-subtle);
+  border-color: var(--color-border);
+  cursor: not-allowed;
+}
+.tertiary:disabled {
+  background: transparent;
+  border-color: transparent;
+}
+/* Pending keeps its colours (it is working, not unavailable); only the cursor changes. */
+.button[aria-busy="true"] {
+  cursor: progress;
+}
+
+/* ---- Looks: <html data-button="ink | outline">. No attribute = filled (above). ---- */
+
+/* ink: the primary action is printed in the text colour; the accent is left for links and
+   selection. Suits editorial and institutional directions. text-on-bg is AA by contract. */
+:global(:root[data-button="ink"]) .primary {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+:global(:root[data-button="ink"]) .primary:hover {
+  /* No ink-hover token: lift the text colour a little toward the page colour. */
+  background: color-mix(in oklch, var(--color-text) 82%, var(--color-bg));
+  color: var(--color-bg);
+}
+
+/* outline: the primary action is an accent outline with accent text and fills on hover.
+   Accent text must reach 4.5:1 on the surface; check it when picking the accent. */
+:global(:root[data-button="outline"]) .primary {
+  background: var(--color-surface);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+:global(:root[data-button="outline"]) .primary:hover {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+/* Disabled keeps the shared disabled look (declared after, so it wins over the looks). */
+:global(:root[data-button]) .primary:disabled {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-subtle);
+  border-color: var(--color-border);
+}

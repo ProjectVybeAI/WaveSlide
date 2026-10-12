@@ -1,0 +1,142 @@
+/* slide.css: the lecturer's PowerPoint slide behind the overlay in hero-a / hero-b. It is someone
+   else's content, so it deliberately uses Office-style fonts and its own template colours, not WaveSlide tokens. */
+.screen-page {
+  margin: 0;
+  background: #000;
+  overflow-x: hidden;
+}
+.screen-fit {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+.screen {
+  position: relative;
+  width: 1440px;
+  height: 900px;
+  background: #000;
+  transform-origin: 0 0;
+}
+.pp-slide {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 1440px;
+  height: 810px;
+  padding: 72px 96px 64px 112px;
+  color: #1d2433;
+  background: #ffffff;
+  font-family: Aptos, Calibri, Carlito, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+.pp-slide p {
+  max-width: none;
+  margin: 0;
+}
+.pp-rule {
+  position: absolute;
+  top: 72px;
+  left: 64px;
+  width: 10px;
+  height: 118px;
+  background: #8a1c2b;
+}
+.pp-kicker {
+  font-size: 22px;
+  color: #8a1c2b;
+  font-weight: 600;
+}
+.pp-title {
+  margin-top: 6px !important;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.pp-sub {
+  margin-top: 14px !important;
+  font-size: 24px;
+  color: #4a5263;
+}
+.pp-tables {
+  display: grid;
+  gap: 30px;
+  margin-top: 46px;
+  width: 820px;
+}
+.pp-table {
+  display: grid;
+  grid-template-columns: 96px repeat(10, 1fr);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.pp-table > div {
+  display: grid;
+  place-items: center;
+  height: 40px;
+  border-right: 1px solid #c9ced8;
+  border-bottom: 1px solid #c9ced8;
+}
+.pp-table .h {
+  font-weight: 700;
+  border-bottom: 2px solid #1d2433;
+}
+.pp-table .lab {
+  justify-items: start;
+  padding-left: 4px;
+  font-weight: 700;
+  color: #8a1c2b;
+  border-right: 2px solid #1d2433;
+}
+.pp-table .f {
+  background: #f7dcdf;
+}
+.pp-table .e {
+  color: #b7bdc8;
+}
+.pp-take {
+  position: absolute;
+  right: 96px;
+  top: 300px;
+  width: 360px;
+}
+.pp-take-n {
+  font-size: 88px;
+  font-weight: 700;
+  line-height: 1;
+  color: #8a1c2b;
+}
+.pp-take-n span {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1d2433;
+}
+.pp-take-n.pp-dim {
+  margin-top: 12px !important;
+  color: #8f96a3;
+}
+.pp-take-t {
+  margin-top: 28px !important;
+  font-size: 24px;
+  line-height: 1.35;
+  color: #3a4253;
+}
+.pp-foot {
+  position: absolute;
+  left: 112px;
+  bottom: 40px;
+  font-size: 18px;
+  color: #6b7383;
+}
+.pp-num {
+  position: absolute;
+  right: 64px;
+  bottom: 36px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #6b7383;
+}
+.ov-on-screen {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}

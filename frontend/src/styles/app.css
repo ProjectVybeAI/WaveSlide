@@ -1,0 +1,18 @@
+/* App-wide rules that are not tokens or kit base styles. */
+html {
+  background: var(--color-bg);
+}
+html:has(main[class*="window"]) {
+  /* the frameless overlay window */
+  background: var(--color-surface);
+}
+
+/* Route changes: a short cross-fade of the page only (DESIGN.md "Motion"). */
+::view-transition-old(page),
+::view-transition-new(page) {
+  animation-duration: var(--duration-fast);
+}
+::view-transition-old(sidebar),
+::view-transition-new(sidebar) {
+  animation: none;
+}

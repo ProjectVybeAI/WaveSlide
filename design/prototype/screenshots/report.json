@@ -1,0 +1,433 @@
+[
+  {
+    "route": "/hero-a.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/hero-a-html-desktop.png",
+    "title": "Overlay over PowerPoint, holding three fingers (direction A, Cue) · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour border-color: rgb(201, 206, 216) x86 (e.g. div.h \"7\")",
+      "Off-token colour color: rgb(29, 36, 51) x77 (e.g. p.pp-title \"Page replacement: FIFO against LRU\")",
+      "Off-token colour background-color: rgb(247, 220, 223) x51 (e.g. div.f \"7\")",
+      "Off-token colour border-color: rgb(29, 36, 51) x28 (e.g. div.h.lab \"FIFO\")",
+      "Off-token colour color: rgb(138, 28, 43) x10 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-token colour color: rgb(183, 189, 200) x6 (e.g. div.f.e \"–\")",
+      "Off-token colour color: rgb(107, 115, 131) x2 (e.g. p.pp-foot \"Dept. of Computer Engineering\")",
+      "Off-token colour background-color: rgb(0, 0, 0) x1 (e.g. div#screen.screen \"CS-302 Operating Systems, Lecture 7 Page\")",
+      "Off-scale font-size 22px x90 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-scale font-size 17.4px x3 (e.g. text \"1\")",
+      "Off-scale font-size 88px x2 (e.g. p.pp-take-n \"8 faults with LRU\")",
+      "Off-scale font-size 26px x2 (e.g. span \"faults with LRU\")",
+      "Off-scale font-size 9.5px x2 (e.g. text \"Slide\")",
+      "Off-scale font-size 46px x2 (e.g. text \"3\")",
+      "Off-scale spacing 72px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 96px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 112px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 30px x1 (e.g. div#pp-tables.pp-tables \"FIFO7012030423Frame 17772222444Frame 2–0\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 10), Aptos (not a web font, 98), Sofia Sans Variable (loaded, 9), Red Hat Mono Variable (loaded, 1)",
+      "Tab order: button \"Pause gestures\" -> button \"Make the overlay compact\" -> button \"Hide the overlay\""
+    ]
+  },
+  {
+    "route": "/hero-a.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/hero-a-html-tablet.png",
+    "title": "Overlay over PowerPoint, holding three fingers (direction A, Cue) · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour border-color: rgb(201, 206, 216) x86 (e.g. div.h \"7\")",
+      "Off-token colour color: rgb(29, 36, 51) x77 (e.g. p.pp-title \"Page replacement: FIFO against LRU\")",
+      "Off-token colour background-color: rgb(247, 220, 223) x51 (e.g. div.f \"7\")",
+      "Off-token colour border-color: rgb(29, 36, 51) x28 (e.g. div.h.lab \"FIFO\")",
+      "Off-token colour color: rgb(138, 28, 43) x10 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-token colour color: rgb(183, 189, 200) x6 (e.g. div.f.e \"–\")",
+      "Off-token colour color: rgb(107, 115, 131) x2 (e.g. p.pp-foot \"Dept. of Computer Engineering\")",
+      "Off-token colour background-color: rgb(0, 0, 0) x1 (e.g. div#screen.screen \"CS-302 Operating Systems, Lecture 7 Page\")",
+      "Off-scale font-size 22px x90 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-scale font-size 17.4px x3 (e.g. text \"1\")",
+      "Off-scale font-size 88px x2 (e.g. p.pp-take-n \"8 faults with LRU\")",
+      "Off-scale font-size 26px x2 (e.g. span \"faults with LRU\")",
+      "Off-scale font-size 9.5px x2 (e.g. text \"Slide\")",
+      "Off-scale font-size 46px x2 (e.g. text \"3\")",
+      "Off-scale spacing 72px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 96px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 112px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 30px x1 (e.g. div#pp-tables.pp-tables \"FIFO7012030423Frame 17772222444Frame 2–0\")",
+      "Tap target under 24px: button \"Pause gestures\" 16x16",
+      "Tap target under 24px: button \"Make the overlay compact\" 16x16",
+      "Tap target under 24px: button \"Hide the overlay\" 16x16"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 10), Aptos (not a web font, 98), Sofia Sans Variable (loaded, 9), Red Hat Mono Variable (loaded, 1)"
+    ]
+  },
+  {
+    "route": "/hero-a.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/hero-a-html-mobile.png",
+    "title": "Overlay over PowerPoint, holding three fingers (direction A, Cue) · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour border-color: rgb(201, 206, 216) x86 (e.g. div.h \"7\")",
+      "Off-token colour color: rgb(29, 36, 51) x77 (e.g. p.pp-title \"Page replacement: FIFO against LRU\")",
+      "Off-token colour background-color: rgb(247, 220, 223) x51 (e.g. div.f \"7\")",
+      "Off-token colour border-color: rgb(29, 36, 51) x28 (e.g. div.h.lab \"FIFO\")",
+      "Off-token colour color: rgb(138, 28, 43) x10 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-token colour color: rgb(183, 189, 200) x6 (e.g. div.f.e \"–\")",
+      "Off-token colour color: rgb(107, 115, 131) x2 (e.g. p.pp-foot \"Dept. of Computer Engineering\")",
+      "Off-token colour background-color: rgb(0, 0, 0) x1 (e.g. div#screen.screen \"CS-302 Operating Systems, Lecture 7 Page\")",
+      "Off-scale font-size 22px x90 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-scale font-size 17.4px x3 (e.g. text \"1\")",
+      "Off-scale font-size 88px x2 (e.g. p.pp-take-n \"8 faults with LRU\")",
+      "Off-scale font-size 26px x2 (e.g. span \"faults with LRU\")",
+      "Off-scale font-size 9.5px x2 (e.g. text \"Slide\")",
+      "Off-scale font-size 46px x2 (e.g. text \"3\")",
+      "Off-scale spacing 72px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 96px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 112px x1 (e.g. div.pp-slide \"PowerPoint slide 5 of 12\")",
+      "Off-scale spacing 30px x1 (e.g. div#pp-tables.pp-tables \"FIFO7012030423Frame 17772222444Frame 2–0\")",
+      "Tap target under 24px: button \"Pause gestures\" 8x8",
+      "Tap target under 24px: button \"Make the overlay compact\" 8x8",
+      "Tap target under 24px: button \"Hide the overlay\" 8x8"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 10), Aptos (not a web font, 98), Sofia Sans Variable (loaded, 9), Red Hat Mono Variable (loaded, 1)"
+    ]
+  },
+  {
+    "route": "/hero-b.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/hero-b-html-desktop.png",
+    "title": "Overlay over PowerPoint, holding three fingers (direction B, Rig) · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour border-color: rgb(201, 206, 216) x86 (e.g. div.h \"7\")",
+      "Off-token colour color: rgb(29, 36, 51) x77 (e.g. p.pp-title \"Page replacement: FIFO against LRU\")",
+      "Off-token colour background-color: rgb(247, 220, 223) x51 (e.g. div.f \"7\")",
+      "Off-token colour border-color: rgb(29, 36, 51) x28 (e.g. div.h.lab \"FIFO\")",
+      "Off-token colour color: rgb(138, 28, 43) x10 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-token colour color: rgb(183, 189, 200) x6 (e.g. div.f.e \"–\")",
+      "Off-token colour color: rgb(107, 115, 131) x2 (e.g. p.pp-foot \"Dept. of Computer Engineering\")",
+      "Off-token colour color: rgb(0, 0, 0) x1 (e.g. h1.visually-hidden \"WaveSlide overlay over a PowerPoint slid\")"
+    ],
+    "info": [
+      "No --color-*/--text-* tokens; checked against all :root variables (legacy mode).",
+      "Fonts: Times (not a web font, 1), Aptos (not a web font, 98), Martian Mono (loaded, 14), Hanken Grotesk (loaded, 2)",
+      "Tab order: button \"Disarm\" -> button \"Compact\" -> button \"Hide\""
+    ]
+  },
+  {
+    "route": "/hero-b.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/hero-b-html-tablet.png",
+    "title": "Overlay over PowerPoint, holding three fingers (direction B, Rig) · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour border-color: rgb(201, 206, 216) x86 (e.g. div.h \"7\")",
+      "Off-token colour color: rgb(29, 36, 51) x77 (e.g. p.pp-title \"Page replacement: FIFO against LRU\")",
+      "Off-token colour background-color: rgb(247, 220, 223) x51 (e.g. div.f \"7\")",
+      "Off-token colour border-color: rgb(29, 36, 51) x28 (e.g. div.h.lab \"FIFO\")",
+      "Off-token colour color: rgb(138, 28, 43) x10 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-token colour color: rgb(183, 189, 200) x6 (e.g. div.f.e \"–\")",
+      "Off-token colour color: rgb(107, 115, 131) x2 (e.g. p.pp-foot \"Dept. of Computer Engineering\")",
+      "Off-token colour color: rgb(0, 0, 0) x1 (e.g. h1.visually-hidden \"WaveSlide overlay over a PowerPoint slid\")",
+      "Tap target under 24px: button \"Disarm\" 13x13",
+      "Tap target under 24px: button \"Compact\" 13x13",
+      "Tap target under 24px: button \"Hide\" 13x13"
+    ],
+    "info": [
+      "No --color-*/--text-* tokens; checked against all :root variables (legacy mode).",
+      "Fonts: Times (not a web font, 1), Aptos (not a web font, 98), Martian Mono (loaded, 14), Hanken Grotesk (loaded, 2)"
+    ]
+  },
+  {
+    "route": "/hero-b.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/hero-b-html-mobile.png",
+    "title": "Overlay over PowerPoint, holding three fingers (direction B, Rig) · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour border-color: rgb(201, 206, 216) x86 (e.g. div.h \"7\")",
+      "Off-token colour color: rgb(29, 36, 51) x77 (e.g. p.pp-title \"Page replacement: FIFO against LRU\")",
+      "Off-token colour background-color: rgb(247, 220, 223) x51 (e.g. div.f \"7\")",
+      "Off-token colour border-color: rgb(29, 36, 51) x28 (e.g. div.h.lab \"FIFO\")",
+      "Off-token colour color: rgb(138, 28, 43) x10 (e.g. p.pp-kicker \"CS-302 Operating Systems, Lecture 7\")",
+      "Off-token colour color: rgb(183, 189, 200) x6 (e.g. div.f.e \"–\")",
+      "Off-token colour color: rgb(107, 115, 131) x2 (e.g. p.pp-foot \"Dept. of Computer Engineering\")",
+      "Off-token colour color: rgb(0, 0, 0) x1 (e.g. h1.visually-hidden \"WaveSlide overlay over a PowerPoint slid\")",
+      "Tap target under 24px: button \"Disarm\" 7x7",
+      "Tap target under 24px: button \"Compact\" 7x7",
+      "Tap target under 24px: button \"Hide\" 7x7"
+    ],
+    "info": [
+      "No --color-*/--text-* tokens; checked against all :root variables (legacy mode).",
+      "Fonts: Times (not a web font, 1), Aptos (not a web font, 98), Martian Mono (loaded, 14), Hanken Grotesk (loaded, 2)"
+    ]
+  },
+  {
+    "route": "/overlay.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/overlay-html-desktop.png",
+    "title": "Overlay states · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour background-color: oklch(0.26 0.04 290) x1 (e.g. div.plate-stage.dark \"LiveGoogle Slides 1234Four fingersML 0.8\")",
+      "Off-scale font-size 9.5px x15 (e.g. text \"Go\")",
+      "Off-scale font-size 17.4px x12 (e.g. text \"1\")",
+      "Off-scale font-size 46px x10 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 97), Sofia Sans Variable (loaded, 107), Red Hat Mono Variable (loaded, 15)",
+      "Tab order: button \"Go live\" -> button \"Make the overlay compact\" -> button \"Hide the overlay\""
+    ]
+  },
+  {
+    "route": "/overlay.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/overlay-html-tablet.png",
+    "title": "Overlay states · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour background-color: oklch(0.26 0.04 290) x1 (e.g. div.plate-stage.dark \"LiveGoogle Slides 1234Four fingersML 0.8\")",
+      "Off-scale font-size 9.5px x15 (e.g. text \"Go\")",
+      "Off-scale font-size 17.4px x12 (e.g. text \"1\")",
+      "Off-scale font-size 46px x10 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 97), Sofia Sans Variable (loaded, 107), Red Hat Mono Variable (loaded, 15)"
+    ]
+  },
+  {
+    "route": "/overlay.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/overlay-html-mobile.png",
+    "title": "Overlay states · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-token colour background-color: oklch(0.26 0.04 290) x1 (e.g. div.plate-stage.dark \"LiveGoogle Slides 1234Four fingersML 0.8\")",
+      "Off-scale font-size 9.5px x15 (e.g. text \"Go\")",
+      "Off-scale font-size 17.4px x12 (e.g. text \"1\")",
+      "Off-scale font-size 46px x10 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 97), Sofia Sans Variable (loaded, 107), Red Hat Mono Variable (loaded, 15)"
+    ]
+  },
+  {
+    "route": "/live.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/live-html-desktop.png",
+    "title": "Live · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 22.5px x3 (e.g. h2#setup-h.visually-hidden \"Setup check\")",
+      "Off-scale font-size 17.4px x3 (e.g. text \"1\")",
+      "Off-scale font-size 9.5px x2 (e.g. text \"Slide\")",
+      "Off-scale font-size 46px x2 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 20), Arial (not a web font, 1), Sofia Sans Variable (loaded, 117), Red Hat Mono Variable (loaded, 14)",
+      "Tab order: button \"Pause\" -> a \"Live\" -> a \"Settings\" -> a \"Practice deck\" -> a \"Dataset\" -> a \"Evaluation lab\" -> button \"Camera\" -> button \"Replay a session\" -> button \"Show overlay\""
+    ]
+  },
+  {
+    "route": "/live.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/live-html-tablet.png",
+    "title": "Live · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 22.5px x3 (e.g. h2#setup-h.visually-hidden \"Setup check\")",
+      "Off-scale font-size 17.4px x3 (e.g. text \"1\")",
+      "Off-scale font-size 9.5px x2 (e.g. text \"Slide\")",
+      "Off-scale font-size 46px x2 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 20), Arial (not a web font, 1), Sofia Sans Variable (loaded, 108), Red Hat Mono Variable (loaded, 14)"
+    ]
+  },
+  {
+    "route": "/live.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/live-html-mobile.png",
+    "title": "Live · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 22.5px x3 (e.g. h2#setup-h.visually-hidden \"Setup check\")",
+      "Off-scale font-size 17.4px x3 (e.g. text \"1\")",
+      "Off-scale font-size 9.5px x2 (e.g. text \"Slide\")",
+      "Off-scale font-size 46px x2 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 20), Arial (not a web font, 1), Sofia Sans Variable (loaded, 108), Red Hat Mono Variable (loaded, 14)"
+    ]
+  },
+  {
+    "route": "/settings.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/settings-html-desktop.png",
+    "title": "Settings · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 46px x2 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 12), Arial (not a web font, 1), Sofia Sans Variable (loaded, 155), Red Hat Mono Variable (loaded, 10)",
+      "Tab order: button \"Pause\" -> a \"Live\" -> a \"Settings\" -> a \"Practice deck\" -> a \"Dataset\" -> a \"Evaluation lab\" -> button \"Export\" -> button \"Import\" -> button \"Reset to defaults\" -> button \"Swipe rightSwipe right\" -> button \"Swipe leftSwipe left\" -> button \"Open palm, fingers togetherOpe\" -> button \"Thumbs upThumbs up\" -> button \"FistFist\" -> button \"FistFist\" -> button \"Jump to a slide with fingers\" -> button \"Blank the screen with an open \" -> button \"Two-hand counting for slides 6\" -> button \"Start paused\" -> div \"Swipe distance\""
+    ]
+  },
+  {
+    "route": "/settings.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/settings-html-tablet.png",
+    "title": "Settings · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 46px x2 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 12), Arial (not a web font, 1), Sofia Sans Variable (loaded, 146), Red Hat Mono Variable (loaded, 10)"
+    ]
+  },
+  {
+    "route": "/settings.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/settings-html-mobile.png",
+    "title": "Settings · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 46px x2 (e.g. text \"3\")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 12), Arial (not a web font, 1), Sofia Sans Variable (loaded, 143), Red Hat Mono Variable (loaded, 10)"
+    ]
+  },
+  {
+    "route": "/practice.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/practice-html-desktop.png",
+    "title": "Practice deck · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 22.5px x1 (e.g. h2#slide-h.visually-hidden \"Slide 3 of 10\")",
+      "Off-scale font-size 157.204px x1 (e.g. p.s-num \"3\")",
+      "Off-scale font-size 45.732px x1 (e.g. p.s-title \"Jump here from anywhere\")",
+      "Off-scale font-size 16.4349px x1 (e.g. p.s-body \"Hold up three fingers and keep still. Th\")",
+      "Off-scale font-size 11.433px x1 (e.g. p.s-foot \"Practice deck, slide 3 of 10\")",
+      "Off-scale spacing 40.5938px x1 (e.g. div.deck-slide \"3 Jump here from anywhere Hold up three \")",
+      "Off-scale spacing 48.7188px x1 (e.g. div.deck-slide \"3 Jump here from anywhere Hold up three \")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 19), Arial (not a web font, 1), Sofia Sans Variable (loaded, 46), Red Hat Mono Variable (loaded, 6)",
+      "Tab order: button \"Pause\" -> a \"Live\" -> a \"Settings\" -> a \"Practice deck\" -> a \"Dataset\" -> a \"Evaluation lab\" -> button \"Back to slide 1\" -> button \"Present full screen\""
+    ]
+  },
+  {
+    "route": "/practice.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/practice-html-tablet.png",
+    "title": "Practice deck · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 22.5px x1 (e.g. h2#slide-h.visually-hidden \"Slide 3 of 10\")",
+      "Off-scale font-size 142.491px x1 (e.g. p.s-num \"3\")",
+      "Off-scale font-size 41.452px x1 (e.g. p.s-title \"Jump here from anywhere\")",
+      "Off-scale font-size 14.8968px x1 (e.g. p.s-body \"Hold up three fingers and keep still. Th\")",
+      "Off-scale font-size 10.363px x1 (e.g. p.s-foot \"Practice deck, slide 3 of 10\")",
+      "Off-scale spacing 36.7969px x1 (e.g. div.deck-slide \"3 Jump here from anywhere Hold up three \")",
+      "Off-scale spacing 44.1562px x1 (e.g. div.deck-slide \"3 Jump here from anywhere Hold up three \")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 19), Arial (not a web font, 1), Sofia Sans Variable (loaded, 37), Red Hat Mono Variable (loaded, 6)"
+    ]
+  },
+  {
+    "route": "/practice.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/practice-html-mobile.png",
+    "title": "Practice deck · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [
+      "Off-scale font-size 22.5px x1 (e.g. h2#slide-h.visually-hidden \"Slide 3 of 10\")",
+      "Off-scale font-size 69.3138px x1 (e.g. p.s-num \"3\")",
+      "Off-scale font-size 20.164px x1 (e.g. p.s-title \"Jump here from anywhere\")",
+      "Off-scale font-size 7.24644px x1 (e.g. p.s-body \"Hold up three fingers and keep still. Th\")",
+      "Off-scale font-size 5.041px x1 (e.g. p.s-foot \"Practice deck, slide 3 of 10\")",
+      "Off-scale spacing 17.8906px x1 (e.g. div.deck-slide \"3 Jump here from anywhere Hold up three \")",
+      "Off-scale spacing 21.4688px x1 (e.g. div.deck-slide \"3 Jump here from anywhere Hold up three \")"
+    ],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 19), Arial (not a web font, 1), Sofia Sans Variable (loaded, 37), Red Hat Mono Variable (loaded, 6)"
+    ]
+  },
+  {
+    "route": "/evaluation.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/evaluation-html-desktop.png",
+    "title": "Evaluation lab · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 23), Arial (not a web font, 1), Sofia Sans Variable (loaded, 322)",
+      "Tab order: button \"Pause\" -> a \"Live\" -> a \"Settings\" -> a \"Practice deck\" -> a \"Dataset\" -> a \"Evaluation lab\" -> button \"12 Oct, 14:20, synthetic\" -> button \"Export report\" -> button \"Run evaluation\" -> a \"Open Dataset\" -> a \"E1 Gestures\" -> a \"E2 Jumps\" -> a \"E3 False triggers\" -> a \"E4 Response\" -> a \"E5 Distance\" -> a \"E6 Lighting\" -> a \"E7 Rules vs model\" -> a \"Ablation\" -> a \"E8 Ratings\""
+    ]
+  },
+  {
+    "route": "/evaluation.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/evaluation-html-tablet.png",
+    "title": "Evaluation lab · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 23), Arial (not a web font, 1), Sofia Sans Variable (loaded, 313)"
+    ]
+  },
+  {
+    "route": "/evaluation.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/evaluation-html-mobile.png",
+    "title": "Evaluation lab · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 23), Arial (not a web font, 1), Sofia Sans Variable (loaded, 313)"
+    ]
+  },
+  {
+    "route": "/evaluation-empty.html",
+    "viewport": "1440x900",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/evaluation-empty-html-desktop.png",
+    "title": "Evaluation lab, no runs yet · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 5), Arial (not a web font, 1), Sofia Sans Variable (loaded, 33)",
+      "Tab order: button \"Go live\" -> a \"Live\" -> a \"Settings\" -> a \"Practice deck\" -> a \"Dataset\" -> a \"Evaluation lab\" -> a \"Record participants\" -> button \"Try it on synthetic sessions\""
+    ]
+  },
+  {
+    "route": "/evaluation-empty.html",
+    "viewport": "768x1024",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/evaluation-empty-html-tablet.png",
+    "title": "Evaluation lab, no runs yet · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 5), Arial (not a web font, 1), Sofia Sans Variable (loaded, 24)"
+    ]
+  },
+  {
+    "route": "/evaluation-empty.html",
+    "viewport": "390x844",
+    "screenshot": "/Users/shubham_satishaudattapure/Personal/ProjectVybe/WaveSlide/design/prototype/screenshots/evaluation-empty-html-mobile.png",
+    "title": "Evaluation lab, no runs yet · WaveSlide prototype",
+    "blockers": [],
+    "warnings": [],
+    "info": [
+      "Fonts: Sofia Sans Extra Condensed Variable (loaded, 5), Arial (not a web font, 1), Sofia Sans Variable (loaded, 24)"
+    ]
+  }
+]

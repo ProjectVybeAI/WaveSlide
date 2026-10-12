@@ -1,0 +1,3433 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "WaveSlide engine",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Get Health",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cameras": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "List Cameras",
+        "description": "Phase 1 lists real cameras (cv2-enumerate-cameras).",
+        "operationId": "listCameras",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CameraInfo"
+                  },
+                  "type": "array",
+                  "title": "Response Listcameras"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/engine": {
+      "get": {
+        "tags": [
+          "engine"
+        ],
+        "summary": "Get Engine",
+        "operationId": "getEngine",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EngineSnapshot"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/engine/active": {
+      "post": {
+        "tags": [
+          "engine"
+        ],
+        "summary": "Set Active",
+        "operationId": "setEngineActive",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetActiveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EngineSnapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/engine/source": {
+      "post": {
+        "tags": [
+          "engine"
+        ],
+        "summary": "Set Source",
+        "operationId": "setEngineSource",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetSourceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EngineSnapshot"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/overlay": {
+      "post": {
+        "tags": [
+          "engine"
+        ],
+        "summary": "Set Overlay",
+        "operationId": "setOverlay",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverlayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/preview.mjpg": {
+      "get": {
+        "tags": [
+          "engine"
+        ],
+        "summary": "Preview",
+        "description": "Mirrored camera image as MJPEG (320 px wide, about 15 fps). Camera source only.",
+        "operationId": "getPreview",
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings": {
+      "get": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Get Settings",
+        "operationId": "getSettings",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Put Settings",
+        "operationId": "putSettings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Settings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings/reset": {
+      "post": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Reset Settings",
+        "operationId": "resetSettings",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings/export": {
+      "get": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Export Settings",
+        "operationId": "exportSettings",
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/settings/import": {
+      "post": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Import Settings",
+        "operationId": "importSettings",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_importSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profiles": {
+      "get": {
+        "tags": [
+          "profiles"
+        ],
+        "summary": "List Profiles",
+        "description": "Every app profile with its keys for this computer's OS.",
+        "operationId": "listProfiles",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AppProfile"
+                  },
+                  "type": "array",
+                  "title": "Response Listprofiles"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sessions": {
+      "get": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "List Sessions",
+        "operationId": "listSessions",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kind"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SessionSummary"
+                  },
+                  "title": "Response Listsessions"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sessions/{session_id}": {
+      "get": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Get Session",
+        "operationId": "getSession",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Delete Session",
+        "operationId": "deleteSession",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recordings": {
+      "post": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Start Recording",
+        "description": "Placeholder until Phase 2.",
+        "operationId": "startRecording",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordingStatus"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recordings/current/stop": {
+      "post": {
+        "tags": [
+          "dataset"
+        ],
+        "summary": "Stop Recording",
+        "description": "Placeholder until Phase 2.",
+        "operationId": "stopRecording",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/model": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Get Model",
+        "operationId": "getModel",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelCard"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/model/train": {
+      "post": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Train Model",
+        "operationId": "trainModel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/evaluations": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "List Evaluations",
+        "operationId": "listEvaluations",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EvaluationSummary"
+                  },
+                  "type": "array",
+                  "title": "Response Listevaluations"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Start Evaluation",
+        "operationId": "startEvaluation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/evaluations/{evaluation_id}": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Get Evaluation",
+        "operationId": "getEvaluation",
+        "parameters": [
+          {
+            "name": "evaluation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Evaluation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationReport"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Get Job",
+        "operationId": "getJob",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Ablation": {
+        "properties": {
+          "minutes": {
+            "type": "number",
+            "title": "Minutes"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/AblationRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "minutes",
+          "rows"
+        ],
+        "title": "Ablation"
+      },
+      "AblationRow": {
+        "properties": {
+          "control": {
+            "type": "string",
+            "enum": [
+              "all_on",
+              "no_hold",
+              "no_cooldown",
+              "no_stillness",
+              "no_rearm"
+            ],
+            "title": "Control"
+          },
+          "false_triggers_per_min": {
+            "type": "number",
+            "title": "False Triggers Per Min"
+          }
+        },
+        "type": "object",
+        "required": [
+          "control",
+          "false_triggers_per_min"
+        ],
+        "title": "AblationRow"
+      },
+      "Action": {
+        "type": "string",
+        "enum": [
+          "next",
+          "previous",
+          "blank_toggle",
+          "toggle_active",
+          "start_show",
+          "exit_show",
+          "jump"
+        ],
+        "title": "Action",
+        "description": "What a command does in the presentation app."
+      },
+      "AppProfile": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "keys": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/Action"
+            },
+            "type": "object",
+            "title": "Keys"
+          },
+          "jump_strategy": {
+            "type": "string",
+            "enum": [
+              "type_number",
+              "step_from_home"
+            ],
+            "title": "Jump Strategy"
+          },
+          "unsupported": {
+            "items": {
+              "$ref": "#/components/schemas/Action"
+            },
+            "type": "array",
+            "title": "Unsupported"
+          },
+          "notes": {
+            "type": "string",
+            "title": "Notes",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "keys",
+          "jump_strategy",
+          "unsupported"
+        ],
+        "title": "AppProfile",
+        "description": "A presentation app's shortcuts, resolved for the current OS."
+      },
+      "Body_importSettings": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_importSettings"
+      },
+      "CameraInfo": {
+        "properties": {
+          "index": {
+            "type": "integer",
+            "title": "Index"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "index",
+          "name"
+        ],
+        "title": "CameraInfo"
+      },
+      "CameraSettings": {
+        "properties": {
+          "index": {
+            "type": "integer",
+            "maximum": 9.0,
+            "minimum": 0.0,
+            "title": "Index",
+            "default": 0
+          },
+          "width": {
+            "type": "integer",
+            "title": "Width",
+            "default": 640
+          },
+          "height": {
+            "type": "integer",
+            "title": "Height",
+            "default": 480
+          }
+        },
+        "type": "object",
+        "title": "CameraSettings"
+      },
+      "CommandLogEntry": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "t": {
+            "type": "number",
+            "title": "T",
+            "description": "Unix time in seconds"
+          },
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "gesture": {
+            "$ref": "#/components/schemas/Gesture"
+          },
+          "slide": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slide"
+          },
+          "keys": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Keys"
+          },
+          "pipeline_ms": {
+            "type": "number",
+            "title": "Pipeline Ms",
+            "description": "Frame capture to key sent"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run"
+          },
+          "blocked_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocked Reason"
+          },
+          "ack_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ack Ms",
+            "description": "Key sent to the practice deck showing the slide"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "t",
+          "action",
+          "gesture",
+          "keys",
+          "pipeline_ms",
+          "dry_run"
+        ],
+        "title": "CommandLogEntry"
+      },
+      "ConditionRow": {
+        "properties": {
+          "condition": {
+            "type": "string",
+            "title": "Condition",
+            "description": "e.g. \"0.5 m\" or \"dim\""
+          },
+          "rules_accuracy": {
+            "type": "number",
+            "title": "Rules Accuracy"
+          },
+          "ml_accuracy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ml Accuracy"
+          },
+          "detection_rate": {
+            "type": "number",
+            "title": "Detection Rate"
+          },
+          "luminance_mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Luminance Mean"
+          }
+        },
+        "type": "object",
+        "required": [
+          "condition",
+          "rules_accuracy",
+          "detection_rate"
+        ],
+        "title": "ConditionRow"
+      },
+      "ConfusionMatrix": {
+        "properties": {
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Labels"
+          },
+          "matrix": {
+            "items": {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Matrix"
+          }
+        },
+        "type": "object",
+        "required": [
+          "labels",
+          "matrix"
+        ],
+        "title": "ConfusionMatrix",
+        "description": "Rows: what the hand did. Columns: what was recognised. Counts, not percentages."
+      },
+      "E1GestureAccuracy": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/GestureAccuracyRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rows"
+        ],
+        "title": "E1GestureAccuracy"
+      },
+      "E2FingerCount": {
+        "properties": {
+          "one_hand": {
+            "$ref": "#/components/schemas/ConfusionMatrix"
+          },
+          "two_hand": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConfusionMatrix"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accuracy": {
+            "type": "number",
+            "title": "Accuracy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "one_hand",
+          "accuracy"
+        ],
+        "title": "E2FingerCount"
+      },
+      "E3FalseTriggers": {
+        "properties": {
+          "minutes": {
+            "type": "number",
+            "title": "Minutes"
+          },
+          "active_per_min": {
+            "type": "number",
+            "title": "Active Per Min"
+          },
+          "paused_per_min": {
+            "type": "number",
+            "title": "Paused Per Min"
+          },
+          "per_participant": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Per Participant"
+          }
+        },
+        "type": "object",
+        "required": [
+          "minutes",
+          "active_per_min",
+          "paused_per_min",
+          "per_participant"
+        ],
+        "title": "E3FalseTriggers"
+      },
+      "E4ResponseTime": {
+        "properties": {
+          "n_commands": {
+            "type": "integer",
+            "title": "N Commands"
+          },
+          "pipeline_p50_ms": {
+            "type": "number",
+            "title": "Pipeline P50 Ms"
+          },
+          "pipeline_p95_ms": {
+            "type": "number",
+            "title": "Pipeline P95 Ms"
+          },
+          "histogram": {
+            "items": {
+              "$ref": "#/components/schemas/HistogramBin"
+            },
+            "type": "array",
+            "title": "Histogram"
+          },
+          "gesture_end_to_command_p50_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gesture End To Command P50 Ms"
+          },
+          "key_to_render_p50_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key To Render P50 Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "n_commands",
+          "pipeline_p50_ms",
+          "pipeline_p95_ms",
+          "histogram"
+        ],
+        "title": "E4ResponseTime"
+      },
+      "E5Distance": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ConditionRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rows"
+        ],
+        "title": "E5Distance"
+      },
+      "E6Lighting": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ConditionRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rows"
+        ],
+        "title": "E6Lighting"
+      },
+      "E7RulesVsModel": {
+        "properties": {
+          "rules": {
+            "$ref": "#/components/schemas/RecogniserResult"
+          },
+          "ml": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RecogniserResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "rules"
+        ],
+        "title": "E7RulesVsModel"
+      },
+      "E8Ratings": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/RatingRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          },
+          "ease_mean": {
+            "type": "number",
+            "title": "Ease Mean"
+          },
+          "reliability_mean": {
+            "type": "number",
+            "title": "Reliability Mean"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rows",
+          "ease_mean",
+          "reliability_mean"
+        ],
+        "title": "E8Ratings"
+      },
+      "EngineSnapshot": {
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "state": {
+            "$ref": "#/components/schemas/EngineState"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceKind"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          },
+          "recogniser": {
+            "$ref": "#/components/schemas/Recogniser"
+          },
+          "fps": {
+            "type": "number",
+            "title": "Fps"
+          },
+          "pipeline_ms_p50": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pipeline Ms P50"
+          },
+          "profile_id": {
+            "type": "string",
+            "title": "Profile Id"
+          },
+          "camera_ok": {
+            "type": "boolean",
+            "title": "Camera Ok"
+          },
+          "last_command": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CommandLogEntry"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "active",
+          "state",
+          "source",
+          "recogniser",
+          "fps",
+          "profile_id",
+          "camera_ok"
+        ],
+        "title": "EngineSnapshot"
+      },
+      "EngineState": {
+        "type": "string",
+        "enum": [
+          "PAUSED",
+          "ACTIVE",
+          "HOLDING",
+          "COOLDOWN"
+        ],
+        "title": "EngineState",
+        "description": "States of the reliability state machine (ARCHITECTURE.md step 6)."
+      },
+      "ErrorBody": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details",
+            "default": {}
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorBody"
+      },
+      "ErrorCode": {
+        "type": "string",
+        "enum": [
+          "VALIDATION_ERROR",
+          "MAPPING_CONFLICT",
+          "ACTIVATION_MUST_BE_HELD_POSE",
+          "NO_MODEL",
+          "SESSION_NOT_FOUND",
+          "CAMERA_UNAVAILABLE",
+          "NO_CAMERA_IN_REPLAY",
+          "CAMERA_REQUIRED",
+          "RECORDING_IN_PROGRESS",
+          "NO_RECORDING",
+          "NOT_ENOUGH_DATA",
+          "JOB_RUNNING",
+          "JOB_NOT_FOUND",
+          "EVALUATION_NOT_FOUND",
+          "NOT_FOUND",
+          "INTERNAL_ERROR"
+        ],
+        "title": "ErrorCode"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "EvaluationReport": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "title": "Synthetic"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "n_sessions": {
+            "type": "integer",
+            "title": "N Sessions"
+          },
+          "participants": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Participants"
+          },
+          "sections": {
+            "$ref": "#/components/schemas/EvaluationSections"
+          },
+          "charts": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Charts",
+            "description": "PNG file names in docs/eval/"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "synthetic",
+          "sources",
+          "n_sessions",
+          "participants",
+          "sections"
+        ],
+        "title": "EvaluationReport"
+      },
+      "EvaluationRequest": {
+        "properties": {
+          "sources": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "recorded",
+                "synthetic"
+              ]
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "include_ml": {
+            "type": "boolean",
+            "title": "Include Ml",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "EvaluationRequest"
+      },
+      "EvaluationSections": {
+        "properties": {
+          "e1_gestures": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E1GestureAccuracy"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "e2_finger_count": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E2FingerCount"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "e3_false_triggers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E3FalseTriggers"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "e4_response_time": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E4ResponseTime"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "e5_distance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E5Distance"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "e6_lighting": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E6Lighting"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "e7_rules_vs_model": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E7RulesVsModel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "e8_ratings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/E8Ratings"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ablation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Ablation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "EvaluationSections",
+        "description": "Each section is null when the data it needs was not recorded."
+      },
+      "EvaluationSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "title": "Synthetic"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "n_sessions": {
+            "type": "integer",
+            "title": "N Sessions"
+          },
+          "participants": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Participants"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "synthetic",
+          "sources",
+          "n_sessions",
+          "participants"
+        ],
+        "title": "EvaluationSummary"
+      },
+      "Features": {
+        "properties": {
+          "finger_jump": {
+            "type": "boolean",
+            "title": "Finger Jump",
+            "default": true
+          },
+          "blank": {
+            "type": "boolean",
+            "title": "Blank",
+            "default": true
+          },
+          "two_hand": {
+            "type": "boolean",
+            "title": "Two Hand",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "Features"
+      },
+      "Gesture": {
+        "type": "string",
+        "enum": [
+          "SWIPE_LEFT",
+          "SWIPE_RIGHT",
+          "FIST",
+          "OPEN_PALM",
+          "THUMBS_UP",
+          "THUMBS_DOWN",
+          "COUNT_1",
+          "COUNT_2",
+          "COUNT_3",
+          "COUNT_4",
+          "COUNT_5"
+        ],
+        "title": "Gesture",
+        "description": "Anything a mapping can use: a held pose or a swipe."
+      },
+      "GestureAccuracyRow": {
+        "properties": {
+          "gesture": {
+            "type": "string",
+            "title": "Gesture"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "per_participant": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Tally"
+            },
+            "type": "object",
+            "title": "Per Participant"
+          },
+          "correct": {
+            "type": "integer",
+            "title": "Correct"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "accuracy": {
+            "type": "number",
+            "title": "Accuracy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "gesture",
+          "action",
+          "per_participant",
+          "correct",
+          "total",
+          "accuracy"
+        ],
+        "title": "GestureAccuracyRow"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok",
+            "title": "Status"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "darwin",
+              "win32",
+              "other"
+            ],
+            "title": "Platform"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceKind"
+          },
+          "keys_mode": {
+            "type": "string",
+            "enum": [
+              "pyautogui",
+              "record"
+            ],
+            "title": "Keys Mode"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/Permissions"
+          },
+          "model_loaded": {
+            "type": "boolean",
+            "title": "Model Loaded"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version",
+          "platform",
+          "source",
+          "keys_mode",
+          "permissions",
+          "model_loaded"
+        ],
+        "title": "Health"
+      },
+      "HistogramBin": {
+        "properties": {
+          "start_ms": {
+            "type": "number",
+            "title": "Start Ms"
+          },
+          "end_ms": {
+            "type": "number",
+            "title": "End Ms"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_ms",
+          "end_ms",
+          "count"
+        ],
+        "title": "HistogramBin"
+      },
+      "Job": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "train",
+              "evaluate"
+            ],
+            "title": "Kind"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "done",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "progress": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Progress"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": ""
+          },
+          "result_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Id"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "progress"
+        ],
+        "title": "Job",
+        "description": "A background job (train or evaluate). One runs at a time."
+      },
+      "Mappings": {
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/Gesture",
+            "default": "SWIPE_RIGHT"
+          },
+          "previous": {
+            "$ref": "#/components/schemas/Gesture",
+            "default": "SWIPE_LEFT"
+          },
+          "blank_toggle": {
+            "$ref": "#/components/schemas/Gesture",
+            "default": "OPEN_PALM"
+          },
+          "toggle_active": {
+            "$ref": "#/components/schemas/Gesture",
+            "default": "THUMBS_UP"
+          },
+          "start_show": {
+            "$ref": "#/components/schemas/Gesture",
+            "default": "FIST"
+          },
+          "exit_show": {
+            "$ref": "#/components/schemas/Gesture",
+            "default": "THUMBS_DOWN"
+          }
+        },
+        "type": "object",
+        "title": "Mappings",
+        "description": "Which gesture triggers which action. Jump is always COUNT_1..5 (reserved)."
+      },
+      "ModelCard": {
+        "properties": {
+          "trained_at": {
+            "type": "string",
+            "title": "Trained At"
+          },
+          "classes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Classes"
+          },
+          "feature_version": {
+            "type": "integer",
+            "title": "Feature Version"
+          },
+          "n_frames": {
+            "type": "integer",
+            "title": "N Frames"
+          },
+          "participants": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Participants"
+          },
+          "lopo_macro_f1": {
+            "type": "number",
+            "title": "Lopo Macro F1"
+          },
+          "sklearn_version": {
+            "type": "string",
+            "title": "Sklearn Version"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "title": "Synthetic"
+          }
+        },
+        "type": "object",
+        "required": [
+          "trained_at",
+          "classes",
+          "feature_version",
+          "n_frames",
+          "participants",
+          "lopo_macro_f1",
+          "sklearn_version",
+          "synthetic"
+        ],
+        "title": "ModelCard"
+      },
+      "OverlayRequest": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "full",
+              "compact",
+              "hidden"
+            ],
+            "title": "Mode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "title": "OverlayRequest"
+      },
+      "OverlayResponse": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "full",
+              "compact",
+              "hidden"
+            ],
+            "title": "Mode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "title": "OverlayResponse"
+      },
+      "OverlaySettings": {
+        "properties": {
+          "visible": {
+            "type": "boolean",
+            "title": "Visible",
+            "default": true
+          },
+          "compact": {
+            "type": "boolean",
+            "title": "Compact",
+            "default": false
+          },
+          "show_preview": {
+            "type": "boolean",
+            "title": "Show Preview",
+            "default": true
+          },
+          "show_landmarks": {
+            "type": "boolean",
+            "title": "Show Landmarks",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "OverlaySettings"
+      },
+      "Permissions": {
+        "properties": {
+          "camera": {
+            "type": "string",
+            "enum": [
+              "granted",
+              "denied",
+              "unknown",
+              "not_required"
+            ],
+            "title": "Camera"
+          },
+          "keyboard": {
+            "type": "string",
+            "enum": [
+              "granted",
+              "denied",
+              "unknown",
+              "not_required"
+            ],
+            "title": "Keyboard"
+          }
+        },
+        "type": "object",
+        "required": [
+          "camera",
+          "keyboard"
+        ],
+        "title": "Permissions"
+      },
+      "RatingRow": {
+        "properties": {
+          "participant": {
+            "type": "string",
+            "title": "Participant"
+          },
+          "ease": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Ease"
+          },
+          "reliability": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Reliability"
+          },
+          "comment": {
+            "type": "string",
+            "title": "Comment",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "participant",
+          "ease",
+          "reliability"
+        ],
+        "title": "RatingRow"
+      },
+      "Recogniser": {
+        "type": "string",
+        "enum": [
+          "rules",
+          "ml"
+        ],
+        "title": "Recogniser"
+      },
+      "RecogniserResult": {
+        "properties": {
+          "confusion": {
+            "$ref": "#/components/schemas/ConfusionMatrix"
+          },
+          "macro_f1": {
+            "type": "number",
+            "title": "Macro F1"
+          },
+          "ms_per_frame": {
+            "type": "number",
+            "title": "Ms Per Frame"
+          }
+        },
+        "type": "object",
+        "required": [
+          "confusion",
+          "macro_f1",
+          "ms_per_frame"
+        ],
+        "title": "RecogniserResult"
+      },
+      "RecordingRequest": {
+        "properties": {
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "gestures",
+              "talking",
+              "two_hand"
+            ],
+            "title": "Protocol"
+          },
+          "participant": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Participant"
+          },
+          "distance_m": {
+            "type": "number",
+            "maximum": 3.0,
+            "minimum": 0.3,
+            "title": "Distance M",
+            "default": 1.0
+          },
+          "lighting": {
+            "type": "string",
+            "enum": [
+              "bright",
+              "normal",
+              "dim"
+            ],
+            "title": "Lighting",
+            "default": "normal"
+          }
+        },
+        "type": "object",
+        "required": [
+          "protocol",
+          "participant"
+        ],
+        "title": "RecordingRequest"
+      },
+      "RecordingStatus": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "title": "Session Id"
+          },
+          "protocol": {
+            "type": "string",
+            "enum": [
+              "gestures",
+              "talking",
+              "two_hand"
+            ],
+            "title": "Protocol"
+          },
+          "step": {
+            "type": "integer",
+            "title": "Step"
+          },
+          "total_steps": {
+            "type": "integer",
+            "title": "Total Steps"
+          },
+          "prompt": {
+            "type": "string",
+            "title": "Prompt"
+          },
+          "started_at": {
+            "type": "string",
+            "title": "Started At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session_id",
+          "protocol",
+          "step",
+          "total_steps",
+          "prompt",
+          "started_at"
+        ],
+        "title": "RecordingStatus"
+      },
+      "Sensitivity": {
+        "properties": {
+          "swipe_min_travel": {
+            "type": "number",
+            "maximum": 5.0,
+            "minimum": 0.5,
+            "title": "Swipe Min Travel",
+            "description": "hand lengths",
+            "default": 2.0
+          },
+          "swipe_max_ms": {
+            "type": "integer",
+            "maximum": 1500.0,
+            "minimum": 200.0,
+            "title": "Swipe Max Ms",
+            "description": "ms",
+            "default": 500
+          },
+          "swipe_min_speed": {
+            "type": "number",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Swipe Min Speed",
+            "description": "hand lengths per second",
+            "default": 4.0
+          },
+          "palm_spread_max": {
+            "type": "number",
+            "maximum": 0.8,
+            "minimum": 0.2,
+            "title": "Palm Spread Max",
+            "description": "spread",
+            "default": 0.45
+          },
+          "still_max_speed": {
+            "type": "number",
+            "maximum": 3.0,
+            "minimum": 0.2,
+            "title": "Still Max Speed",
+            "description": "hand lengths per second",
+            "default": 1.0
+          },
+          "smoothing": {
+            "type": "number",
+            "maximum": 5.0,
+            "minimum": 0.1,
+            "title": "Smoothing",
+            "description": "One Euro min cut-off, Hz",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "title": "Sensitivity",
+        "description": "Distances are in hand lengths (wrist to middle-finger knuckle)."
+      },
+      "SessionDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "gestures",
+              "talking",
+              "two_hand",
+              "demo"
+            ],
+            "title": "Kind"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic"
+            ],
+            "title": "Source"
+          },
+          "participant": {
+            "type": "string",
+            "title": "Participant"
+          },
+          "distance_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance M"
+          },
+          "lighting": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "bright",
+                  "normal",
+                  "dim"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lighting"
+          },
+          "luminance_mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Luminance Mean"
+          },
+          "n_frames": {
+            "type": "integer",
+            "title": "N Frames"
+          },
+          "duration_s": {
+            "type": "number",
+            "title": "Duration S"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/SessionLabel"
+            },
+            "type": "array",
+            "title": "Labels"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "source",
+          "participant",
+          "distance_m",
+          "lighting",
+          "luminance_mean",
+          "n_frames",
+          "duration_s",
+          "created_at",
+          "labels"
+        ],
+        "title": "SessionDetail"
+      },
+      "SessionLabel": {
+        "properties": {
+          "start": {
+            "type": "number",
+            "title": "Start",
+            "description": "Seconds from the session start"
+          },
+          "end": {
+            "type": "number",
+            "title": "End"
+          },
+          "gesture": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Gesture"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "COUNT_6",
+                  "COUNT_7",
+                  "COUNT_8",
+                  "COUNT_9",
+                  "COUNT_10",
+                  "TALKING"
+                ]
+              }
+            ],
+            "title": "Gesture"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "gesture"
+        ],
+        "title": "SessionLabel"
+      },
+      "SessionSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "gestures",
+              "talking",
+              "two_hand",
+              "demo"
+            ],
+            "title": "Kind"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic"
+            ],
+            "title": "Source"
+          },
+          "participant": {
+            "type": "string",
+            "title": "Participant"
+          },
+          "distance_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance M"
+          },
+          "lighting": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "bright",
+                  "normal",
+                  "dim"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lighting"
+          },
+          "luminance_mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Luminance Mean"
+          },
+          "n_frames": {
+            "type": "integer",
+            "title": "N Frames"
+          },
+          "duration_s": {
+            "type": "number",
+            "title": "Duration S"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "source",
+          "participant",
+          "distance_m",
+          "lighting",
+          "luminance_mean",
+          "n_frames",
+          "duration_s",
+          "created_at"
+        ],
+        "title": "SessionSummary"
+      },
+      "SetActiveRequest": {
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "active"
+        ],
+        "title": "SetActiveRequest"
+      },
+      "SetSourceRequest": {
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/SourceKind"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          },
+          "loop": {
+            "type": "boolean",
+            "title": "Loop",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "SetSourceRequest"
+      },
+      "Settings": {
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "title": "Schema Version",
+            "default": 1
+          },
+          "mappings": {
+            "$ref": "#/components/schemas/Mappings"
+          },
+          "features": {
+            "$ref": "#/components/schemas/Features"
+          },
+          "sensitivity": {
+            "$ref": "#/components/schemas/Sensitivity"
+          },
+          "timing": {
+            "$ref": "#/components/schemas/Timing"
+          },
+          "camera": {
+            "$ref": "#/components/schemas/CameraSettings"
+          },
+          "profile_id": {
+            "type": "string",
+            "enum": [
+              "powerpoint",
+              "google_slides",
+              "pdf_viewer",
+              "practice"
+            ],
+            "title": "Profile Id",
+            "default": "powerpoint"
+          },
+          "recogniser": {
+            "$ref": "#/components/schemas/Recogniser",
+            "default": "rules"
+          },
+          "overlay": {
+            "$ref": "#/components/schemas/OverlaySettings"
+          },
+          "start_paused": {
+            "type": "boolean",
+            "title": "Start Paused",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "Settings"
+      },
+      "SourceKind": {
+        "type": "string",
+        "enum": [
+          "camera",
+          "replay"
+        ],
+        "title": "SourceKind"
+      },
+      "Tally": {
+        "properties": {
+          "correct": {
+            "type": "integer",
+            "title": "Correct"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "correct",
+          "total"
+        ],
+        "title": "Tally"
+      },
+      "Timing": {
+        "properties": {
+          "hold_count_ms": {
+            "type": "integer",
+            "maximum": 3000.0,
+            "minimum": 300.0,
+            "title": "Hold Count Ms",
+            "default": 1000
+          },
+          "hold_palm_ms": {
+            "type": "integer",
+            "maximum": 3000.0,
+            "minimum": 300.0,
+            "title": "Hold Palm Ms",
+            "default": 800
+          },
+          "hold_pose_ms": {
+            "type": "integer",
+            "maximum": 3000.0,
+            "minimum": 300.0,
+            "title": "Hold Pose Ms",
+            "default": 1000
+          },
+          "cooldown_ms": {
+            "type": "integer",
+            "maximum": 3000.0,
+            "minimum": 200.0,
+            "title": "Cooldown Ms",
+            "default": 800
+          },
+          "activation_cooldown_ms": {
+            "type": "integer",
+            "maximum": 5000.0,
+            "minimum": 200.0,
+            "title": "Activation Cooldown Ms",
+            "default": 1500
+          }
+        },
+        "type": "object",
+        "title": "Timing"
+      },
+      "TrainRequest": {
+        "properties": {
+          "sources": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "recorded",
+                "synthetic"
+              ]
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "type": "object",
+        "title": "TrainRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ActivationChangedEvent": {
+        "properties": {
+          "kind": {
+            "const": "activation_changed",
+            "default": "activation_changed",
+            "title": "Kind",
+            "type": "string"
+          },
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "active"
+        ],
+        "title": "ActivationChangedEvent",
+        "type": "object"
+      },
+      "CommandEvent": {
+        "properties": {
+          "kind": {
+            "const": "command",
+            "default": "command",
+            "title": "Kind",
+            "type": "string"
+          },
+          "command": {
+            "$ref": "#/components/schemas/CommandLogEntry"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "CommandEvent",
+        "type": "object"
+      },
+      "EngineEventMessage": {
+        "properties": {
+          "type": {
+            "const": "event",
+            "default": "event",
+            "title": "Type",
+            "type": "string"
+          },
+          "event": {
+            "discriminator": {
+              "mapping": {
+                "activation_changed": "#/components/schemas/ActivationChangedEvent",
+                "command": "#/components/schemas/CommandEvent",
+                "hold_cancelled": "#/components/schemas/HoldCancelledEvent",
+                "job_progress": "#/components/schemas/JobProgressEvent",
+                "recording_prompt": "#/components/schemas/RecordingPromptEvent",
+                "settings_changed": "#/components/schemas/SettingsChangedEvent",
+                "warning": "#/components/schemas/WarningEvent"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CommandEvent"
+              },
+              {
+                "$ref": "#/components/schemas/HoldCancelledEvent"
+              },
+              {
+                "$ref": "#/components/schemas/ActivationChangedEvent"
+              },
+              {
+                "$ref": "#/components/schemas/WarningEvent"
+              },
+              {
+                "$ref": "#/components/schemas/SettingsChangedEvent"
+              },
+              {
+                "$ref": "#/components/schemas/RecordingPromptEvent"
+              },
+              {
+                "$ref": "#/components/schemas/JobProgressEvent"
+              }
+            ],
+            "title": "Event"
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "title": "EngineEventMessage",
+        "type": "object"
+      },
+      "EngineFrame": {
+        "description": "Sent up to 30 times a second. Clients keep only the latest one.",
+        "properties": {
+          "type": {
+            "const": "frame",
+            "default": "frame",
+            "title": "Type",
+            "type": "string"
+          },
+          "seq": {
+            "title": "Seq",
+            "type": "integer"
+          },
+          "t": {
+            "title": "T",
+            "type": "number"
+          },
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "state": {
+            "$ref": "#/components/schemas/EngineState"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceKind"
+          },
+          "hands": {
+            "items": {
+              "$ref": "#/components/schemas/HandLandmarks"
+            },
+            "title": "Hands",
+            "type": "array"
+          },
+          "extended": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "boolean"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Per finger (thumb, index, middle, ring, little) of the main hand",
+            "title": "Extended"
+          },
+          "pose": {
+            "$ref": "#/components/schemas/Pose"
+          },
+          "confidence": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "recogniser": {
+            "$ref": "#/components/schemas/Recogniser"
+          },
+          "hold": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HoldInfo"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "cooldown_ms_left": {
+            "default": 0,
+            "title": "Cooldown Ms Left",
+            "type": "integer"
+          },
+          "fps": {
+            "title": "Fps",
+            "type": "number"
+          }
+        },
+        "required": [
+          "seq",
+          "t",
+          "active",
+          "state",
+          "source",
+          "hands",
+          "pose",
+          "confidence",
+          "recogniser",
+          "fps"
+        ],
+        "title": "EngineFrame",
+        "type": "object"
+      },
+      "HandLandmarks": {
+        "description": "One detected hand: 21 (x, y, z) points, x and y in 0..1 of the mirrored image.",
+        "properties": {
+          "handedness": {
+            "enum": [
+              "Left",
+              "Right"
+            ],
+            "title": "Handedness",
+            "type": "string"
+          },
+          "score": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Score",
+            "type": "number"
+          },
+          "landmarks": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 3,
+              "minItems": 3,
+              "type": "array"
+            },
+            "maxItems": 21,
+            "minItems": 21,
+            "title": "Landmarks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "handedness",
+          "score",
+          "landmarks"
+        ],
+        "title": "HandLandmarks",
+        "type": "object"
+      },
+      "HoldCancelledEvent": {
+        "properties": {
+          "kind": {
+            "const": "hold_cancelled",
+            "default": "hold_cancelled",
+            "title": "Kind",
+            "type": "string"
+          },
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "reason": {
+            "enum": [
+              "pose_changed",
+              "moved",
+              "hand_lost"
+            ],
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "reason"
+        ],
+        "title": "HoldCancelledEvent",
+        "type": "object"
+      },
+      "HoldInfo": {
+        "description": "A held gesture on standby: what the cue dial shows.",
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "label": {
+            "description": "Text inside the dial, e.g. \"3\", \"Blank\", \"Live\"",
+            "title": "Label",
+            "type": "string"
+          },
+          "caption": {
+            "description": "Small caption above it, e.g. \"Slide\", \"Screen\", \"Go\"",
+            "title": "Caption",
+            "type": "string"
+          },
+          "progress": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Progress",
+            "type": "number"
+          },
+          "hold_ms": {
+            "title": "Hold Ms",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "action",
+          "label",
+          "caption",
+          "progress",
+          "hold_ms"
+        ],
+        "title": "HoldInfo",
+        "type": "object"
+      },
+      "JobProgressEvent": {
+        "properties": {
+          "kind": {
+            "const": "job_progress",
+            "default": "job_progress",
+            "title": "Kind",
+            "type": "string"
+          },
+          "job": {
+            "$ref": "#/components/schemas/Job"
+          }
+        },
+        "required": [
+          "job"
+        ],
+        "title": "JobProgressEvent",
+        "type": "object"
+      },
+      "Pose": {
+        "description": "A static hand shape, recognised frame by frame (rules or trained model).",
+        "enum": [
+          "NONE",
+          "FIST",
+          "OPEN_PALM",
+          "THUMBS_UP",
+          "THUMBS_DOWN",
+          "COUNT_1",
+          "COUNT_2",
+          "COUNT_3",
+          "COUNT_4",
+          "COUNT_5"
+        ],
+        "title": "Pose",
+        "type": "string"
+      },
+      "RecordingPromptEvent": {
+        "properties": {
+          "kind": {
+            "const": "recording_prompt",
+            "default": "recording_prompt",
+            "title": "Kind",
+            "type": "string"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "step": {
+            "title": "Step",
+            "type": "integer"
+          },
+          "total_steps": {
+            "title": "Total Steps",
+            "type": "integer"
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string"
+          },
+          "gesture": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Gesture"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "seconds": {
+            "title": "Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "session_id",
+          "step",
+          "total_steps",
+          "prompt",
+          "seconds"
+        ],
+        "title": "RecordingPromptEvent",
+        "type": "object"
+      },
+      "SettingsChangedEvent": {
+        "properties": {
+          "kind": {
+            "const": "settings_changed",
+            "default": "settings_changed",
+            "title": "Kind",
+            "type": "string"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/Settings"
+          }
+        },
+        "required": [
+          "settings"
+        ],
+        "title": "SettingsChangedEvent",
+        "type": "object"
+      },
+      "WarningEvent": {
+        "properties": {
+          "kind": {
+            "const": "warning",
+            "default": "warning",
+            "title": "Kind",
+            "type": "string"
+          },
+          "code": {
+            "enum": [
+              "CAMERA_LOST",
+              "CAMERA_BACK",
+              "KEYS_NOT_ALLOWED",
+              "FOCUS_BLOCKED",
+              "SLOW_PIPELINE"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "WarningEvent",
+        "type": "object"
+      },
+      "ServerMessage": {
+        "discriminator": {
+          "mapping": {
+            "event": "#/components/schemas/EngineEventMessage",
+            "frame": "#/components/schemas/EngineFrame"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/EngineFrame"
+          },
+          {
+            "$ref": "#/components/schemas/EngineEventMessage"
+          }
+        ]
+      },
+      "DeckAckMessage": {
+        "properties": {
+          "type": {
+            "const": "deck_ack",
+            "default": "deck_ack",
+            "title": "Type",
+            "type": "string"
+          },
+          "command_id": {
+            "title": "Command Id",
+            "type": "integer"
+          },
+          "t": {
+            "title": "T",
+            "type": "number"
+          }
+        },
+        "required": [
+          "command_id",
+          "t"
+        ],
+        "title": "DeckAckMessage",
+        "type": "object"
+      },
+      "FocusMessage": {
+        "properties": {
+          "type": {
+            "const": "focus",
+            "default": "focus",
+            "title": "Type",
+            "type": "string"
+          },
+          "has_focus": {
+            "title": "Has Focus",
+            "type": "boolean"
+          },
+          "route": {
+            "title": "Route",
+            "type": "string"
+          }
+        },
+        "required": [
+          "has_focus",
+          "route"
+        ],
+        "title": "FocusMessage",
+        "type": "object"
+      },
+      "HelloMessage": {
+        "properties": {
+          "type": {
+            "const": "hello",
+            "default": "hello",
+            "title": "Type",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "overlay",
+              "settings"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "title": "HelloMessage",
+        "type": "object"
+      },
+      "ClientMessage": {
+        "discriminator": {
+          "mapping": {
+            "deck_ack": "#/components/schemas/DeckAckMessage",
+            "focus": "#/components/schemas/FocusMessage",
+            "hello": "#/components/schemas/HelloMessage"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/HelloMessage"
+          },
+          {
+            "$ref": "#/components/schemas/FocusMessage"
+          },
+          {
+            "$ref": "#/components/schemas/DeckAckMessage"
+          }
+        ]
+      }
+    }
+  }
+}

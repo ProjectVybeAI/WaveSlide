@@ -1,0 +1,140 @@
+/* The trigger matches Input; the popup matches Menu. */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+  text-align: start;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+.trigger:hover:not(:disabled) {
+  border-color: var(--color-text-muted);
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+/* Muted, not subtle: the placeholder is real text in the button and needs 4.5:1. */
+.trigger[data-placeholder] .value {
+  color: var(--color-text-muted);
+}
+.trigger[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: inset 0 0 0 var(--border-width) var(--color-danger);
+}
+.trigger:disabled {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-subtle);
+  border-color: var(--color-border);
+  cursor: not-allowed;
+}
+/* A long option truncates instead of pushing the chevron out. */
+.value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chevron {
+  display: inline-flex;
+  flex: none;
+  color: var(--color-text-muted);
+}
+.chevron svg {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+.content {
+  z-index: var(--z-dropdown);
+  min-width: var(--radix-select-trigger-width);
+  max-height: var(--radix-select-content-available-height);
+  overflow: hidden;
+  background: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-overlay);
+}
+.viewport {
+  padding: var(--space-1);
+}
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.item[data-highlighted] {
+  background: var(--color-surface-sunken);
+  box-shadow: inset 0 0 0 2px var(--color-focus);
+}
+.item[data-state="checked"] {
+  font-weight: var(--weight-semibold);
+}
+.item[data-disabled] {
+  color: var(--color-text-subtle);
+  cursor: not-allowed;
+}
+.indicator {
+  display: inline-flex;
+  color: var(--color-accent);
+}
+.indicator svg {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+/* ---- Looks: <html data-input="underline | filled">, the same as Input.module.css. ---- */
+:global(:root[data-input="underline"]) .trigger {
+  padding-inline: var(--space-1);
+  background: transparent;
+  border: 0;
+  border-bottom: var(--border-width) solid var(--color-border-strong);
+  border-radius: 0;
+}
+:global(:root[data-input="underline"]) .trigger:focus-visible {
+  border-bottom-width: calc(var(--border-width) * 2);
+  border-bottom-color: var(--color-focus);
+}
+:global(:root[data-input="underline"]) .trigger[aria-invalid="true"] {
+  border-bottom-color: var(--color-danger);
+  box-shadow: inset 0 calc(var(--border-width) * -1) 0 var(--color-danger);
+}
+:global(:root[data-input="underline"]) .trigger:disabled {
+  background: transparent;
+  border-bottom-style: dashed;
+}
+:global(:root[data-input="filled"]) .trigger {
+  background: var(--color-surface-sunken);
+  border-color: transparent;
+  box-shadow: inset 0 calc(var(--border-width) * -1) 0 var(--color-border-strong);
+}
+:global(:root[data-input="filled"]) .trigger:hover:not(:disabled, [aria-invalid="true"]),
+:global(:root[data-input="filled"]) .trigger:focus-visible {
+  border-color: var(--color-border-strong);
+}
+:global(:root[data-input="filled"]) .trigger[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: inset 0 0 0 var(--border-width) var(--color-danger);
+}
+:global(:root[data-input="filled"]) .trigger:disabled {
+  box-shadow: none;
+}

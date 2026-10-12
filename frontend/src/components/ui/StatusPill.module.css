@@ -1,0 +1,115 @@
+/* A compact chip that never wraps; a long status truncates (set a title on the pill if so). */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  min-height: var(--space-6);
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  white-space: nowrap;
+  vertical-align: middle;
+  color: var(--color-text);
+  border-radius: var(--radius-full);
+}
+.icon {
+  flex: none;
+  width: var(--space-3);
+  height: var(--space-3);
+}
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.neutral {
+  background: var(--color-surface-sunken);
+}
+.neutral .icon {
+  color: var(--color-text-muted);
+}
+.info {
+  background: var(--color-info-subtle);
+}
+.info .icon {
+  color: var(--color-info);
+}
+.success {
+  background: var(--color-success-subtle);
+}
+.success .icon {
+  color: var(--color-success);
+}
+.warning {
+  background: var(--color-warning-subtle);
+}
+.warning .icon {
+  color: var(--color-warning);
+}
+.danger {
+  background: var(--color-danger-subtle);
+}
+.danger .icon {
+  color: var(--color-danger);
+}
+
+/* ---- Looks: <html data-pill="dot | tag">. No attribute = capsule (above). ---- */
+
+/* dot: no chip, just a coloured dot and the word in the text colour. Suits dense tables.
+   The word carries the meaning; the dot only reinforces it. */
+:global(:root[data-pill="dot"]) .pill {
+  gap: var(--space-2);
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+:global(:root[data-pill="dot"]) .icon {
+  display: none;
+}
+:global(:root[data-pill="dot"]) .pill::before {
+  content: "";
+  flex: none;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-text-muted);
+}
+:global(:root[data-pill="dot"]) .info::before {
+  background: var(--color-info);
+}
+:global(:root[data-pill="dot"]) .success::before {
+  background: var(--color-success);
+}
+:global(:root[data-pill="dot"]) .warning::before {
+  background: var(--color-warning);
+}
+:global(:root[data-pill="dot"]) .danger::before {
+  background: var(--color-danger);
+}
+
+/* tag: a square label with a tone rule on the left, small uppercase text with a little
+   tracking (a quarter of --space-1, about 1px; there is no letter-spacing token). */
+:global(:root[data-pill="tag"]) .pill {
+  padding: 0 var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: calc(var(--space-1) / 4);
+  border-radius: 0;
+  border-inline-start: calc(var(--border-width) * 2) solid var(--color-border-strong);
+}
+:global(:root[data-pill="tag"]) .icon {
+  display: none;
+}
+:global(:root[data-pill="tag"]) .info {
+  border-inline-start-color: var(--color-info);
+}
+:global(:root[data-pill="tag"]) .success {
+  border-inline-start-color: var(--color-success);
+}
+:global(:root[data-pill="tag"]) .warning {
+  border-inline-start-color: var(--color-warning);
+}
+:global(:root[data-pill="tag"]) .danger {
+  border-inline-start-color: var(--color-danger);
+}

@@ -1,0 +1,26 @@
+{
+  "id": "powerpoint",
+  "name": "PowerPoint",
+  "description": "Microsoft PowerPoint in slideshow mode.",
+  "jump_strategy": "type_number",
+  "unsupported": [],
+  "notes": "Jump types the slide number then Enter. Start slideshow starts from the current slide.",
+  "keys": {
+    "darwin": {
+      "next": ["right"],
+      "previous": ["left"],
+      "blank_toggle": ["b"],
+      "start_show": ["shift+command+enter"],
+      "exit_show": ["esc"],
+      "jump": ["{n}", "enter"]
+    },
+    "win32": {
+      "next": ["right"],
+      "previous": ["left"],
+      "blank_toggle": ["b"],
+      "start_show": ["shift+f5"],
+      "exit_show": ["esc"],
+      "jump": ["{n}", "enter"]
+    }
+  }
+}

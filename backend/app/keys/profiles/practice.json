@@ -1,0 +1,26 @@
+{
+  "id": "practice",
+  "name": "Practice deck",
+  "description": "WaveSlide's own ten-slide deck. Keys are never sent to another app.",
+  "jump_strategy": "type_number",
+  "unsupported": [],
+  "notes": "Commands go to the practice deck over the WebSocket instead of the keyboard.",
+  "keys": {
+    "darwin": {
+      "next": ["right"],
+      "previous": ["left"],
+      "blank_toggle": ["b"],
+      "start_show": ["f"],
+      "exit_show": ["esc"],
+      "jump": ["{n}", "enter"]
+    },
+    "win32": {
+      "next": ["right"],
+      "previous": ["left"],
+      "blank_toggle": ["b"],
+      "start_show": ["f"],
+      "exit_show": ["esc"],
+      "jump": ["{n}", "enter"]
+    }
+  }
+}

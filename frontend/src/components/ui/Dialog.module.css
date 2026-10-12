@@ -1,0 +1,82 @@
+/* A raised panel over a scrim. On short screens the body scrolls and the footer stays in view. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  /* No scrim token in the contract: the text colour, mostly transparent. */
+  background: color-mix(in oklch, var(--color-text) 45%, transparent);
+  animation: fade var(--duration-base) var(--ease-out);
+}
+.content {
+  position: fixed;
+  z-index: var(--z-modal);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - var(--space-8));
+  max-height: calc(100dvh - var(--space-8));
+  background: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-overlay);
+  animation: fade var(--duration-base) var(--ease-out);
+}
+.sm {
+  max-width: calc(var(--space-16) * 7); /* 448 px */
+}
+.md {
+  max-width: calc(var(--space-16) * 9); /* 576 px */
+}
+.lg {
+  max-width: calc(var(--space-16) * 12); /* 768 px */
+}
+.content:focus-visible {
+  outline: none;
+}
+.title {
+  min-width: 0;
+  /* Room on the right for the close button in the corner. */
+  padding: var(--space-6) var(--space-12) 0 var(--space-6);
+  font-size: var(--text-lg);
+  overflow-wrap: anywhere;
+}
+.close {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-4);
+}
+.description {
+  padding: var(--space-2) var(--space-6) 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+/* The body scrolls, and a scroll box clips anything outside its padding: the space-1 of
+   padding at the bottom keeps a focused input's ring (2px + 2px offset) visible. */
+.body {
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-6) var(--space-1);
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+/* Phones: full-width buttons, stacked so the confirming one (last in the DOM) is on top. */
+@media (max-width: 480px) {
+  .footer {
+    flex-direction: column-reverse;
+  }
+  .footer > * {
+    width: 100%;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}

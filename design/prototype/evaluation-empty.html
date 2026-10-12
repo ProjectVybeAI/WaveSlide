@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-tabs="segmented" data-button="ink" data-pill="dot" data-table="ruled" data-input="filled" data-header="banded">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluation lab, no runs yet · WaveSlide prototype</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side" id="side"></aside>
+      <div class="page">
+        <header class="page-head">
+          <div>
+            <h1>Evaluation lab</h1>
+            <p>Every test from the brief, replayed through the same pipeline that drives your slides.</p>
+          </div>
+        </header>
+        <main class="page-body">
+          <section class="empty" aria-labelledby="empty-h">
+            <div>
+              <h2 id="empty-h">No evaluation runs yet</h2>
+              <p>A run replays recorded sessions through the real pipeline and measures accuracy per gesture, false triggers while talking, response time, distance, lighting, and rules against the trained model. It takes about a minute and changes nothing in your settings.</p>
+              <div class="actions">
+                <a class="btn btn-primary" href="#dataset"><i data-icon="database"></i>Record participants</a>
+                <button class="btn" type="button"><i data-icon="play"></i>Try it on synthetic sessions</button>
+              </div>
+            </div>
+            <div>
+              <h3 class="panel-title">What a real run needs</h3>
+              <ul class="needs">
+                <li><span>Participants with a gestures session</span><span class="pill warning">1 of 2</span><small>Leave-one-participant-out needs at least two people.</small></li>
+                <li><span>Talking sessions, 3 minutes each</span><span class="pill warning">0 of 2</span><small>Measures false triggers while you talk with your hands.</small></li>
+                <li><span>Distances 0.5, 1, 1.5 and 2 m</span><span class="pill">1 of 4</span><small>One participant is enough. Optional for the first run.</small></li>
+                <li><span>Bright, normal and dim light</span><span class="pill">1 of 3</span><small>Optional for the first run.</small></li>
+                <li><span>Trained model</span><span class="pill">Not yet</span><small>Train one in Dataset once two people are recorded. Until then the rules are evaluated alone.</small></li>
+              </ul>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script src="js/icons.js"></script>
+    <script src="js/shell.js"></script>
+    <script>
+      document.getElementById("side").innerHTML = WSShell.shell("Evaluation lab", { paused: true });
+      WSIcons.hydrate();
+    </script>
+  </body>
+</html>
