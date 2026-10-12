@@ -1,0 +1,24 @@
+/* Colours come from custom properties so a slide can recolour the glyph (practice deck). */
+.glyph {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+}
+.bone,
+.lit,
+.motion {
+  fill: none;
+  stroke-linecap: round;
+}
+.bone {
+  stroke: var(--glyph-bone, var(--color-text-subtle));
+}
+.lit {
+  stroke: var(--glyph-lit, var(--color-text));
+}
+.motion {
+  stroke: var(--glyph-motion, var(--color-text-muted));
+}
+.tip {
+  fill: var(--glyph-tip, var(--color-text));
+}

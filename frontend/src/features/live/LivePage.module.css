@@ -1,26 +1,78 @@
+.body,
+.skeleton {
+  display: grid;
+  gap: var(--space-8);
+  padding-block: var(--space-8);
+}
+.skeleton {
+  padding-block: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+.monitorColumn,
+.cuePanel {
+  min-width: 0;
+}
+
+/* The camera monitor: a 2 px tally edge (cobalt when gestures act) and a UMD caption in condensed type. */
 .monitor {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  max-width: 720px;
-  aspect-ratio: 4 / 3;
+  grid-template-rows: auto auto;
+  max-width: calc(var(--space-16) * 12);
   margin: 0;
   overflow: hidden;
   background: var(--color-video);
-  border: 2px solid var(--color-border);
+  border: 2px solid var(--color-paused);
+  transition: border-color var(--duration-fast) var(--ease-out);
 }
 .monitor[data-live="true"] {
-  border-color: var(--color-accent);
+  border-color: var(--color-live);
+}
+.picture {
+  aspect-ratio: 4 / 3;
 }
 .umd {
   display: flex;
-  justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-1) var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: var(--weight-semibold);
+  line-height: 1;
   background: var(--color-surface-sunken);
 }
-.dim {
+.source {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: var(--weight-medium);
   color: var(--color-text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.skeletonMonitor {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+.skeletonPanel {
+  display: grid;
+  gap: var(--space-5);
+}
+.skeletonRing {
+  border-radius: var(--radius-full);
+  width: calc(var(--space-16) * 2.625);
+  height: calc(var(--space-16) * 2.625);
+}
+
+@media (max-width: 1180px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

@@ -1,0 +1,41 @@
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) calc(var(--space-16) * 4.75);
+  gap: var(--space-8);
+  align-items: start;
+  padding-block: var(--space-8);
+}
+.stage {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* In full screen the slide fills the display, centred on black like a real presentation. */
+.screen {
+  display: grid;
+  place-items: center;
+  background: var(--color-video);
+}
+.screen:fullscreen {
+  align-content: center;
+}
+.screen:fullscreen > * {
+  width: min(100vw, 100vh * 16 / 9);
+}
+.keys {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.keys > svg {
+  margin-right: var(--space-1);
+}
+
+@media (max-width: 1180px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

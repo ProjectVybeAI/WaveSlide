@@ -1,0 +1,62 @@
+/* container-type makes cqi the slide's own width: type and spacing scale with the slide. */
+.slide {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: 5cqi 6cqi;
+  overflow: hidden;
+  color: var(--color-slide-ink);
+  background: var(--color-slide-paper);
+  container-type: inline-size;
+  --glyph-bone: var(--color-border-strong);
+  --glyph-lit: var(--color-slide-ink);
+  --glyph-tip: var(--color-accent);
+  --glyph-motion: var(--color-border-strong);
+}
+.slide[data-blank="true"] {
+  display: grid;
+  place-items: center;
+  background: var(--color-video);
+}
+.blank {
+  max-width: 40cqi;
+  font-size: 1.8cqi;
+  color: var(--color-text-subtle);
+  text-align: center;
+}
+.number {
+  font-family: var(--font-display);
+  font-size: 22cqi;
+  font-weight: 800;
+  line-height: 0.8;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+.title {
+  max-width: 58%;
+  margin-top: 4cqi;
+  font-family: var(--font-display);
+  font-size: 6.4cqi;
+  font-weight: var(--weight-display);
+  line-height: 1;
+}
+.body {
+  max-width: 52%;
+  margin-top: 2.4cqi;
+  font-size: 2.3cqi;
+  line-height: 1.4;
+  color: var(--color-slide-muted);
+}
+.hand {
+  position: absolute;
+  right: 6%;
+  bottom: 8%;
+  width: 34%;
+}
+.foot {
+  position: absolute;
+  left: 6%;
+  bottom: 6%;
+  font-size: 1.6cqi;
+  color: var(--color-slide-muted);
+}

@@ -1,0 +1,70 @@
+.ring {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+.disc {
+  fill: var(--color-surface-sunken);
+}
+.rim {
+  fill: none;
+  stroke: var(--color-border);
+}
+.tick {
+  stroke: var(--color-border-strong);
+  stroke-linecap: butt;
+}
+.tickPassed {
+  stroke: var(--color-signal);
+  stroke-linecap: butt;
+}
+.sweep {
+  fill: var(--color-accent);
+}
+.cancel .sweep {
+  fill: var(--color-border-strong);
+}
+/* Go: a solid disc that fades in over --duration-go (0 under reduced motion). */
+.solid {
+  fill: var(--color-accent);
+  opacity: 0;
+  transition: opacity var(--duration-go) var(--ease-out);
+}
+.go .solid {
+  opacity: 1;
+}
+.cool {
+  fill: none;
+  stroke: var(--color-text-subtle);
+  stroke-linecap: butt;
+}
+.numeral,
+.numeralOn {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-anchor: middle;
+  fill: var(--color-text);
+  transition: fill var(--duration-go) var(--ease-out);
+}
+.numeralOn {
+  fill: var(--color-on-accent);
+}
+.go .numeral {
+  fill: var(--color-on-accent);
+}
+.idle .numeral {
+  fill: var(--color-text-subtle);
+}
+.caption,
+.captionOn {
+  font-family: var(--font-text);
+  font-weight: var(--weight-semibold);
+  text-anchor: middle;
+  fill: var(--color-text-muted);
+}
+.captionOn {
+  fill: var(--color-on-accent);
+}
+.go .caption {
+  fill: var(--color-on-accent);
+}

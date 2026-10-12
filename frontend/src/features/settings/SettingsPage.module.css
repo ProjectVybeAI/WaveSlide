@@ -1,0 +1,33 @@
+.notice {
+  margin-top: var(--space-6);
+}
+.state {
+  padding-block: var(--space-8);
+}
+.skeleton {
+  display: grid;
+  padding-top: var(--space-8);
+}
+.skeletonSection {
+  display: grid;
+  grid-template-columns: calc(var(--space-16) * 4.125) minmax(0, 1fr);
+  gap: var(--space-8);
+  padding: var(--space-8) 0;
+  border-top: var(--border-width) solid var(--color-border);
+}
+.skeletonSection:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.skeletonHeading,
+.skeletonRows {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+@media (max-width: 960px) {
+  .skeletonSection {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

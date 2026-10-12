@@ -1,0 +1,51 @@
+.keys {
+  display: grid;
+  gap: var(--space-3);
+  grid-column: 1 / -1;
+}
+.muted {
+  color: var(--color-text-muted);
+}
+.keyRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+.note {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.tag {
+  margin-left: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-signal);
+}
+.recogniser {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+.card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-left: 3px solid var(--color-success);
+}
+.cardTitle {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-weight: var(--weight-semibold);
+}
+.cardTitle > svg {
+  color: var(--color-success);
+}
+.number {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-semibold);
+}
