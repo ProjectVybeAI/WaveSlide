@@ -1,0 +1,70 @@
+.strip {
+  --figure-columns: var(--figure-count);
+  display: grid;
+  grid-template-columns: repeat(var(--figure-columns), minmax(0, 1fr));
+  margin: 0;
+  border-top: var(--border-width) solid var(--color-border-strong);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+.item {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+  min-width: 0;
+  padding: var(--space-4);
+  border-left: var(--border-width) solid var(--color-border);
+}
+.item:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+/* The label reads under the figure, but comes first in the DOM so a screen reader hears it first. */
+.item dt {
+  order: 2;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.item dd {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-display);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.item small {
+  margin-left: var(--space-1);
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+/* Narrower: three across, then two. The first figure of every row loses its left rule and padding. */
+@media (max-width: 1180px) {
+  .strip {
+    --figure-columns: min(var(--figure-count), 3);
+  }
+  .item:nth-child(3n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .item:nth-child(n + 4) {
+    border-top: var(--border-width) solid var(--color-border);
+  }
+}
+@media (max-width: 560px) {
+  .strip {
+    --figure-columns: 2;
+  }
+  .item:nth-child(3n + 1) {
+    padding-left: var(--space-4);
+    border-left: var(--border-width) solid var(--color-border);
+  }
+  .item:nth-child(2n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .item:nth-child(n + 3) {
+    border-top: var(--border-width) solid var(--color-border);
+  }
+}

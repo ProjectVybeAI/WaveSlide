@@ -1,0 +1,46 @@
+/* Segmented, like the kit's tabs: a sunken track with the current section raised. One row on a
+   wide window; on a phone it scrolls sideways inside its own box. */
+.nav {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.list {
+  display: flex;
+  gap: var(--space-1);
+  width: fit-content;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+}
+.list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-8);
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+.list a:hover {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+.list a[aria-current="true"] {
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 var(--border-width) var(--color-border);
+}
+.list a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}

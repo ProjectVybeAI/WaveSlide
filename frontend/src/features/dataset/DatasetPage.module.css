@@ -1,0 +1,12 @@
+.body {
+  display: grid;
+  gap: var(--space-10);
+  padding-block: var(--space-8);
+}
+.skeleton {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}

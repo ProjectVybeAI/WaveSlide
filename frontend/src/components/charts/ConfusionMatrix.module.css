@@ -1,0 +1,115 @@
+.figure {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* The grid scrolls inside its own box on phones; nothing else on the page moves sideways. */
+.scroller {
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+}
+.scroller:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.grid {
+  --cm-gap: calc(var(--space-1) / 2);
+  --cm-head: calc(var(--space-16) + var(--space-4));
+  --cm-cell: var(--space-8);
+  display: grid;
+  gap: var(--cm-gap);
+  width: 100%;
+  /* Cells grow with the box but stop at 48 px, so a 5 x 5 matrix does not stretch across the page. */
+  max-width: calc(var(--cm-head) + var(--cm-columns) * (var(--space-12) + var(--cm-gap)));
+  min-width: calc(var(--cm-head) + var(--cm-columns) * (var(--cm-cell) + var(--cm-gap)));
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+.row {
+  display: grid;
+  grid-template-columns: var(--cm-head) repeat(var(--cm-columns), minmax(var(--cm-cell), 1fr));
+  gap: var(--cm-gap);
+}
+
+.corner {
+  min-height: var(--space-10);
+}
+.columnHead,
+.rowHead {
+  display: flex;
+  align-items: center;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+.columnHead {
+  flex-direction: column;
+  gap: var(--space-1);
+  justify-content: flex-end;
+  padding-bottom: var(--space-1);
+  min-width: 0;
+}
+.columnHead span {
+  /* Short words overhang a narrow phone column rather than being cut with an ellipsis. */
+  white-space: nowrap;
+}
+.rowHead {
+  gap: var(--space-1);
+  justify-content: flex-end;
+  padding-right: var(--space-2);
+  white-space: nowrap;
+}
+
+.cell {
+  display: grid;
+  place-items: center;
+  min-height: var(--space-8);
+  color: var(--color-text);
+  background: var(--color-seq-0);
+  border-radius: var(--radius-sm);
+}
+.cell[data-level="1"] {
+  background: var(--color-seq-1);
+}
+.cell[data-level="2"] {
+  background: var(--color-seq-2);
+}
+.cell[data-level="3"] {
+  background: var(--color-seq-3);
+}
+.cell[data-level="4"] {
+  background: var(--color-seq-4);
+}
+.cell[data-level="5"] {
+  background: var(--color-seq-5);
+}
+.cell[data-level="6"] {
+  background: var(--color-seq-6);
+}
+.cell[data-level="7"] {
+  background: var(--color-seq-7);
+}
+.cell[data-ink="dark"] {
+  color: var(--color-ink-on-light);
+}
+.diagonal {
+  font-weight: var(--weight-semibold);
+}
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* On a phone the narrowest ten-column matrix still fits a 360 px window. */
+@media (max-width: 560px) {
+  .grid {
+    --cm-head: calc(var(--space-12) + var(--space-3));
+    --cm-cell: calc(var(--space-6) + var(--space-1) / 2);
+  }
+}
