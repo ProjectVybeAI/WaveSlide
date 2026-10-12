@@ -16,7 +16,6 @@ from app.contract.common import EngineState, ErrorCode, Recogniser, SourceKind
 from app.contract.engine import (
     ActivationChangedEvent,
     CommandEvent,
-    CommandLogEntry,
     EngineFrame,
     EngineSnapshot,
     HandLandmarks,
@@ -26,6 +25,8 @@ from app.contract.settings import Settings
 from app.core.pipeline import Pipeline, PipelineOutput
 from app.core.types import FrameInput
 from app.dataset.store import find_session
+from app.engine.command_log import CommandLog
+from app.engine.dispatcher import Dispatcher
 from app.engine.hub import Hub
 from app.engine.sources import (
     CameraLandmarkSource,
@@ -35,6 +36,7 @@ from app.engine.sources import (
 )
 from app.errors import AppError
 from app.keys.sender import KeySender
+from app.platform.permissions import keyboard_allowed
 
 log = logging.getLogger("waveslide.engine")
 
@@ -42,6 +44,8 @@ MODEL_PATH = BACKEND_DIR / "models" / "hand_landmarker.task"
 FIXTURE_SESSIONS = BACKEND_DIR / "tests" / "fixtures" / "sessions"
 FRAME_INTERVAL = 1 / 30  # publish at most 30 frames a second
 RETRY_SECONDS = 2.0
+SOURCE_WAIT_SECONDS = 3.0  # how long switching to the camera waits to learn if it opened
+SLOW_PIPELINE_MS = 80.0  # the brief's budget for capture to key
 
 
 class Engine:
@@ -54,11 +58,17 @@ class Engine:
         self.source_kind = SourceKind(config.source)
         self.session_id: str | None = config.replay_session if config.source == "replay" else None
         self.loop_replay = True
-        self.command_log: deque[CommandLogEntry] = deque(maxlen=200)
+        self.command_log = CommandLog(config.resolved_data_dir / "logs")
+        self.dispatcher = Dispatcher(
+            sender, self.command_log, hub.focused_routes, lambda: keyboard_allowed(config.keys)
+        )
         self._source: LandmarkSource | None = None
         self._source_error: str | None = None
         self._pending_source: tuple[SourceKind, str | None, bool] | None = None
         self._last: PipelineOutput = PipelineOutput(active=self.pipeline.active)
+        self._announced_active = self.pipeline.active
+        self._slow_warned = False
+        self._source_attempted = threading.Event()
         self._fps = 0.0
         self._frame_dt = 0.0
         self._pipeline_ms: deque[float] = deque(maxlen=300)
@@ -87,7 +97,7 @@ class Engine:
     # ---- called from request handlers ------------------------------------------
     def snapshot(self) -> EngineSnapshot:
         with self._lock:
-            last = self.command_log[-1] if self.command_log else None
+            last = self.command_log.last()
             p50 = statistics.median(self._pipeline_ms) if self._pipeline_ms else None
             return EngineSnapshot(
                 active=self._last.active,
@@ -107,8 +117,20 @@ class Engine:
             self.pipeline.set_active(active)
             self._last.active = active
             self._last.state = EngineState.ACTIVE if active else EngineState.PAUSED
-        self.hub.publish_event(ActivationChangedEvent(active=active))
+            changed = active != self._announced_active
+            self._announced_active = active
+        if changed:
+            self.hub.publish_event(ActivationChangedEvent(active=active))
         return self.snapshot()
+
+    def record_ack(self, command_id: int) -> None:
+        """The practice deck showed the result of a command: log how long that took."""
+        command = next((c for c in self.command_log.recent() if c.id == command_id), None)
+        if command is None:
+            return
+        updated = self.command_log.set_ack(command_id, (time.time() - command.t) * 1000)
+        if updated:
+            self.hub.publish_event(CommandEvent(command=updated))  # same id: clients replace the row
 
     def set_source(self, kind: SourceKind, session_id: str | None, loop: bool) -> EngineSnapshot:
         if kind == SourceKind.REPLAY:
@@ -119,6 +141,12 @@ class Engine:
             self._pending_source = (kind, session_id, loop)
             self.source_kind = kind
             self.session_id = session_id if kind == SourceKind.REPLAY else None
+            self._source_attempted.clear()
+        if kind == SourceKind.CAMERA and self._thread and self._thread.is_alive():
+            # Learn whether the camera opened, so the UI can say so instead of showing a blank preview.
+            self._source_attempted.wait(SOURCE_WAIT_SECONDS)
+            if self._source_error:
+                raise AppError(ErrorCode.CAMERA_UNAVAILABLE, f"Camera unavailable: {self._source_error}", 503)
         return self.snapshot()
 
     def update_settings(self, settings: Settings) -> None:
@@ -160,7 +188,8 @@ class Engine:
                     if self._source_error:
                         self.hub.publish_event(WarningEvent(code="CAMERA_BACK", message="Camera is back."))
                     self._source_error = None
-                except SourceUnavailable as exc:
+                    self._source_attempted.set()
+                except Exception as exc:  # noqa: BLE001 - camera and MediaPipe fail in many ways
                     self._fail(str(exc))
                     continue
             try:
@@ -188,26 +217,43 @@ class Engine:
         self._source_error = message
         self._fps = 0.0
         self._frame_dt = 0.0
+        self._source_attempted.set()
         self._stop.wait(RETRY_SECONDS)
 
     def _step(self, frame: FrameInput) -> None:
         with self._lock:
             out = self.pipeline.process(frame)
             self._last = out
+            self._pipeline_ms.append((time.perf_counter() - frame.captured_at) * 1000)
+            activation_changed = out.active != self._announced_active
+            self._announced_active = out.active
+        for cancelled in out.cancelled:
+            self.hub.publish_event(cancelled)
         for command in out.commands:
-            self._dispatch(command)
-            self.hub.publish_event(CommandEvent(command=command))
+            entry, warning = self.dispatcher.dispatch(command, self.settings.profile_id, frame.captured_at)
+            self.hub.publish_event(CommandEvent(command=entry))
+            if warning:
+                self.hub.publish_event(warning)
+        if activation_changed:
+            self.hub.publish_event(ActivationChangedEvent(active=out.active))
+        self._warn_if_slow()
         now = time.perf_counter()
         if now - self._last_publish >= FRAME_INTERVAL - 0.002:
             self._last_publish = now
             self.hub.publish_frame(self._frame_message(frame, out))
 
-    def _dispatch(self, command: CommandLogEntry) -> None:
-        if command.blocked_reason is None and not command.dry_run:
-            self.sender.send(command.keys)
-        with self._lock:
-            self.command_log.append(command)
-            self._pipeline_ms.append(command.pipeline_ms)
+    def _warn_if_slow(self) -> None:
+        """Warn once when the slowest 5% of frames exceed the capture-to-key budget."""
+        if len(self._pipeline_ms) < 60:
+            return
+        p95 = sorted(self._pipeline_ms)[int(len(self._pipeline_ms) * 0.95)]
+        if p95 > SLOW_PIPELINE_MS and not self._slow_warned:
+            self._slow_warned = True
+            self.hub.publish_event(
+                WarningEvent(code="SLOW_PIPELINE", message=f"Slow pipeline: {p95:.0f} ms.")
+            )
+        elif p95 < SLOW_PIPELINE_MS / 2:
+            self._slow_warned = False
 
     def _frame_message(self, frame: FrameInput, out: PipelineOutput) -> EngineFrame:
         self._seq += 1

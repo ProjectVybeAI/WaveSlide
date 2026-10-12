@@ -16,7 +16,7 @@ router = APIRouter(prefix="/api/settings", tags=["settings"])
 
 
 def _apply(state: AppState, settings: Settings) -> Settings:
-    saved = state.settings.save(validate_settings(settings))
+    saved = state.settings.save(validate_settings(settings, state.config.resolved_data_dir))
     state.engine.update_settings(saved)
     state.hub.publish_event(SettingsChangedEvent(settings=saved))
     return saved
@@ -52,7 +52,10 @@ def export_settings(state: StateDep) -> Response:
 )
 async def import_settings(file: UploadFile, state: StateDep) -> Settings:
     try:
-        settings = Settings.model_validate(migrate(json.loads(await file.read())))
+        raw = json.loads(await file.read())
+        if not isinstance(raw, dict) or "schema_version" not in raw:
+            raise ValueError("not a settings export")  # an export always carries its schema_version
+        settings = Settings.model_validate(migrate(raw))
     except (ValueError, ValidationError) as exc:
         raise AppError(
             ErrorCode.VALIDATION_ERROR, "This file is not a WaveSlide settings file.", 422

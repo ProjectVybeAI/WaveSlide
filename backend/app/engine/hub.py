@@ -61,11 +61,9 @@ class Hub:
             client.wake.clear()
         return events, frame
 
-    def any_window_focused(self, except_route: str | None = None) -> bool:
-        """True if a WaveSlide window has keyboard focus (used by the focus guard)."""
-        return any(
-            c.has_focus and not (except_route and c.route.startswith(except_route)) for c in self.clients()
-        )
+    def focused_routes(self) -> list[str]:
+        """Routes of the WaveSlide windows that report keyboard focus (input to the focus guard)."""
+        return [c.route for c in self.clients() if c.has_focus]
 
     @staticmethod
     def _wake(client: Client) -> None:
