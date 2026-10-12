@@ -593,7 +593,7 @@
           "dataset"
         ],
         "summary": "Start Recording",
-        "description": "Placeholder until Phase 2.",
+        "description": "Start a guided recording. Prompts follow as `recording_prompt` events.",
         "operationId": "startRecording",
         "requestBody": {
           "content": {
@@ -645,7 +645,7 @@
           "dataset"
         ],
         "summary": "Stop Recording",
-        "description": "Placeholder until Phase 2.",
+        "description": "Stop the recording and save what was captured (also works after the protocol has ended).",
         "operationId": "stopRecording",
         "responses": {
           "200": {

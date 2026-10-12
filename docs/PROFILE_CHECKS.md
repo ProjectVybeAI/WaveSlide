@@ -33,8 +33,10 @@ fist held for 1 s = start slideshow, thumbs-down held for 1 s = exit.
 ## Phase 2
 | Check | How | macOS | Windows |
 |---|---|---|---|
-| Guided recording appears in Dataset with luminance | | | |
-| Train, then switch Settings to the trained model live | | | |
+| Guided `gestures` recording appears in Dataset with luminance | `npm start` with a webcam, open Dataset, Record session (protocol gestures, one participant, 1 m, normal light), follow the prompts, Stop and save. The row must show frames and a luminance value, and no key may press during recording | | |
+| Train a model from recorded sessions | With at least 2 participants recorded, Dataset, Train model. The model card shows LOPO macro-F1. With one participant it must say there is not enough data | | |
+| Switch Settings to the trained model live | Settings, Recogniser: ML, Save. The overlay badge reads "ML" with a confidence; present with PowerPoint and check next, previous and jump still work. Restart the app: the badge must still read "ML" | | |
+| Two-hand count in a real deck | Settings, two-hand on. Hold five fingers on one hand and two on the other, still, for 1 s: jump to slide 7. With two-hand off the same pose must not jump above 5 | | |
 
 ## Shortcuts not confirmed by official docs
 - PowerPoint for Mac: blank screen `B` and start from current slide `⇧⌘↩`.

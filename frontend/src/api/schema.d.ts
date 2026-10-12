@@ -264,7 +264,7 @@ export interface paths {
         put?: never;
         /**
          * Start Recording
-         * @description Placeholder until Phase 2.
+         * @description Start a guided recording. Prompts follow as `recording_prompt` events.
          */
         post: operations["startRecording"];
         delete?: never;
@@ -284,7 +284,7 @@ export interface paths {
         put?: never;
         /**
          * Stop Recording
-         * @description Placeholder until Phase 2.
+         * @description Stop the recording and save what was captured (also works after the protocol has ended).
          */
         post: operations["stopRecording"];
         delete?: never;

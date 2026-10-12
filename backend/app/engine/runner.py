@@ -36,6 +36,7 @@ from app.engine.sources import (
 )
 from app.errors import AppError
 from app.keys.sender import KeySender
+from app.ml.store import classifier_factory
 from app.platform.permissions import keyboard_allowed
 
 log = logging.getLogger("waveslide.engine")
@@ -54,7 +55,7 @@ class Engine:
         self.hub = hub
         self.sender = sender
         self.settings = settings
-        self.pipeline = Pipeline(settings)
+        self.pipeline = Pipeline(settings, classifier_factory=classifier_factory(config.resolved_data_dir))
         self.source_kind = SourceKind(config.source)
         self.session_id: str | None = config.replay_session if config.source == "replay" else None
         self.loop_replay = True
