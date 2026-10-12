@@ -1,0 +1,93 @@
+.rail {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.ack {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-top: 2px solid var(--color-accent);
+}
+.ackTitle {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+.dot {
+  width: var(--space-2);
+  height: var(--space-2);
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+}
+.figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.figures > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+}
+.figures > div + div {
+  padding-left: var(--space-3);
+  border-left: var(--border-width) solid var(--color-border);
+}
+.figures dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-display);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.figures small {
+  margin-left: 2px;
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+.figures dt {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+.title {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-display);
+}
+.tries {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.try {
+  display: grid;
+  grid-template-columns: var(--space-10) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+.try b {
+  display: block;
+  font-weight: var(--weight-semibold);
+}
+.try span {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.help {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.error {
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}

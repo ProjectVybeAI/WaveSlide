@@ -1,0 +1,5 @@
+/* The choice itself is the control; there is no content to show under a segment. */
+.panel {
+  display: none;
+  padding: 0;
+}

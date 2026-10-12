@@ -1,0 +1,10 @@
+.unit {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-top: var(--space-2);
+}
+.unit p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,14 @@
+.switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+.sessions {
+  min-width: calc(var(--space-16) * 3);
+}
+.error {
+  flex-basis: 100%;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}

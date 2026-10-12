@@ -19,6 +19,14 @@ describe("HandSkeleton", () => {
     expect(numbers).toEqual(["1", "2", "3"]);
   });
 
+  it("lights the extended fingers only", () => {
+    const { container } = render(
+      <HandSkeleton hands={[hand]} extended={[false, true, false, false, false]} />,
+    );
+    expect(container.querySelectorAll(".jointLit")).toHaveLength(3); // the tip carries the number badge instead
+    expect(container.querySelectorAll(".boneLit")).toHaveLength(3);
+  });
+
   it("draws nothing without hands", () => {
     const { container } = render(<HandSkeleton hands={[]} />);
     expect(container.querySelectorAll("circle")).toHaveLength(0);
