@@ -12,13 +12,23 @@ macOS runs on the developer's Mac; the Windows column is filled on a Windows lap
 | One-command desktop | `npm start`: the settings window and a frameless, always-on-top overlay at the top right | | |
 
 ## Phase 1
+Setup for every row: `npm start` (settings window plus overlay), open the presentation app with a
+10-slide deck in slideshow mode, click the slideshow once so it has keyboard focus, then show a
+thumbs-up for 1 s ("Live"). Use the matching profile in Settings. Gestures: swipe right = next,
+swipe left = previous, hold 1-5 fingers still for 1 s = jump, open palm held still for 0.8 s = blank,
+fist held for 1 s = start slideshow, thumbs-down held for 1 s = exit.
 | Check | How | macOS | Windows |
 |---|---|---|---|
-| PowerPoint: activate, next, previous, jump to 4, blank, start and exit slideshow | | | |
-| Google Slides in Chrome: same gestures | | | |
-| Adobe Acrobat Reader full screen: next, previous, jump | | | |
-| Overlay never takes focus from the presentation (`focus=False`) | | | |
-| Missing Accessibility permission shows the fix on Live | | | n/a |
+| PowerPoint: activate, next, previous, jump to 4, blank, start and exit slideshow | Profile PowerPoint. Activate, swipe right then left, show four fingers (the deck goes to slide 4), palm (screen goes black), palm again (back), thumbs-down (exit), fist (start from the current slide). Look at the Live log: each row shows keys and a latency under 80 ms | | |
+| Google Slides in Chrome: same gestures | Profile Google Slides, present the deck in Chrome. Same sequence. Note whether jump (`4`, `Enter`) and blank (`B`) work: Google documents them inconsistently | | |
+| Adobe Acrobat Reader full screen: next, previous, jump | Profile PDF viewer, `Ctrl/Cmd+L` for full screen. Swipe right and left, show three fingers (goes to page 3 through `Home`, `Right`, `Right`). The palm shows "Not sent: PDF viewer has no shortcut for this" in the log | | |
+| Overlay never takes focus from the presentation (`focus=False`) | While presenting, do a gesture and watch the slides: the overlay must not take keyboard focus and must not flash the window in front of PowerPoint or Chrome. Then click the overlay's pause button: if it cannot be clicked, restart with `uv run --directory backend python -m app.desktop --overlay-focus` (the focus guard then blocks keys while the overlay has focus) and note the fallback here | | |
+| Missing Accessibility permission shows the fix on Live | System Settings, Privacy and Security, Accessibility: switch the terminal (or Python) off, reload Live. The setup check must show the problem with the fix steps and the command log must say "Accessibility permission is missing", not fail silently. Switch it back on and press Re-check | | n/a |
+| Focus guard | Click into the WaveSlide settings window and do a swipe: the log row says "Not sent" with the reason and the overlay shows the warning. Open `/practice` and swipe: the deck moves | | |
+| Live fps and latency | Live screen with a webcam: fps at least 20 and pipeline p95 (capture to key) under 80 ms over 30 s of gestures | | |
+| Camera switch | Settings camera select with two cameras (or the replay switch on Live): the preview changes without restarting, and an unplugged camera shows "Camera unavailable" with a retry | | |
+| Overlay sizes | Overlay compact button: 220 x 56 strip, full button: 340 x 280, hide: the window disappears; each stays at the top right, 16 px in | | |
+| Demo replay | `npm run dev:replay` with `/practice` open: slide 2, 3, back to 2, jump to 3, blank and unblank, then "Paused", with no other command | | |
 
 ## Phase 2
 | Check | How | macOS | Windows |
