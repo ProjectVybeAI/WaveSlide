@@ -28,5 +28,5 @@ def get_health(state: StateDep) -> Health:
 
 @router.get("/cameras", response_model=list[CameraInfo], operation_id="listCameras")
 def list_cameras() -> list[CameraInfo]:
-    """Cameras by name, so the picker can show "FaceTime HD Camera" instead of "0"."""
+    """Phase 1 lists real cameras (cv2-enumerate-cameras)."""
     return enumerate_cameras()
