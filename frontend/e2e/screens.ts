@@ -54,7 +54,12 @@ export const DEMO_SCREENS: Screen[] = [
   { name: "practice-jumped", path: "/practice?state=jumped" },
   { name: "practice-blanked", path: "/practice?state=blanked" },
   { name: "dataset", path: "/dataset?state=default" },
+  { name: "dataset-empty", path: "/dataset?state=empty" },
+  { name: "dataset-recording", path: "/dataset?state=recording" },
   { name: "evaluation", path: "/evaluation?state=default" },
+  { name: "evaluation-empty", path: "/evaluation?state=empty" },
+  { name: "evaluation-running", path: "/evaluation?state=running" },
+  { name: "evaluation-synthetic", path: "/evaluation?state=synthetic-data" },
 ];
 
 export const OVERLAY_SIZE = { full: { width: 340, height: 280 }, compact: { width: 220, height: 56 } };

@@ -2,6 +2,8 @@
 // Open any route with ?state=<name> (e.g. /overlay?state=paused, /?state=error) to switch states.
 // Fixtures come from backend/app/contract/examples.py via `npm run contract`.
 import { delay, http, HttpResponse, ws } from "msw";
+import { datasetHandlers } from "@/features/dataset/mocks";
+import { evaluationHandlers } from "@/features/evaluation/mocks";
 import examples from "./fixtures/examples.json";
 
 export type MockState = string;
@@ -239,6 +241,8 @@ const PREVIEW = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480"><
 const engineSocket = ws.link("ws://*/ws/engine");
 
 export const handlers = [
+  ...datasetHandlers,
+  ...evaluationHandlers,
   http.get("/api/health", () => respond(health())),
   http.get("/api/engine", () => respond(snapshot())),
   http.post("/api/engine/active", async ({ request }) => {
