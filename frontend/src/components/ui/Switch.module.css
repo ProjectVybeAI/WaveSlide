@@ -100,10 +100,10 @@
 .state::after {
   content: attr(data-off);
 }
-.switch[data-state="checked"] + .state::before {
+.switch[data-state="checked"] ~ .state::before {
   visibility: visible;
 }
-.switch[data-state="checked"] + .state::after {
+.switch[data-state="checked"] ~ .state::after {
   visibility: hidden;
 }
 .switch:disabled + .state {
