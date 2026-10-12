@@ -1,0 +1,111 @@
+.recorder {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+/* The camera monitor, like Live's: video colour behind the picture, a UMD caption under it. */
+.monitor {
+  display: grid;
+  max-width: calc(var(--space-16) * 12);
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-video);
+  border: 2px solid var(--color-paused);
+}
+.picture {
+  aspect-ratio: 4 / 3;
+}
+.umd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--control-height);
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  background: var(--color-surface-sunken);
+}
+.note {
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+.cue {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  min-width: 0;
+}
+.step {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.prompt {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-display);
+}
+.dialRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  align-items: center;
+}
+.pose {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  background: var(--color-surface-sunken);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.progress {
+  display: grid;
+  gap: var(--space-1);
+  width: 100%;
+  max-width: calc(var(--space-16) * 6);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.progress progress {
+  width: 100%;
+  height: var(--space-2);
+  appearance: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+.progress progress::-webkit-progress-bar {
+  background: var(--color-surface-sunken);
+}
+.progress progress::-webkit-progress-value {
+  background: var(--color-text);
+}
+.progress progress::-moz-progress-bar {
+  background: var(--color-text);
+}
+.help {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 1180px) {
+  .recorder {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,54 @@
+.job {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "text percent"
+    "bar bar";
+  gap: var(--space-2) var(--space-4);
+  align-items: end;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-left: 3px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+.text {
+  grid-area: text;
+  display: grid;
+  min-width: 0;
+}
+.title {
+  font-weight: var(--weight-semibold);
+}
+.message {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.percent {
+  grid-area: percent;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-display);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+/* The bar is data, so it jumps with each update; only a colour fade is allowed to move. */
+.bar {
+  grid-area: bar;
+  width: 100%;
+  height: var(--space-2);
+  appearance: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+.bar::-webkit-progress-bar {
+  background: var(--color-surface-sunken);
+}
+.bar::-webkit-progress-value {
+  background: var(--color-text);
+}
+.bar::-moz-progress-bar {
+  background: var(--color-text);
+}
