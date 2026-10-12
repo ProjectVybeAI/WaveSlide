@@ -12,6 +12,7 @@
     "dev:replay": "concurrently -k -n api,web -c blue,magenta \"node scripts/run-backend.mjs api --replay\" \"npm:dev:web\"",
     "dev:desktop": "concurrently -k -n web,desktop -c magenta,blue \"npm:dev:web\" \"node scripts/run-backend.mjs desktop --dev\"",
     "seed": "node scripts/run-backend.mjs seed",
+    "eval": "uv run --directory backend python ../eval/run.py",
     "test": "npm run test:api && npm run test:web",
     "test:api": "uv run --directory backend pytest -q --no-header -rf -m \"not camera and not keys\"",
     "test:web": "npm --prefix frontend run test:quiet",

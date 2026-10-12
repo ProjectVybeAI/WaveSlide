@@ -68,7 +68,15 @@ def _bars(ax, labels, series: dict[str, list[float]], colours: list[str], percen
                 )
     ax.set_xticks(x, labels)
     if len(series) > 1:
-        ax.legend(frameon=False, labelcolor=MUTED, fontsize=8)
+        # Below the axis, so it never covers a bar.
+        ax.legend(
+            frameon=False,
+            labelcolor=MUTED,
+            fontsize=8,
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.12),
+            ncol=len(series),
+        )
 
 
 def _heat(ax, cm: ConfusionMatrix, title: str) -> None:
