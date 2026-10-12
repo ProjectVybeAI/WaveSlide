@@ -40,4 +40,4 @@ Brief: docs/BRIEF.md · Architecture: docs/ARCHITECTURE.md · Plan and status: d
 - `data/` runtime files (gitignored): settings.json, sessions/, models/, eval/, logs/.
 
 ## Current phase
-Phase 0 done. Next: Phase 1 (Live gesture control: pipeline, overlay, practice deck and settings). See docs/PLAN.md "Status".
+Phases 0-1 done. Next: Phase 2 (Two-hand counting, dataset, classifier and evaluation lab). See docs/PLAN.md "Status".

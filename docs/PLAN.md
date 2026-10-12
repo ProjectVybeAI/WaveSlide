@@ -7,7 +7,7 @@ parse this file, so keep the headings and field names exactly as they are.
 | Phase | Title | State | Commit |
 |---|---|---|---|
 | 0 | Contract and scaffold | done | chore: scaffold WaveSlide (phase 0) |
-| 1 | Live gesture control: pipeline, overlay, practice deck and settings | todo | |
+| 1 | Live gesture control: pipeline, overlay, practice deck and settings | done | feat(phase-1): live gesture control |
 | 2 | Two-hand counting, dataset, classifier and evaluation lab | todo | |
 | 3 | Polish, evaluation and ship | todo | |
 
@@ -131,14 +131,14 @@ and the ship bar are scoped to these. The overlay is captured at its window size
   - `frontend`: owns `frontend/src/features/overlay/**`, `frontend/src/features/live/**`, `frontend/src/features/practice/**`, `frontend/src/features/settings/**`, `frontend/src/components/hand/**`. `components/hand/`: `HandSkeleton` (SVG landmarks and bones over the preview, mirrored coordinates, landmarks-only mode for replay), `HoldRing` (progress from `frame.hold`, the target label inside: "Slide 3", "Blank"), `PoseChip`. Overlay: preview + skeleton, pose and recogniser badge, hold ring, active/paused state in words and colour, last command with its latency, cooldown bar, pause button, compact and hide controls, no-hand and camera-error states. Live: setup check (camera, Accessibility with step-by-step fix, profile, focus hint), large preview, fps and pipeline p50, source switch (camera / replay session), command log table (gesture, action, keys, latency, blocked reason). Settings: mapping table (one select per action, conflicts shown inline before save), feature switches, sensitivity and timing sliders with units and the §13 defaults marked, camera and profile selects (unsupported actions explained), recogniser choice (ML disabled with "Train a model in Dataset" when `GET /api/model` is 404), overlay options, save, export, import, reset with confirm, dirty-state guard. Practice deck: 10 slides, arrows/number+Enter/B keyboard handling, blank screen, follows `command` events when `dry_run` is true, sends `deck_ack`. Component tests for HoldRing, mapping conflicts and the settings form.
 - **Integration:** swap placeholder pages for the real ones in `frontend/src/app/router.tsx`; overlay window size presets in `backend/app/desktop.py` agreed with the overlay design; contract changes (if any) via `npm run contract`; MSW fixtures for every Demo screen state of `/overlay`, `/`, `/settings`, `/practice`; add routes to `shots.spec.ts`; fill the Phase 1 column of `docs/PROFILE_CHECKS.md`.
 - **Acceptance:**
-  - [ ] `npm run dev:replay` with `synthetic-demo` and `/practice` open: the deck goes to slide 2, 3, back to 2, jumps to 3, blanks and unblanks, then the overlay shows "Paused", with no other command
-  - [ ] `npm test` includes and passes the boundary tests named above (swipe 1.9/2.1 `s`, diagonal, hold cancel, cooldown, re-arm, paused, focus guard, per-profile key sequences)
-  - [ ] `PUT /api/settings` assigning `FIST` to two actions returns 409 `MAPPING_CONFLICT`; a swipe as activation returns 422 `ACTIVATION_MUST_BE_HELD_POSE`; `recogniser: ml` without a model returns 409 `NO_MODEL`
-  - [ ] Settings survive a restart (`data/settings.json`); reset restores the §13 defaults; export then import round-trips
-  - [ ] Replay pipeline time (after landmarks) p95 < 5 ms per frame; live camera mode shows fps ≥ 20 and pipeline p95 (capture to key) < 80 ms on the dev Mac (Live screen, manual)
-  - [ ] Live on macOS with PowerPoint and with Google Slides in Chrome: activate, next, previous, jump to 4, blank, start and exit slideshow all work, and the overlay never takes focus from the presentation (PROFILE_CHECKS.md, manual). If `focus=False` makes the overlay unclickable, the fallback (`focus=True` plus the focus guard) is used and noted here
-  - [ ] With Accessibility permission missing, the Live setup check shows the problem and the fix steps instead of failing silently (macOS, manual)
-  - [ ] Screens have loading, empty and error states
+  - [x] `npm run dev:replay` with `synthetic-demo` and `/practice` open: the deck goes to slide 2, 3, back to 2, jumps to 3, blanks and unblanks, then the overlay shows "Paused", with no other command
+  - [x] `npm test` includes and passes the boundary tests named above (swipe 1.9/2.1 `s`, diagonal, hold cancel, cooldown, re-arm, paused, focus guard, per-profile key sequences)
+  - [x] `PUT /api/settings` assigning `FIST` to two actions returns 409 `MAPPING_CONFLICT`; a swipe as activation returns 422 `ACTIVATION_MUST_BE_HELD_POSE`; `recogniser: ml` without a model returns 409 `NO_MODEL`
+  - [x] Settings survive a restart (`data/settings.json`); reset restores the §13 defaults; export then import round-trips
+  - [ ] Replay pipeline time (after landmarks) p95 < 5 ms per frame; live camera mode shows fps ≥ 20 and pipeline p95 (capture to key) < 80 ms on the dev Mac (Live screen, manual) (replay p95 ≈ 0.1 ms verified in tests; live fps and latency still manual)
+  - [ ] Live on macOS with PowerPoint and with Google Slides in Chrome: activate, next, previous, jump to 4, blank, start and exit slideshow all work, and the overlay never takes focus from the presentation (PROFILE_CHECKS.md, manual). If `focus=False` makes the overlay unclickable, the fallback (`focus=True` plus the focus guard) is used and noted here (manual, not yet run)
+  - [ ] With Accessibility permission missing, the Live setup check shows the problem and the fix steps instead of failing silently (macOS, manual) (manual, not yet run; the permissions-missing state is covered by e2e)
+  - [x] Screens have loading, empty and error states
 - **Demo:** start paused, hold a thumbs-up and watch the ring fill to "Active"; swipe right twice in PowerPoint; hold up three fingers and let go halfway to show the ring cancel, then hold again to jump to slide 3; open Settings, swap the swipe directions and show it take effect.
 
 ### Phase 2: Two-hand counting, dataset, classifier and evaluation lab
@@ -174,3 +174,7 @@ and the ship bar are scoped to these. The overlay is captured at its window size
 ## Polish backlog
 | Screen | Item | Rubric score | From |
 |---|---|---|---|
+| Live | Cue panel lacks agreement, palm speed, spread rows and a third engine figure (key to slide p50) | Live 4.3 | Phase 1 critique |
+| Settings | Timing dial previews: "hold other poses" has no target; cooldown previews are bare circles | Settings 4.7 | Phase 1 critique |
+| Live, Settings, Practice | At 390 px the tally block is a ~70 px card; make it one row under 960 px | 4.3 / 4.7 / 4.1 | Phase 1 critique |
+| Overlay compact | Only the standby state is baselined; add compact-paused and compact-cooldown | 4.5 | Phase 1 critique |
