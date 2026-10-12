@@ -41,7 +41,7 @@ class PoseTemplate:
 TEMPLATES: dict[str, PoseTemplate] = {
     "NONE": PoseTemplate((0.5, 0.45, 0.5, 0.55, 0.6), 0.0),
     "FIST": PoseTemplate((1.0, 1.0, 1.0, 1.0, 1.0), 0.0),
-    "OPEN_PALM": PoseTemplate((0.0, 0.0, 0.0, 0.0, 0.0), -0.12),
+    "OPEN_PALM": PoseTemplate((0.0, 0.0, 0.0, 0.0, 0.0), -0.30),
     "THUMBS_UP": PoseTemplate((0.0, 1.0, 1.0, 1.0, 1.0), 0.0, roll_deg=38.0),
     "THUMBS_DOWN": PoseTemplate((0.0, 1.0, 1.0, 1.0, 1.0), 0.0, roll_deg=218.0),
     "COUNT_1": PoseTemplate((1.0, 0.0, 1.0, 1.0, 1.0), 0.0),
