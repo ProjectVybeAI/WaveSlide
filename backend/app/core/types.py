@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+DEFAULT_ASPECT = 640 / 480  # image width / height of the usual webcam frame
+
 
 @dataclass
 class Hand:
@@ -19,3 +21,4 @@ class FrameInput:
     t: float  # seconds, monotonic within the source
     captured_at: float  # time.perf_counter() when the frame was captured, for latency
     hands: list[Hand] = field(default_factory=list)
+    aspect: float = DEFAULT_ASPECT  # width / height: x is stretched by this so distances are true
