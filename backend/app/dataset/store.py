@@ -1,9 +1,38 @@
 """Session files: data/sessions/<id>.jsonl, a header line then one line per frame."""
 
+import time
 from collections.abc import Iterator
 from pathlib import Path
 
+import numpy as np
+
+from app.config import BACKEND_DIR
 from app.contract.sessions import SessionFrame, SessionHeader, SessionSummary
+from app.core.types import FrameInput, Hand
+
+FIXTURE_SESSIONS = BACKEND_DIR / "tests" / "fixtures" / "sessions"
+
+
+def sessions_dirs(data_dir: Path) -> list[Path]:
+    """Where sessions live: the user's data first, then the small committed fixtures."""
+    return [data_dir / "sessions", FIXTURE_SESSIONS]
+
+
+def session_paths(dirs: list[Path]) -> list[Path]:
+    """Every session file once (the first directory wins on a repeated id), sorted by id."""
+    seen: dict[str, Path] = {}
+    for directory in dirs:
+        for path in sorted(directory.glob("*.jsonl")):
+            seen.setdefault(path.stem, path)
+    return [seen[name] for name in sorted(seen)]
+
+
+def iter_inputs(path: Path) -> Iterator[FrameInput]:
+    """A session as pipeline input, as fast as the caller asks for it. `captured_at` is stamped when
+    each frame is handed out, so the pipeline time measured after it is the real cost of the frame."""
+    for frame in iter_frames(path):
+        hands = [Hand(h.handedness, h.score, np.asarray(h.landmarks, dtype=float)) for h in frame.hands]
+        yield FrameInput(t=frame.t, captured_at=time.perf_counter(), hands=hands)
 
 
 def write_session(path: Path, header: SessionHeader, frames: list[SessionFrame]) -> None:

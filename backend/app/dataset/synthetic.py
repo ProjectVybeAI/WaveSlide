@@ -139,9 +139,19 @@ def place(
 class SessionBuilder:
     """Builds a timeline of frames and labels at 30 fps."""
 
-    def __init__(self, person: Participant, seed: int, distance_m: float = 1.0):
+    def __init__(
+        self,
+        person: Participant,
+        seed: int,
+        distance_m: float = 1.0,
+        noise_px: float = 1.2,
+        dropout: float = 0.0,
+    ):
         self.person = person
         self.rng = np.random.default_rng(seed)
+        self.noise_px = noise_px  # landmark jitter; a dim room makes the detector less steady
+        self.dropout = dropout  # share of frames in which the detector finds no hand
+        self.dropout_rng = np.random.default_rng(seed + 7)  # separate, so dropout 0 changes nothing
         self.size = person.hand_size / distance_m
         self.frames: list[SessionFrame] = []
         self.labels: list[SessionLabel] = []
@@ -149,6 +159,8 @@ class SessionBuilder:
         self.centre = np.array([430.0, 250.0])
 
     def _emit(self, hands: list[HandLandmarks]) -> None:
+        if self.dropout and self.dropout_rng.random() < self.dropout:
+            hands = []
         self.frames.append(SessionFrame(t=round(self.t, 4), hands=hands))
         self.t += 1.0 / FPS
 
@@ -173,7 +185,7 @@ class SessionBuilder:
         points = hand_points(template, self.person, self.rng)
         roll = template.roll_deg + self.rng.normal(0, 4)
         c = self.centre if centre is None else centre
-        return place(points, (float(c[0]), float(c[1])), self.size, roll, left, self.rng)
+        return place(points, (float(c[0]), float(c[1])), self.size, roll, left, self.rng, self.noise_px)
 
     def hold(self, pose: str, seconds: float, label: str | None = None) -> None:
         start = self.t
@@ -182,6 +194,29 @@ class SessionBuilder:
             self._emit([self._hand(pose)])
         if label:
             self.labels.append(SessionLabel(start=round(start, 3), end=round(self.t, 3), gesture=label))
+
+    def rest_toward(self, x: float, seconds: float) -> None:
+        """Rest while the hand glides slowly to image column `x` (a swipe then starts from there)."""
+        n = int(seconds * FPS)
+        step = (x - self.centre[0]) / max(n, 1)
+        for _ in range(n):
+            self.centre[0] += step
+            self.centre[1] += self.rng.normal(0, 1.0)
+            self._emit([self._hand("NONE")])
+
+    def swipe_from_rest(self, direction: int, travel_lengths: float = 3.0, duration_s: float = 0.3) -> None:
+        """A swipe that starts where the hand rests and ends where the arm stops (no jumps)."""
+        start = self.t
+        n = max(2, int(duration_s * FPS))
+        x0 = float(self.centre[0])
+        travel = direction * travel_lengths * self.size
+        for i in range(n):
+            phase = 0.5 - 0.5 * np.cos(np.pi * i / (n - 1))
+            centre = np.array([x0 + travel * phase, self.centre[1] + self.rng.normal(0, 2)])
+            self._emit([self._hand("OPEN_PALM", centre=centre)])
+        self.centre[0] = x0 + travel
+        gesture = Gesture.SWIPE_RIGHT if direction > 0 else Gesture.SWIPE_LEFT
+        self.labels.append(SessionLabel(start=round(start, 3), end=round(self.t, 3), gesture=gesture))
 
     def swipe(self, direction: int, travel_lengths: float = 3.0, duration_s: float = 0.3) -> None:
         """Palm moves sideways; direction +1 is the presenter's right (image right, mirrored)."""
@@ -250,25 +285,42 @@ POSE_GESTURES = [
 ]
 
 
+# A dim room is simulated as a less steady detector (more jitter, some frames with no hand), with
+# a plausible mean picture brightness (0-255). Synthetic sessions say so in their header.
+LIGHTING = {
+    "bright": {"noise_px": 1.2, "dropout": 0.0, "luminance": 168.0},
+    "normal": {"noise_px": 1.2, "dropout": 0.0, "luminance": 121.0},
+    "dim": {"noise_px": 2.4, "dropout": 0.04, "luminance": 47.0},
+}
+
+
 def gestures_session(
-    person: Participant, seed: int, distance_m: float = 1.0, lighting: str = "normal"
+    person: Participant,
+    seed: int,
+    distance_m: float = 1.0,
+    lighting: str = "normal",
+    rounds: int = 3,
+    swipes_each_way: int = 10,
 ) -> tuple[SessionHeader, list[SessionFrame]]:
-    """Each pose held 4 s, 3 rounds, with rests; then 10 swipes each way."""
-    b = SessionBuilder(person, seed, distance_m)
+    """Each pose held 4 s, `rounds` times, with rests; then swipes each way."""
+    look = LIGHTING[lighting]
+    b = SessionBuilder(person, seed, distance_m, look["noise_px"], look["dropout"])
     b.gap(0.5)
-    for _round in range(3):
+    for _round in range(rounds):
         for pose in POSE_GESTURES:
             b.rest(1.0)
             b.hold(pose, 4.0, label=pose)
     for direction in (+1, -1):
-        for _ in range(10):
-            b.rest(1.2)
-            b.swipe(direction)
+        for _ in range(swipes_each_way):
+            b.rest_toward(IMAGE_W / 2 - direction * 1.5 * b.size, 1.2)  # so the whole swipe stays in view
+            b.swipe_from_rest(direction)
     b.rest(1.0)
     sid = f"synthetic-gestures-{person.name}"
     if distance_m != 1.0 or lighting != "normal":
         sid += f"-{distance_m:g}m-{lighting}"
-    return b.header(sid, "gestures", distance_m, lighting), b.frames
+    header = b.header(sid, "gestures", distance_m, lighting)
+    header.luminance_mean = look["luminance"]
+    return header, b.frames
 
 
 def talking_session(person: Participant, seed: int, minutes: float = 3.0):

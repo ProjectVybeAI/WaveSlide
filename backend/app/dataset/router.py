@@ -1,13 +1,13 @@
-"""Sessions (real list in Phase 0) and the guided recorder (placeholder until Phase 2)."""
+"""Sessions (list, detail, delete) and the guided recorder."""
 
 from fastapi import APIRouter, Response
 
-from app.contract.common import ErrorCode
-from app.contract.examples import RECORDING, SESSION
+from app.contract.common import ErrorCode, SourceKind
 from app.contract.sessions import RecordingRequest, RecordingStatus, SessionDetail, SessionSummary
+from app.dataset.recorder import RecordingService
 from app.dataset.store import find_session, read_header, summarise
 from app.errors import AppError, error_responses
-from app.state import StateDep
+from app.state import AppState, StateDep
 
 router = APIRouter(prefix="/api", tags=["dataset"])
 
@@ -56,15 +56,32 @@ def delete_session(session_id: str, state: StateDep) -> Response:
     return Response(status_code=204)
 
 
+def recorder_service(state: AppState) -> RecordingService:
+    """The one RecordingService of this app, created on first use."""
+    if "recorder" not in state.extras:
+        sessions_dir = state.config.resolved_data_dir / "sessions"
+        state.extras["recorder"] = RecordingService(state.hub, state.engine, sessions_dir)
+    return state.extras["recorder"]
+
+
 @router.post(
     "/recordings",
     response_model=RecordingStatus,
     operation_id="startRecording",
     responses=error_responses(409),
 )
-def start_recording(body: RecordingRequest) -> RecordingStatus:
-    """Placeholder until Phase 2."""
-    return RECORDING
+async def start_recording(body: RecordingRequest, state: StateDep) -> RecordingStatus:
+    """Start a guided recording. Prompts follow as `recording_prompt` events."""
+    if state.engine.source_kind != SourceKind.CAMERA:
+        raise AppError(
+            ErrorCode.CAMERA_REQUIRED,
+            "Recording needs the webcam. Switch the source to camera first.",
+            409,
+        )
+    service = recorder_service(state)
+    if service.running:
+        raise AppError(ErrorCode.RECORDING_IN_PROGRESS, "A recording is already running. Stop it first.", 409)
+    return await service.start(body)
 
 
 @router.post(
@@ -73,6 +90,11 @@ def start_recording(body: RecordingRequest) -> RecordingStatus:
     operation_id="stopRecording",
     responses=error_responses(404),
 )
-def stop_recording() -> SessionSummary:
-    """Placeholder until Phase 2."""
-    return SESSION
+async def stop_recording(state: StateDep) -> SessionSummary:
+    """Stop the recording and save what was captured (also works after the protocol has ended)."""
+    summary = await recorder_service(state).stop()
+    if summary is None:
+        raise AppError(
+            ErrorCode.NO_RECORDING, "There is no recording to stop, or no frames were captured.", 404
+        )
+    return summary
