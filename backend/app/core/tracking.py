@@ -33,6 +33,11 @@ def bounding_box_area(points: np.ndarray) -> float:
     return float(width * height)
 
 
+def true_scale(hand: Hand, aspect: float) -> Hand:
+    """Stretch x (and the matching z) by the image aspect, so distances are in image heights."""
+    return Hand(hand.handedness, hand.score, hand.points * np.array([aspect, 1.0, aspect]))
+
+
 def largest_hands(hands: list[Hand], count: int) -> list[Hand]:
     """The `count` hands with the biggest bounding box, biggest first."""
     return sorted(hands, key=lambda h: bounding_box_area(h.points), reverse=True)[:count]

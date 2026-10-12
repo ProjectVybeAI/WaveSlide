@@ -31,3 +31,22 @@ def test_demo_script_labels_every_scripted_gesture():
         "OPEN_PALM",
         "THUMBS_UP",
     ]
+
+
+def test_distance_and_lighting_variants_are_byte_identical_across_runs(tmp_path):
+    from app.dataset.synthetic import PARTICIPANTS, gestures_session
+
+    for name in ("a", "b"):
+        header, frames = gestures_session(PARTICIPANTS[0], 7, 2.0, "dim", rounds=1, swipes_each_way=1)
+        write_session(tmp_path / f"{name}.jsonl", header, frames)
+    assert (tmp_path / "a.jsonl").read_bytes() == (tmp_path / "b.jsonl").read_bytes()
+    assert read_header(tmp_path / "a.jsonl").id == "synthetic-gestures-p1-2m-dim"
+    assert read_header(tmp_path / "a.jsonl").luminance_mean == 47.0
+
+
+def test_a_dim_session_loses_some_hands_and_a_normal_one_does_not():
+    from app.dataset.synthetic import PARTICIPANTS, gestures_session
+
+    _, normal = gestures_session(PARTICIPANTS[0], 7, rounds=1, swipes_each_way=0)
+    _, dim = gestures_session(PARTICIPANTS[0], 7, lighting="dim", rounds=1, swipes_each_way=0)
+    assert sum(not f.hands for f in dim) > sum(not f.hands for f in normal)

@@ -36,8 +36,10 @@ class HandFeatures:
     palm: np.ndarray  # palm centre (x, y), in image heights, for the swipe detector
 
     def vector(self) -> np.ndarray:
-        """Fixed-length vector for the random forest: 42 normalised coordinates, 5 bends, spread."""
-        return np.concatenate([self.points.ravel(), self.bends, [self.spread]])
+        """Fixed-length vector for the random forest (49 numbers): 42 normalised coordinates,
+        5 joint angles, spread and thumb direction. The thumb direction is what tells thumbs-up
+        from thumbs-down, because the roll normalisation has turned both hands upright."""
+        return np.concatenate([self.points.ravel(), self.bends, [self.spread, self.thumb_from_up]])
 
 
 def _bend_degrees(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> float:
