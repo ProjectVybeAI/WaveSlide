@@ -11,24 +11,24 @@ session or a synthetic one in exactly the same way (ARCHITECTURE.md decision 4).
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-import numpy as np
-
-from app.contract.common import EngineState, Pose
+from app.contract.common import EngineState, Pose, Recogniser
 from app.contract.engine import HoldCancelledEvent, HoldInfo
 from app.contract.settings import Settings
 from app.contract.system import AppProfile
 from app.core.commands import Command, make_command
+from app.core.counting import counted_pose
 from app.core.features import HandFeatures, compute_features
-from app.core.intents import COUNT_POSES
 from app.core.poses import classify_rules
-from app.core.reliability import Reliability, Signals
-from app.core.tracking import HandTracker, Track, largest_hands
-from app.core.types import FrameInput, Hand
+from app.core.reliability import Controls, Reliability, Signals
+from app.core.tracking import HandTracker, Track, largest_hands, true_scale
+from app.core.types import FrameInput
 from app.keys.profiles import load_profiles
 
-# A pose classifier turns features into a pose. The rules are the default; Phase 2 plugs the
-# trained random forest in here, so the comparison isolates the classifier.
+# A pose classifier turns features into a pose. The rules are the default; the trained random
+# forest (app/ml) has the same signature, so the comparison isolates the classifier.
 PoseClassifier = Callable[[HandFeatures, Settings], Pose]
+# Returns the trained classifier, or None when there is no usable model (then the rules are used).
+ClassifierFactory = Callable[[], PoseClassifier | None]
 
 
 def rules_classifier(features: HandFeatures, settings: Settings) -> Pose:
@@ -60,13 +60,22 @@ class _Seen:
 
 class Pipeline:
     def __init__(
-        self, settings: Settings, os_name: str | None = None, classifier: PoseClassifier | None = None
+        self,
+        settings: Settings,
+        os_name: str | None = None,
+        classifier: PoseClassifier | None = None,
+        classifier_factory: ClassifierFactory | None = None,
+        controls: Controls | None = None,
     ):
+        """`classifier` forces one recogniser (tests, evaluation). Otherwise the Settings choose:
+        rules, or the trained model from `classifier_factory` when `recogniser` is "ml"."""
         self.settings = settings
         self.os_name = os_name
-        self.classifier: PoseClassifier = classifier or rules_classifier
+        self.forced_classifier = classifier
+        self.classifier_factory = classifier_factory
+        self.classifier: PoseClassifier = self._choose_classifier()
         self.tracker = HandTracker(settings.sensitivity.smoothing)
-        self.reliability = Reliability(settings, active=not settings.start_paused)
+        self.reliability = Reliability(settings, active=not settings.start_paused, controls=controls)
         self.profile = self._load_profile()
 
     @property
@@ -78,6 +87,14 @@ class Pipeline:
         self.reliability.settings = settings
         self.tracker.set_smoothing(settings.sensitivity.smoothing)
         self.profile = self._load_profile()
+        self.classifier = self._choose_classifier()
+
+    def _choose_classifier(self) -> PoseClassifier:
+        if self.forced_classifier:
+            return self.forced_classifier
+        if self.settings.recogniser == Recogniser.ML and self.classifier_factory:
+            return self.classifier_factory() or rules_classifier
+        return rules_classifier
 
     def set_active(self, active: bool) -> None:
         self.reliability.set_active(active)
@@ -91,12 +108,14 @@ class Pipeline:
         if primary is None:
             signals = Signals(frame.t, hand_present=False, pose=Pose.NONE, slide=None, speed=0.0)
         else:
-            pose, slide = self._counted_pose(seen)
+            pose, slide = counted_pose([s.pose for s in seen])
             motion = primary.track.motion
             swipe = motion.swipe(self.settings.sensitivity)
             if swipe:
                 motion.reset()  # one swipe, one event
-            signals = Signals(frame.t, True, pose, slide, motion.speed(), swipe)
+            # Two-hand counting needs both hands still, so the fastest hand sets the speed.
+            speed = max(s.track.motion.speed() for s in seen)
+            signals = Signals(frame.t, True, pose, slide, speed, swipe)
         step = self.reliability.update(signals)
 
         out = PipelineOutput(
@@ -113,7 +132,7 @@ class Pipeline:
     def _observe(self, frame: FrameInput) -> list[_Seen]:
         """Steps 2-4 for each chosen hand, biggest first."""
         count = 2 if self.settings.features.two_hand else 1
-        hands = [self._true_scale(h, frame.aspect) for h in largest_hands(frame.hands, count)]
+        hands = [true_scale(h, frame.aspect) for h in largest_hands(frame.hands, count)]
         seen: list[_Seen] = []
         for track, hand in self.tracker.update(hands, frame.t):
             smoothed = track.filter(hand.points, frame.t)
@@ -127,17 +146,3 @@ class Pipeline:
             )
             seen.append(_Seen(track, features, pose, confidence))
         return seen
-
-    @staticmethod
-    def _true_scale(hand: Hand, aspect: float) -> Hand:
-        """Stretch x (and the matching z) by the image aspect, so distances are in image heights."""
-        return Hand(hand.handedness, hand.score, hand.points * np.array([aspect, 1.0, aspect]))
-
-    def _counted_pose(self, seen: list[_Seen]) -> tuple[Pose, int | None]:
-        """The main hand's pose, or, when two hands both count, the pose with the sum as the slide."""
-        main = seen[0]
-        if len(seen) == 2 and all(s.pose in COUNT_POSES for s in seen):
-            counts = [COUNT_POSES[s.pose] for s in seen]
-            higher = max(seen, key=lambda s: COUNT_POSES[s.pose])
-            return higher.pose, sum(counts)
-        return main.pose, None

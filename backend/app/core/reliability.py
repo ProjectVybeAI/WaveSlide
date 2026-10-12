@@ -23,6 +23,17 @@ from app.core.intents import Intent, pose_intent, swipe_intent
 GRACE_S = 0.150  # a pose may flicker this long without cancelling a hold
 
 
+@dataclass(frozen=True)
+class Controls:
+    """Which reliability controls are on. Always all on in the app; the evaluation's ablation
+    (ARCHITECTURE.md step 7) turns one off at a time to measure what each one prevents."""
+
+    hold: bool = True  # a pose must be held for its hold time
+    stillness: bool = True  # a moving hand never starts or keeps a hold
+    cooldown: bool = True  # intents are ignored for a while after a command
+    rearm: bool = True  # a fired pose must be released before it can fire again
+
+
 @dataclass
 class Signals:
     """What the recogniser saw in one frame."""
@@ -61,13 +72,15 @@ class _Hold:
 
 
 class Reliability:
-    def __init__(self, settings: Settings, active: bool):
+    def __init__(self, settings: Settings, active: bool, controls: Controls | None = None):
         self.settings = settings
+        self.controls = controls or Controls()
         self.active = active
         self.state = EngineState.ACTIVE if active else EngineState.PAUSED
         self._hold: _Hold | None = None
         self._cooldown_until = 0.0
         self._must_release: Pose | None = None  # the re-arm rule
+        self._released_since: float | None = None  # when the pose last stopped matching
 
     def set_active(self, active: bool) -> None:
         """Forced from outside (the pause button): drop any hold or cooldown."""
@@ -79,8 +92,7 @@ class Reliability:
     def update(self, sig: Signals) -> Step:
         fired: list[Intent] = []
         cancelled: list[Cancelled] = []
-        if self._must_release is not None and sig.pose != self._must_release:
-            self._must_release = None  # released, so it may fire again
+        self._check_release(sig)
         if self.state == EngineState.COOLDOWN and sig.t >= self._cooldown_until:
             self.state = EngineState.ACTIVE if self.active else EngineState.PAUSED
         if self.state == EngineState.HOLDING:
@@ -92,6 +104,20 @@ class Reliability:
         )
 
     # ---- steps -----------------------------------------------------------------
+    def _check_release(self, sig: Signals) -> None:
+        """Re-arm only after the pose has really been released. A flicker or a frame where the
+        detector lost the hand (common in dim light) shorter than the grace period is not a release,
+        otherwise a held palm would fire again as soon as the cooldown ended."""
+        if self._must_release is None:
+            return
+        if sig.pose == self._must_release:
+            self._released_since = None
+        elif self._released_since is None:
+            self._released_since = sig.t
+        elif sig.t - self._released_since > GRACE_S:
+            self._must_release = None
+            self._released_since = None
+
     def _look_for_intent(self, sig: Signals, fired: list[Intent]) -> None:
         if sig.swipe and self.state == EngineState.ACTIVE:
             intent = swipe_intent(self.settings, sig.swipe)
@@ -100,13 +126,16 @@ class Reliability:
                 return
         if not sig.hand_present or sig.pose == Pose.NONE or sig.pose == self._must_release:
             return
-        if sig.speed >= self.settings.sensitivity.still_max_speed:
+        if self.controls.stillness and sig.speed >= self.settings.sensitivity.still_max_speed:
             return  # a moving hand never starts a hold: this is what separates swipes from holds
         intent = pose_intent(self.settings, sig.pose, sig.slide)
         if intent is None:
             return
         if self.state == EngineState.PAUSED and intent.action != Action.TOGGLE_ACTIVE:
             return  # while paused only the activation gesture counts
+        if not self.controls.hold:
+            self._fire(intent, sig.t, fired, released_pose=sig.pose)  # ablation: no ring to fill
+            return
         self._hold = _Hold(intent, sig.pose, sig.slide, sig.t)
         self.state = EngineState.HOLDING
 
@@ -122,7 +151,8 @@ class Reliability:
                 reason = "pose_changed" if sig.hand_present else "hand_lost"
                 self._cancel(cancelled, reason)
                 return
-        if sig.swipe or sig.speed >= self.settings.sensitivity.still_max_speed:
+        too_fast = self.controls.stillness and sig.speed >= self.settings.sensitivity.still_max_speed
+        if sig.swipe or too_fast:
             self._cancel(cancelled, "moved")  # a swipe in the middle of a hold wins: it fires below
             return
         if sig.t - hold.started >= hold.intent.hold_ms / 1000:
@@ -143,7 +173,11 @@ class Reliability:
             cooldown_ms = timing.activation_cooldown_ms
         else:
             cooldown_ms = timing.cooldown_ms
-        self._must_release = released_pose  # None for swipes: the motion itself is the release
+        if not self.controls.cooldown:
+            cooldown_ms = 0
+        # None for swipes: the motion itself is the release
+        self._must_release = released_pose if self.controls.rearm else None
+        self._released_since = None
         self._cooldown_until = t + cooldown_ms / 1000
         self.state = EngineState.COOLDOWN
 
