@@ -10,11 +10,12 @@ from pathlib import Path
 
 from app.contract.common import ErrorCode, Gesture, Recogniser
 from app.contract.settings import Settings
+from app.core.poses import COUNT_OF_POSE
 from app.errors import AppError
+from app.ml.store import MODEL_FILE
 
 SWIPES = {Gesture.SWIPE_LEFT, Gesture.SWIPE_RIGHT}
-RESERVED_FOR_JUMP = {Gesture.COUNT_1, Gesture.COUNT_2, Gesture.COUNT_3, Gesture.COUNT_4, Gesture.COUNT_5}
-MODEL_FILE = Path("models") / "pose_rf.joblib"  # written by Phase 2 training
+RESERVED_FOR_JUMP = {Gesture(pose.value) for pose in COUNT_OF_POSE}
 
 
 def model_available(data_dir: Path) -> bool:

@@ -33,8 +33,10 @@ class PalmMotion:
 
     def push(self, t: float, palm: np.ndarray, scale: float, history_s: float) -> None:
         """Add the palm centre (image heights) of one frame; `scale` is the hand length."""
-        if self._samples and t - self._samples[-1][0] > MAX_GAP_S:
-            self.reset()
+        if self._samples:
+            gap = t - self._samples[-1][0]
+            if gap > MAX_GAP_S or gap < 0:  # a pause, or the clock restarted (a new source)
+                self.reset()
         self._samples.append((t, float(palm[0]), float(palm[1])))
         self._scales.append(scale)
         keep_from = t - max(history_s, MIN_HISTORY_S)

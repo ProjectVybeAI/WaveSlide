@@ -13,7 +13,6 @@ from app.engine.command_log import CommandLog
 from app.engine.dispatcher import Dispatcher
 from app.engine.sources import ReplayLandmarkSource
 from app.keys.sender import RecordingSender
-from tests.core.support import fingers_together
 
 TALKING = BACKEND_DIR / "tests" / "fixtures" / "sessions" / "synthetic-talking-p1.jsonl"
 
@@ -30,8 +29,7 @@ SCRIPTED = [
 
 
 def _replay_demo(tmp_path, os_name="darwin"):
-    with fingers_together():
-        header, frames = demo_session(42)
+    header, frames = demo_session(42)
     path = tmp_path / "synthetic-demo.jsonl"
     write_session(path, header, frames)
     source = ReplayLandmarkSource(path, realtime=False, loop=False)  # as fast as possible

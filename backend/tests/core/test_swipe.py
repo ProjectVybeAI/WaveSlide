@@ -1,8 +1,10 @@
 """Swipe boundaries, in hand lengths (s): 2.0 s of travel in 500 ms, mostly horizontal, fast."""
 
+import numpy as np
 import pytest
 
 from app.core.pipeline import Pipeline
+from app.core.swipe import PalmMotion
 from app.dataset.synthetic import SessionBuilder
 from tests.core.support import P1, P2, P3, commands_of, diagonal_swipe, live_settings, park, run, sweep
 
@@ -67,3 +69,13 @@ def test_the_generators_own_swipe_with_its_snap_back_is_accepted_too():
     builder.swipe(+1, travel_lengths=3.0)
     builder.rest(1.0)
     assert commands_of(run(Pipeline(live_settings(), os_name="darwin"), builder)) == [("next", None)]
+
+
+def test_palm_speed_ignores_old_samples_when_the_clock_restarts():
+    """Switching source restarts the time base near 0: a still hand must not read as fast."""
+    motion = PalmMotion()
+    for t, x in [(100.0, 0.30), (100.03, 0.30)]:
+        motion.push(t, np.array([x, 0.5]), 0.2, 0.5)
+    motion.push(0.0, np.array([0.70, 0.5]), 0.2, 0.5)  # far away, and time went backwards
+    motion.push(0.03, np.array([0.70, 0.5]), 0.2, 0.5)
+    assert motion.speed() < 0.1

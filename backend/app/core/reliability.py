@@ -89,6 +89,12 @@ class Reliability:
         self._hold = None
         self._cooldown_until = 0.0
 
+    def reset(self) -> None:
+        """Forget every timestamp and hold (the time base restarted), but keep the on/off state."""
+        self.set_active(self.active)
+        self._must_release = None
+        self._released_since = None
+
     def update(self, sig: Signals) -> Step:
         fired: list[Intent] = []
         cancelled: list[Cancelled] = []

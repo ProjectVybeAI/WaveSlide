@@ -10,6 +10,7 @@ from app.config import BACKEND_DIR
 from app.contract.sessions import SessionFrame, SessionHeader, SessionSummary
 from app.core.types import FrameInput, Hand
 
+# The small synthetic sessions live under tests/ so CI has data; they are searched after the user's own.
 FIXTURE_SESSIONS = BACKEND_DIR / "tests" / "fixtures" / "sessions"
 
 

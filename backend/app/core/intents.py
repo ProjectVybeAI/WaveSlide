@@ -8,8 +8,8 @@ from dataclasses import dataclass
 
 from app.contract.common import Action, Gesture, Pose
 from app.contract.settings import Settings
+from app.core.poses import COUNT_OF_POSE
 
-COUNT_POSES = {Pose.COUNT_1: 1, Pose.COUNT_2: 2, Pose.COUNT_3: 3, Pose.COUNT_4: 4, Pose.COUNT_5: 5}
 SWIPES = (Gesture.SWIPE_LEFT, Gesture.SWIPE_RIGHT)
 
 # What the cue dial shows while a gesture is on standby: (label, caption).
@@ -56,11 +56,11 @@ def swipe_intent(settings: Settings, gesture: Gesture) -> Intent | None:
 
 def pose_intent(settings: Settings, pose: Pose, slide: int | None = None) -> Intent | None:
     """The intent for a held pose. `slide` overrides the number when two hands are counted."""
-    if pose in COUNT_POSES:  # COUNT_1..5 are reserved for jumping
+    if pose in COUNT_OF_POSE:  # COUNT_1..5 are reserved for jumping
         if not settings.features.finger_jump:
             return None
         return Intent(
-            Action.JUMP, Gesture(pose.value), slide or COUNT_POSES[pose], settings.timing.hold_count_ms
+            Action.JUMP, Gesture(pose.value), slide or COUNT_OF_POSE[pose], settings.timing.hold_count_ms
         )
     if pose == Pose.NONE:
         return None

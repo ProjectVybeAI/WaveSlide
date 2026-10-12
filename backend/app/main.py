@@ -11,12 +11,13 @@ from fastapi.staticfiles import StaticFiles
 
 from app import jobs
 from app.config import PROJECT_DIR, Config, get_config
+from app.contract.common import ErrorCode
 from app.dataset import router as dataset
 from app.engine import router as engine_router
 from app.engine import ws
 from app.engine.hub import Hub
 from app.engine.runner import Engine
-from app.errors import register_error_handlers
+from app.errors import AppError, register_error_handlers
 from app.evaluation import router as evaluation
 from app.keys import router as keys
 from app.keys.sender import KeySender, PyAutoGuiSender, RecordingSender
@@ -71,5 +72,11 @@ def _serve_frontend(app: FastAPI, dist: Path) -> None:
 
     @app.get("/{path:path}", include_in_schema=False)
     def spa(path: str) -> FileResponse:
-        file = dist / path
-        return FileResponse(file if path and file.is_file() else dist / "index.html")
+        if path.split("/", 1)[0] in ("api", "ws"):  # an unknown API route is a JSON 404, not the UI
+            raise AppError(ErrorCode.NOT_FOUND, f"No route called /{path}.", 404)
+        root = dist.resolve()
+        file = (root / path).resolve()
+        # Only serve files inside the build folder: "../" must never reach other files.
+        if path and file.is_relative_to(root) and file.is_file():
+            return FileResponse(file)
+        return FileResponse(root / "index.html")

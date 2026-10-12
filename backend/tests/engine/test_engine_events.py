@@ -2,19 +2,24 @@
 
 import asyncio
 import json
+import time
 
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
 from app.config import Config
-from app.contract.common import Action, Gesture
+from app.contract.common import Action, Gesture, SourceKind
 from app.contract.engine import CommandLogEntry
+from app.contract.settings import Settings
+from app.core.types import Hand
 from app.dataset.store import write_session
 from app.dataset.synthetic import PARTICIPANTS, SessionBuilder
 from app.engine.command_log import RING_SIZE, CommandLog
 from app.engine.hub import Hub
 from app.engine.runner import Engine
 from app.engine.sources import SourceUnavailable
+from app.keys.sender import RecordingSender
 from app.main import create_app
 from tests.core.support import park, sweep
 
@@ -151,3 +156,23 @@ def test_switching_to_an_unavailable_camera_is_a_503(swipe_app, monkeypatch):
         assert client.get("/api/engine").json()["camera_ok"] is False
         back = client.post("/api/engine/source", json={"kind": "replay", "session_id": "quick-swipe"})
         assert back.status_code == 200
+
+
+def test_switching_source_clears_the_old_time_base(swipe_app):
+    """A new source's clock restarts near 0: cooldowns and tracks from the old one must be gone."""
+    engine = Engine(swipe_app, Settings(), Hub(), RecordingSender())
+    engine.pipeline.reliability._cooldown_until = 100.0  # left over from a source that ran to t=100
+    engine.pipeline.tracker.update(
+        [Hand("Right", 0.9, np.zeros((21, 3)))], 100.0
+    )  # a track last seen at t=100
+    engine.set_source(SourceKind.REPLAY, "quick-swipe", True)  # applied as the thread starts
+    engine.start()
+    try:
+        for _ in range(100):
+            if engine.pipeline.reliability._cooldown_until == 0.0:
+                break
+            time.sleep(0.02)
+        assert engine.pipeline.reliability._cooldown_until == 0.0
+        assert all(track.last_seen < 50 for track in engine.pipeline.tracker._tracks)
+    finally:
+        engine.stop()

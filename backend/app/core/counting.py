@@ -8,16 +8,16 @@ The poses passed in are the stable poses; the reliability state machine adds the
 """
 
 from app.contract.common import Pose
-from app.core.intents import COUNT_POSES
+from app.core.poses import COUNT_OF_POSE
 
 
 def two_hand_slide(first: Pose, second: Pose) -> int | None:
     """6-10 when one hand is COUNT_5 and the other is a count; None for anything else."""
-    if first not in COUNT_POSES or second not in COUNT_POSES:
+    if first not in COUNT_OF_POSE or second not in COUNT_OF_POSE:
         return None
     if Pose.COUNT_5 not in (first, second):
         return None
-    return COUNT_POSES[first] + COUNT_POSES[second]
+    return COUNT_OF_POSE[first] + COUNT_OF_POSE[second]
 
 
 def counted_pose(poses: list[Pose]) -> tuple[Pose, int | None]:
@@ -32,6 +32,6 @@ def counted_pose(poses: list[Pose]) -> tuple[Pose, int | None]:
     slide = two_hand_slide(main, poses[1])
     if slide is not None:
         return Pose.COUNT_5, slide
-    if main in COUNT_POSES:
+    if main in COUNT_OF_POSE:
         return Pose.NONE, None  # two hands in view and not a valid 5 + n: no jump
     return main, None

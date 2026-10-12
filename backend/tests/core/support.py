@@ -1,31 +1,14 @@
 """Test helpers: turn synthetic sessions into pipeline frames and collect what comes out."""
 
-from contextlib import contextmanager
-
 import numpy as np
 
 from app.contract.settings import Settings
 from app.core.pipeline import Pipeline, PipelineOutput
 from app.core.types import FrameInput, Hand
 from app.dataset import synthetic
-from app.dataset.synthetic import PARTICIPANTS, PoseTemplate, SessionBuilder
+from app.dataset.synthetic import PARTICIPANTS, SessionBuilder
 
 P1, P2, P3 = PARTICIPANTS
-
-
-@contextmanager
-def fingers_together():
-    """Synthetic OPEN_PALM with the fingers pulled together (spread about 0.3, under the 0.45 limit).
-
-    The committed generator pulls them together by only -0.12, which gives a spread of 0.41-0.59:
-    straddling the threshold. See "Integration requests" in the Phase 1 backend report.
-    """
-    original = synthetic.TEMPLATES["OPEN_PALM"]
-    synthetic.TEMPLATES["OPEN_PALM"] = PoseTemplate((0.0,) * 5, -0.30)
-    try:
-        yield
-    finally:
-        synthetic.TEMPLATES["OPEN_PALM"] = original
 
 
 def live_settings(**changes) -> Settings:

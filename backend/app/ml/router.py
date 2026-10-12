@@ -9,7 +9,7 @@ from app.dataset.store import sessions_dirs
 from app.errors import AppError, error_responses
 from app.jobs import job_manager
 from app.ml import training
-from app.ml.store import classifier_factory, load_card
+from app.ml.store import load_card
 from app.state import StateDep
 
 router = APIRouter(prefix="/api/model", tags=["model"])
@@ -37,9 +37,8 @@ def train_model(body: TrainRequest, state: StateDep) -> Job:
     def work(progress) -> str:
         training.train_model(paths, data_dir, progress)
         # Let the running engine pick the new model up (it only uses it when recogniser is "ml").
-        pipeline = state.engine.pipeline
-        if pipeline.classifier_factory is None:
-            pipeline.classifier_factory = classifier_factory(data_dir)
+        # The engine is always built with a classifier_factory for this data folder, so re-applying
+        # the current settings is enough to reload the model.
         state.engine.update_settings(state.engine.settings)
         return "pose_rf"
 

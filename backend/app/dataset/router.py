@@ -5,7 +5,7 @@ from fastapi import APIRouter, Response
 from app.contract.common import ErrorCode, SourceKind
 from app.contract.sessions import RecordingRequest, RecordingStatus, SessionDetail, SessionSummary
 from app.dataset.recorder import RecordingService
-from app.dataset.store import find_session, read_header, summarise
+from app.dataset.store import find_session, read_header, session_paths, summarise
 from app.errors import AppError, error_responses
 from app.state import AppState, StateDep
 
@@ -16,14 +16,9 @@ router = APIRouter(prefix="/api", tags=["dataset"])
 def list_sessions(
     state: StateDep, kind: str | None = None, source: str | None = None
 ) -> list[SessionSummary]:
-    seen: dict[str, SessionSummary] = {}
-    for directory in state.engine.sessions_dirs:
-        for path in sorted(directory.glob("*.jsonl")):
-            if path.stem not in seen:
-                seen[path.stem] = summarise(path)
     sessions = [
         s
-        for s in seen.values()
+        for s in map(summarise, session_paths(state.engine.sessions_dirs))
         if (kind is None or s.kind == kind) and (source is None or s.source == source)
     ]
     return sorted(sessions, key=lambda s: s.id)

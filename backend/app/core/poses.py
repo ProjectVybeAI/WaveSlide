@@ -14,7 +14,9 @@ FIST_MIN_BEND = 70.0  # a fist needs curled fingers: a relaxed half-curled hand 
 WINDOW = 5
 AGREE = 4
 
-COUNT_POSES = {1: Pose.COUNT_1, 2: Pose.COUNT_2, 3: Pose.COUNT_3, 4: Pose.COUNT_4, 5: Pose.COUNT_5}
+# The one table of counting poses, in both directions.
+POSE_FOR_COUNT = {1: Pose.COUNT_1, 2: Pose.COUNT_2, 3: Pose.COUNT_3, 4: Pose.COUNT_4, 5: Pose.COUNT_5}
+COUNT_OF_POSE = {pose: count for count, pose in POSE_FOR_COUNT.items()}
 
 
 def classify_rules(features: HandFeatures, palm_spread_max: float) -> Pose:
@@ -32,7 +34,7 @@ def classify_rules(features: HandFeatures, palm_spread_max: float) -> Pose:
     if n_extended == 5:
         # Fingers together ("stop") is the palm; fingers fanned out is a high five, the number 5.
         return Pose.OPEN_PALM if features.spread <= palm_spread_max else Pose.COUNT_5
-    return COUNT_POSES[n_extended]
+    return POSE_FOR_COUNT[n_extended]
 
 
 class PoseStabiliser:

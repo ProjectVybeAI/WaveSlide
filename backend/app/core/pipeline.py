@@ -89,6 +89,12 @@ class Pipeline:
         self.profile = self._load_profile()
         self.classifier = self._choose_classifier()
 
+    def reset(self) -> None:
+        """Start from a clean slate when the frame source changes: its timestamps restart near 0,
+        so tracks, palm motion and cooldowns from the old source would be nonsense. Keeps on/off."""
+        self.tracker.reset()
+        self.reliability.reset()
+
     def _choose_classifier(self) -> PoseClassifier:
         if self.forced_classifier:
             return self.forced_classifier

@@ -12,7 +12,7 @@ from collections import deque
 from pathlib import Path
 
 from app.config import BACKEND_DIR, Config
-from app.contract.common import EngineState, ErrorCode, Recogniser, SourceKind
+from app.contract.common import EngineState, ErrorCode, SourceKind
 from app.contract.engine import (
     ActivationChangedEvent,
     CommandEvent,
@@ -24,7 +24,7 @@ from app.contract.engine import (
 from app.contract.settings import Settings
 from app.core.pipeline import Pipeline, PipelineOutput
 from app.core.types import FrameInput
-from app.dataset.store import find_session
+from app.dataset.store import find_session, sessions_dirs
 from app.engine.command_log import CommandLog
 from app.engine.dispatcher import Dispatcher
 from app.engine.hub import Hub
@@ -42,7 +42,6 @@ from app.platform.permissions import keyboard_allowed
 log = logging.getLogger("waveslide.engine")
 
 MODEL_PATH = BACKEND_DIR / "models" / "hand_landmarker.task"
-FIXTURE_SESSIONS = BACKEND_DIR / "tests" / "fixtures" / "sessions"
 FRAME_INTERVAL = 1 / 30  # publish at most 30 frames a second
 RETRY_SECONDS = 2.0
 SOURCE_WAIT_SECONDS = 3.0  # how long switching to the camera waits to learn if it opened
@@ -93,7 +92,7 @@ class Engine:
 
     @property
     def sessions_dirs(self) -> list[Path]:
-        return [self.config.resolved_data_dir / "sessions", FIXTURE_SESSIONS]
+        return sessions_dirs(self.config.resolved_data_dir)
 
     # ---- called from request handlers ------------------------------------------
     def snapshot(self) -> EngineSnapshot:
@@ -170,8 +169,7 @@ class Engine:
                 raise SourceUnavailable(f"No session called {self.session_id}")
             return ReplayLandmarkSource(path, realtime=True, loop=self.loop_replay)
         cam = self.settings.camera
-        index = cam.index if cam.index else self.config.camera_index
-        return CameraLandmarkSource(index, cam.width, cam.height, MODEL_PATH)
+        return CameraLandmarkSource(cam.index, cam.width, cam.height, MODEL_PATH)
 
     def _run(self) -> None:
         last_frame_at = time.perf_counter()
@@ -182,6 +180,7 @@ class Engine:
                 if self._source:
                     self._source.close()
                 self._source = None
+                self.pipeline.reset()  # the new source's clock restarts near 0
                 _, _, self.loop_replay = pending
             if self._source is None:
                 try:
@@ -276,7 +275,7 @@ class Engine:
             extended=out.extended,
             pose=out.pose,
             confidence=out.confidence,
-            recogniser=self.settings.recogniser or Recogniser.RULES,
+            recogniser=self.settings.recogniser,
             hold=out.hold,
             cooldown_ms_left=out.cooldown_ms_left,
             fps=round(self._fps, 1),

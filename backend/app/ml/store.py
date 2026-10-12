@@ -16,9 +16,9 @@ from app.contract.evaluation import ModelCard
 from app.core.features import FEATURE_VERSION
 from app.core.pipeline import ClassifierFactory
 from app.ml.forest import MLPoseClassifier
-from app.settings.service import MODEL_FILE
 
 log = logging.getLogger("waveslide.ml")
+MODEL_FILE = Path("models") / "pose_rf.joblib"
 CARD_FILE = Path("models") / "model_card.json"
 
 

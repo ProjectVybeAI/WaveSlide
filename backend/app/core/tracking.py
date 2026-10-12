@@ -76,6 +76,9 @@ class HandTracker:
             result.append((track, hand))
         return result
 
+    def reset(self) -> None:
+        self._tracks.clear()
+
     def _new_track(self) -> Track:
         track = Track(self._next_id, OneEuroFilter(self.min_cutoff))
         self._next_id += 1
