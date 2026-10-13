@@ -60,7 +60,6 @@ Set in `.env` (created from `.env.example` by `npm run setup`). There are no sec
 | `WAVESLIDE_SOURCE` | `camera` | `camera` or `replay` |
 | `WAVESLIDE_REPLAY_SESSION` | `synthetic-demo` | Session played in replay mode |
 | `WAVESLIDE_KEYS` | `pyautogui` | `pyautogui` presses real keys; `record` only logs them |
-| `WAVESLIDE_CAMERA_INDEX` | `0` | Which webcam |
 | `WAVESLIDE_LOG_LEVEL` | `info` | Log level |
 
 ## Seeding
