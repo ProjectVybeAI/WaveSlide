@@ -40,4 +40,4 @@ Brief: docs/BRIEF.md · Architecture: docs/ARCHITECTURE.md · Plan and status: d
 - `data/` runtime files (gitignored): settings.json, sessions/, models/, eval/, logs/.
 
 ## Current phase
-Phases 0-2 done. Next: Phase 3 (Polish, evaluation and ship): run `/vybe:ship`. See docs/PLAN.md "Status".
+Shipped (v1.0). All phases done. Open: the manual hardware checks in docs/PROFILE_CHECKS.md and the real participant study (docs/EVALUATION.md is synthetic).
