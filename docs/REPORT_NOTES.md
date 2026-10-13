@@ -56,7 +56,7 @@ Defaults (backend/app/contract/settings.py): activation THUMBS_UP; next SWIPE_RI
 - Random forest on the same features, with a model card and a feature-version check (`ml/`).
 - Evaluation harness that replays labelled sessions and writes `docs/EVALUATION.md` and charts (`evaluation/`, `eval/run.py`).
 - Local-only server: 127.0.0.1, WebSocket Origin check.
-- Test size at last check: 315 backend tests (pytest), 104 frontend tests in 22 files (vitest), 22 Playwright tests across 5 spec files (counted from `test(` lines in `frontend/e2e`; not re-run for these notes), CI on macOS and Windows runners.
+- Test size at last check: 315 backend tests (pytest), 104 frontend tests in 22 files (vitest), 23 Playwright tests across 5 spec files (counted from `test(` lines in `frontend/e2e`; not re-run for these notes), CI on macOS and Windows runners.
 
 ## 7. Testing and results
 What is real: automated tests pass (above). What is synthetic: everything in `docs/EVALUATION.md` (run `run-20261013-001122`, 12 synthetic sessions, participants p1 to p3).
