@@ -10,6 +10,7 @@
   stroke-linecap: round;
 }
 .bone,
+.boneMuted,
 .boneLit {
   stroke-linecap: round;
 }
@@ -18,6 +19,13 @@
 }
 .boneLit {
   stroke: var(--color-signal);
+}
+/* Paused or no camera: the hand is shown but nothing is counted. */
+.boneMuted {
+  stroke: var(--color-border-strong);
+}
+.jointMuted {
+  fill: var(--color-border-strong);
 }
 .joint {
   fill: var(--color-bone);

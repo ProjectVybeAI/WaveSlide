@@ -54,6 +54,10 @@
   align-items: baseline;
   min-width: 0;
 }
+.lost {
+  color: var(--color-danger);
+  font-variant-numeric: tabular-nums;
+}
 .source {
   min-width: 0;
   overflow: hidden;

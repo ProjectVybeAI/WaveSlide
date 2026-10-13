@@ -1,4 +1,4 @@
-// A full synthetic evaluation report: every section filled, so each part of the Evaluation lab can be
+// A full synthetic evaluation report (and the same numbers as a recorded run): every section filled, so each part of the Evaluation lab can be
 // drawn and tested. Numbers follow design/prototype/evaluation.html. Used by the MSW handlers
 // (the default fixture) and by the component tests; never by the real app.
 import type { EvaluationReport, EvaluationSummary } from "@/api/types";
@@ -181,6 +181,30 @@ export const fullReport: EvaluationReport = {
       rules: { confusion: { labels: POSES, matrix: RULES }, macro_f1: macroF1(RULES), ms_per_frame: 0.02 },
       ml: { confusion: { labels: POSES, matrix: MODEL }, macro_f1: macroF1(MODEL), ms_per_frame: 0.41 },
     },
+    // A synthetic run has no study participants, so no ratings (the screen says so).
+    e8_ratings: null,
+    ablation: {
+      minutes: 9,
+      rows: [
+        { control: "all_on", false_triggers_per_min: 0.33 },
+        { control: "no_hold", false_triggers_per_min: 4.7 },
+        { control: "no_cooldown", false_triggers_per_min: 2.3 },
+        { control: "no_stillness", false_triggers_per_min: 1.7 },
+        { control: "no_rearm", false_triggers_per_min: 1.3 },
+      ],
+    },
+  },
+};
+
+/** A run on recorded sessions: the same numbers without the banner, and with the participants' ratings. */
+export const recordedReport: EvaluationReport = {
+  ...fullReport,
+  id: "2026-10-12-1630",
+  created_at: "2026-10-12T16:30:00+00:00",
+  synthetic: false,
+  sources: ["recorded"],
+  sections: {
+    ...fullReport.sections,
     e8_ratings: {
       rows: [
         { participant: "p1", ease: 5, reliability: 4, comment: "Swipes felt natural." },
@@ -195,47 +219,56 @@ export const fullReport: EvaluationReport = {
       ease_mean: 4.67,
       reliability_mean: 3.67,
     },
-    ablation: {
-      minutes: 9,
-      rows: [
-        { control: "all_on", false_triggers_per_min: 0.33 },
-        { control: "no_hold", false_triggers_per_min: 4.7 },
-        { control: "no_cooldown", false_triggers_per_min: 2.3 },
-        { control: "no_stillness", false_triggers_per_min: 1.7 },
-        { control: "no_rearm", false_triggers_per_min: 1.3 },
-      ],
-    },
   },
 };
 
 /** The same run without a trained model: the right-hand half of E7 and the model lines are missing. */
-export const reportWithoutModel: EvaluationReport = {
-  ...fullReport,
-  id: "2026-10-11-0900",
-  created_at: "2026-10-11T09:00:00+00:00",
-  sections: {
-    ...fullReport.sections,
-    e5_distance: {
-      rows: (fullReport.sections.e5_distance?.rows ?? []).map((row) => ({ ...row, ml_accuracy: null })),
-    },
-    e6_lighting: {
-      rows: (fullReport.sections.e6_lighting?.rows ?? []).map((row) => ({ ...row, ml_accuracy: null })),
-    },
-    e7_rules_vs_model: { rules: fullReport.sections.e7_rules_vs_model!.rules, ml: null },
-    e8_ratings: null,
-  },
-};
-
-export const summaries: EvaluationSummary[] = [fullReport, reportWithoutModel].map(
-  ({ id, created_at, synthetic, sources, n_sessions, participants }) => ({
+function withoutModel(report: EvaluationReport, id: string, createdAt: string): EvaluationReport {
+  return {
+    ...report,
     id,
-    created_at,
-    synthetic,
-    sources,
-    n_sessions,
-    participants,
-  }),
-);
+    created_at: createdAt,
+    sections: {
+      ...report.sections,
+      e5_distance: {
+        rows: (report.sections.e5_distance?.rows ?? []).map((row) => ({ ...row, ml_accuracy: null })),
+      },
+      e6_lighting: {
+        rows: (report.sections.e6_lighting?.rows ?? []).map((row) => ({ ...row, ml_accuracy: null })),
+      },
+      e7_rules_vs_model: { rules: report.sections.e7_rules_vs_model!.rules, ml: null },
+      e8_ratings: null,
+    },
+  };
+}
+
+export const reportWithoutModel = withoutModel(fullReport, "2026-10-11-0900", "2026-10-11T09:00:00+00:00");
+const recordedWithoutModel = withoutModel(recordedReport, "2026-10-11-0930", "2026-10-11T09:30:00+00:00");
+
+const summarise = ({
+  id,
+  created_at,
+  synthetic,
+  sources,
+  n_sessions,
+  participants,
+}: EvaluationReport): EvaluationSummary => ({
+  id,
+  created_at,
+  synthetic,
+  sources,
+  n_sessions,
+  participants,
+});
+
+/** Every report the mocks can serve. */
+export const allReports = [fullReport, reportWithoutModel, recordedReport, recordedWithoutModel];
+
+/** The runs listed in the `synthetic-data` state (the Dataset mocks also use these). */
+export const summaries: EvaluationSummary[] = [fullReport, reportWithoutModel].map(summarise);
+
+/** The runs listed in the `default` state: a run on recorded sessions, newest first. */
+export const recordedSummaries: EvaluationSummary[] = [recordedReport, recordedWithoutModel].map(summarise);
 
 /** Macro-averaged F1 over the classes of a count matrix (rows: shown, columns: recognised), 2 decimals. */
 function macroF1(matrix: number[][]): number {

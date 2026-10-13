@@ -44,3 +44,14 @@
   outline: 2px solid var(--color-focus);
   outline-offset: -2px;
 }
+
+/* On a phone the row scrolls: the right edge fades out so it reads as "more this way", and the
+   trailing margin lets the last link scroll clear of the fade. */
+@media (max-width: 559px) {
+  .nav {
+    mask-image: linear-gradient(to right, black calc(100% - var(--space-8)), transparent);
+  }
+  .list {
+    margin-right: var(--space-8);
+  }
+}

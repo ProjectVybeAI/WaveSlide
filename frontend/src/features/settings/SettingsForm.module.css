@@ -4,6 +4,5 @@
 }
 .sections {
   display: grid;
-  max-width: calc(var(--space-16) * 17.5);
   padding-bottom: var(--space-8);
 }

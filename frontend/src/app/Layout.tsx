@@ -57,23 +57,24 @@ function EngineFacts() {
   const { data } = useEngineSnapshot();
   const frame = useEngineFrame();
   const fps = frame?.fps ?? data?.fps;
+  const cameraLost = data?.camera_ok === false;
   return (
     <dl className={styles.facts}>
       <div>
         <dt>App profile</dt>
-        <dd>{data ? (PROFILE_NAMES[data.profile_id] ?? data.profile_id) : "–"}</dd>
+        <dd>{data ? (PROFILE_NAMES[data.profile_id] ?? data.profile_id) : "—"}</dd>
       </div>
       <div>
         <dt>Recogniser</dt>
-        <dd>{data ? (data.recogniser === "ml" ? "Trained model" : "Rules") : "–"}</dd>
+        <dd>{data ? (data.recogniser === "ml" ? "Trained model" : "Rules") : "—"}</dd>
       </div>
       <div>
         <dt>{data?.source === "replay" ? "Replay" : "Camera"}</dt>
-        <dd>{fps ? formatFps(fps) : "–"}</dd>
+        <dd>{cameraLost ? "Off" : fps ? formatFps(fps) : "—"}</dd>
       </div>
       <div>
         <dt>Capture to key, p50</dt>
-        <dd>{data?.pipeline_ms_p50 ? formatMs(data.pipeline_ms_p50) : "–"}</dd>
+        <dd>{data?.pipeline_ms_p50 ? formatMs(data.pipeline_ms_p50) : "—"}</dd>
       </div>
     </dl>
   );

@@ -45,7 +45,7 @@ export function ReportView({ report }: { report: EvaluationReport }) {
       </div>
       <ModelSection data={s.e7_rules_vs_model} />
       <div className={sections.pair}>
-        <RatingsSection data={s.e8_ratings} />
+        <RatingsSection data={s.e8_ratings} synthetic={report.synthetic} />
         <AblationSection data={s.ablation} />
       </div>
     </div>

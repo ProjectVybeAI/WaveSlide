@@ -105,6 +105,21 @@ export function SensitivitySection() {
 
 const seconds = (ms: number) => ms / 1000;
 
+/** The grey arc that drains after a command, captioned with how long it takes: "0.8 s". */
+function CooldownPreview({ ms }: { ms: number }) {
+  const text = `${seconds(ms).toFixed(1)} s`;
+  return (
+    <HoldRing
+      state="cooldown"
+      cooldown={0.65}
+      holdMs={0}
+      label={text}
+      size={64}
+      description={`Preview: the dial drains for ${text}`}
+    />
+  );
+}
+
 export function TimingSection() {
   const { values, changed, set } = useDraft();
   const t = values.timing;
@@ -171,6 +186,8 @@ export function TimingSection() {
           <HoldRing
             state="idle"
             holdMs={t.hold_pose_ms}
+            label="Go"
+            glyph="THUMBS_UP"
             size={64}
             description={`Preview: ${t.hold_pose_ms / 100} ticks`}
           />
@@ -188,9 +205,7 @@ export function TimingSection() {
         unit="ms"
         format={wholeNumber}
         help="Then the same pose has to be released before it can fire again."
-        leading={
-          <HoldRing state="cooldown" cooldown={1} holdMs={0} size={64} description="Preview: cooldown arc" />
-        }
+        leading={<CooldownPreview ms={t.cooldown_ms} />}
       />
       <Slider
         label="Cooldown after going live or pausing"
@@ -204,9 +219,7 @@ export function TimingSection() {
         unit="ms"
         format={wholeNumber}
         help="Longer than the others, so one thumbs up cannot switch you live and straight back."
-        leading={
-          <HoldRing state="cooldown" cooldown={1} holdMs={0} size={64} description="Preview: cooldown arc" />
-        }
+        leading={<CooldownPreview ms={t.activation_cooldown_ms} />}
       />
     </SetSection>
   );

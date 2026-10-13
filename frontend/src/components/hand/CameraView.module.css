@@ -15,3 +15,7 @@
 .image {
   object-fit: cover;
 }
+/* Camera lost: the last frame stays, in grey, so it cannot pass for live. */
+.grey {
+  filter: grayscale(1);
+}

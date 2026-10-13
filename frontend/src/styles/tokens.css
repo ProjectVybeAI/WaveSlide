@@ -47,6 +47,7 @@
     --border-width: 1px;
     --shadow-overlay: 0 18px 44px oklch(8% 0.01 255 / 0.55), 0 2px 8px oklch(8% 0.01 255 / 0.4);
     --control-height: 36px;
+    --sidebar-width: 14.5rem; /* 232: the settings window's sidebar */
 
     /* Neutrals: graphite, tinted toward the accent hue */
     --color-bg: oklch(21% 0.009 255); /* #16191c */

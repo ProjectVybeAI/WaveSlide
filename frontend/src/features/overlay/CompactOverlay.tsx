@@ -7,7 +7,14 @@ import { formatMs } from "@/lib/format";
 import styles from "./CompactOverlay.module.css";
 
 type Props = {
-  band: { kind: "live" | "paused" | "blocked" | "error"; word: string; sub: string; short: string };
+  band: {
+    kind: "live" | "paused" | "blocked" | "error";
+    word: string;
+    sub: string;
+    short: string;
+    /** How to go live again, short enough for the strip: "Thumbs up 1 s". */
+    resume: string;
+  };
   cue: Cue;
   lastCommand: CommandLogEntry | null;
   lastBlocked: boolean;
@@ -15,14 +22,21 @@ type Props = {
 };
 
 /** The two text lines beside the dial. */
-function lines(cue: Cue, lastCommand: CommandLogEntry | null, lastBlocked: boolean): [string, string] {
+function lines(
+  cue: Cue,
+  lastCommand: CommandLogEntry | null,
+  lastBlocked: boolean,
+  resume: string,
+): [string, string] {
   switch (cue.mode) {
     case "standby":
-      return [cue.target, "Keep still"];
+      return [cue.target, "Standby"];
     case "go":
       return [cue.target, ""];
     case "cooldown":
-      return ["Cooldown", cue.detail];
+      return [lastCommand ? commandLabel(lastCommand) : cue.target, "Cooldown"];
+    case "paused":
+      return [cue.word, resume];
     case "cancelled":
     case "blocked":
     case "camera":
@@ -36,13 +50,14 @@ function lines(cue: Cue, lastCommand: CommandLogEntry | null, lastBlocked: boole
 }
 
 export function CompactOverlay({ band, cue, lastCommand, lastBlocked, onExpand }: Props) {
-  const [first, second] = lines(cue, lastCommand, lastBlocked);
+  const [first, second] = lines(cue, lastCommand, lastBlocked, band.resume);
   return (
     <section
       className={styles.strip}
       data-band={band.kind}
       aria-label={`WaveSlide overlay, compact, ${band.word}`}
     >
+      <h1 className="visually-hidden">WaveSlide overlay</h1>
       <button
         type="button"
         className={styles.band}

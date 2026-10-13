@@ -49,22 +49,36 @@ export function OverlayPage() {
     GESTURE_LABEL[values?.mappings?.toggle_active ?? SETTINGS_DEFAULTS.mappings.toggle_active];
   const holdSeconds = (timing.hold_pose_ms / 1000).toFixed(1).replace(".0", "");
 
-  const band: { kind: Band; word: string; sub: string; short: string } = (() => {
-    if (cue.mode === "connecting") return { kind: "paused", word: "Connecting", sub: "", short: "" };
+  const band: { kind: Band; word: string; sub: string; short: string; resume: string } = (() => {
+    if (cue.mode === "connecting")
+      return { kind: "paused", word: "Connecting", sub: "", short: "", resume: "" };
     if (cue.mode === "error")
-      return { kind: "error", word: "No engine", sub: "Start WaveSlide again", short: "Not running" };
+      return {
+        kind: "error",
+        word: "No engine",
+        sub: "Start WaveSlide again",
+        short: "Not running",
+        resume: "",
+      };
     if (cue.mode === "camera")
-      return { kind: "error", word: "No camera", sub: "Gestures are off", short: "Gestures off" };
+      return { kind: "error", word: "No camera", sub: "Gestures are off", short: "Gestures off", resume: "" };
     if (cue.mode === "blocked")
-      return { kind: "blocked", word: "Not sent", sub: "Click your slides first", short: "Focus" };
+      return {
+        kind: "blocked",
+        word: "Not sent",
+        sub: "Click your slides first",
+        short: "Focus",
+        resume: "",
+      };
     if (!live)
       return {
         kind: "paused",
         word: "Paused",
         sub: `${goLiveGesture} ${holdSeconds} s to go live`,
         short: goLiveGesture,
+        resume: `${goLiveGesture} ${holdSeconds} s`,
       };
-    return { kind: "live", word: "Live", sub: profile, short: profile };
+    return { kind: "live", word: "Live", sub: profile, short: profile, resume: "" };
   })();
 
   const compact = narrow || (compactChoice ?? values?.overlay?.compact ?? false);
@@ -90,6 +104,7 @@ export function OverlayPage() {
 
   return (
     <section className={styles.overlay} data-band={band.kind} aria-label={`WaveSlide overlay, ${band.word}`}>
+      <h1 className="visually-hidden">WaveSlide overlay</h1>
       <header className={styles.band}>
         <span className={styles.lamp} aria-hidden="true" />
         <p className={styles.word}>{band.word}</p>
@@ -161,6 +176,7 @@ export function OverlayPage() {
               <CameraView
                 frame={frame}
                 size="small"
+                mode={live ? "live" : "paused"}
                 showImage={values?.overlay?.show_preview ?? true}
                 showLandmarks={values?.overlay?.show_landmarks ?? true}
               />

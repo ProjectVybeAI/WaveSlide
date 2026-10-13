@@ -19,8 +19,9 @@
   background: var(--color-video);
 }
 .blank {
-  max-width: 40cqi;
-  font-size: 1.8cqi;
+  /* Never smaller than the label size, however small the slide is. */
+  max-width: max(40cqi, calc(var(--space-16) * 3));
+  font-size: max(var(--text-xs), 1.8cqi);
   color: var(--color-text-subtle);
   text-align: center;
 }

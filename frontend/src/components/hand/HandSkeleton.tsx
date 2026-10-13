@@ -19,20 +19,30 @@ type Props = {
   extended?: boolean[] | null;
   /** "small" for the 184 px overlay camera, "large" for the Live monitor. Marks scale with the picture. */
   size?: "small" | "large";
+  /** Paused or camera lost: nothing is being counted, so draw plain grey bones and no numbers. */
+  muted?: boolean;
   className?: string;
 };
 
-export function HandSkeleton({ hands, extended, size = "large", className }: Props) {
+export function HandSkeleton({ hands, extended, size = "large", muted = false, className }: Props) {
   return (
     <svg className={clsx(styles.svg, className)} viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} aria-hidden="true">
       {hands.map((hand, handIndex) => (
-        <Hand key={handIndex} hand={hand} extended={handIndex === 0 ? extended : null} marks={MARKS[size]} />
+        <Hand
+          key={handIndex}
+          hand={hand}
+          extended={handIndex === 0 && !muted ? extended : null}
+          marks={MARKS[size]}
+          muted={muted}
+        />
       ))}
     </svg>
   );
 }
 
-function Hand({ hand, extended, marks }: { hand: HandLandmarks; extended?: boolean[] | null; marks: Marks }) {
+type HandProps = { hand: HandLandmarks; extended?: boolean[] | null; marks: Marks; muted: boolean };
+
+function Hand({ hand, extended, marks, muted }: HandProps) {
   const points = hand.landmarks.map(([x = 0, y = 0]) => [x * VIEW_W, y * VIEW_H] as const);
   const litPoints = new Set<number>();
   extended?.forEach((isExtended, finger) => {
@@ -72,7 +82,7 @@ function Hand({ hand, extended, marks }: { hand: HandLandmarks; extended?: boole
         return (
           <line
             key={`${a}-${b}`}
-            className={isLit(a, b) ? styles.boneLit : styles.bone}
+            className={isLit(a, b) ? styles.boneLit : muted ? styles.boneMuted : styles.bone}
             x1={pa[0]}
             y1={pa[1]}
             x2={pb[0]}
@@ -85,7 +95,7 @@ function Hand({ hand, extended, marks }: { hand: HandLandmarks; extended?: boole
         numbered.has(i) ? null : (
           <circle
             key={i}
-            className={litPoints.has(i) ? styles.jointLit : styles.joint}
+            className={litPoints.has(i) ? styles.jointLit : muted ? styles.jointMuted : styles.joint}
             cx={x}
             cy={y}
             r={marks.joint}
@@ -95,12 +105,7 @@ function Hand({ hand, extended, marks }: { hand: HandLandmarks; extended?: boole
       {numbers.map(({ n, x, y }) => (
         <g key={n} transform={`translate(${x} ${y - badge * 1.2})`}>
           <circle className={styles.badge} r={badge} />
-          <text
-            className={styles.badgeText}
-            fontSize={text}
-            textAnchor="middle"
-            dominantBaseline="central"
-          >
+          <text className={styles.badgeText} fontSize={text} textAnchor="middle" dominantBaseline="central">
             {n}
           </text>
         </g>

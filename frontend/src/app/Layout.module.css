@@ -1,9 +1,14 @@
 .shell {
   display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   min-height: 100vh;
   /* keeps the sidebar colour under the sticky sidebar on long pages */
-  background: linear-gradient(90deg, var(--color-surface-sunken) 0 231px, var(--color-border) 231px 232px, var(--color-bg) 232px);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-sunken) 0 calc(var(--sidebar-width) - 1px),
+    var(--color-border) calc(var(--sidebar-width) - 1px) var(--sidebar-width),
+    var(--color-bg) var(--sidebar-width)
+  );
 }
 .skip {
   position: absolute;
@@ -52,7 +57,9 @@
   font-weight: var(--weight-medium);
   text-decoration: none;
   border-radius: var(--radius-md);
-  transition: background-color var(--duration-fast) ease-out, color var(--duration-fast) ease-out;
+  transition:
+    background-color var(--duration-fast) ease-out,
+    color var(--duration-fast) ease-out;
 }
 .nav a:hover {
   color: var(--color-text);

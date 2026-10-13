@@ -20,3 +20,52 @@
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
+
+/* Under 560 px: a ruled list, two lines per session. The source is a dot (with a title and a label). */
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--border-width) solid var(--color-border-strong);
+}
+.row {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+.text {
+  min-width: 0;
+}
+.text p {
+  margin: 0;
+}
+.name {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-weight: var(--weight-semibold);
+}
+.nameText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.source {
+  flex: none;
+  width: var(--space-2);
+  height: var(--space-2);
+  background: var(--color-info);
+  border-radius: var(--radius-full);
+}
+.source[data-source="synthetic"] {
+  background: var(--color-warning);
+}
+.line {
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}

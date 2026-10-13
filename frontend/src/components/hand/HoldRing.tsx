@@ -4,6 +4,8 @@
 // 90 ms fade, and it is instant under reduced motion because --duration-go is 0 there.
 import { clsx } from "clsx";
 import { useId } from "react";
+import { PoseGlyph } from "./PoseGlyph";
+import type { GlyphPose } from "./glyph";
 import { arcPath, sweepPath, RADIUS, TICK_INNER, TICK_OUTER, polar } from "./ringGeometry";
 import styles from "./HoldRing.module.css";
 
@@ -24,6 +26,8 @@ export type HoldRingProps = {
   cooldown?: number;
   /** Width and height in CSS pixels (written as rem). */
   size?: number;
+  /** A pose pictogram above the label (the Settings preview for the hold that goes live). */
+  glyph?: GlyphPose;
   /** What a screen reader hears instead of the drawing. */
   description: string;
   className?: string;
@@ -39,6 +43,7 @@ export function HoldRing({
   caption = "",
   cooldown = 0,
   size = 104,
+  glyph,
   description,
   className,
 }: HoldRingProps) {
@@ -50,8 +55,8 @@ export function HoldRing({
   const sweep = showsSweep ? sweepPath(RADIUS, turn) : "";
   const passedTicks = state === "go" ? ticks : state === "standby" ? Math.floor(turn * ticks + 1e-6) : 0;
   const long = label.length > 2;
-  const numeralSize = label.length > 5 ? 20 : long ? 24 : 46;
-  const numeralY = long ? 8 + numeralSize * 0.3 : 22;
+  const numeralSize = glyph ? 24 : label.length > 5 ? 20 : long ? 24 : 46;
+  const numeralY = glyph ? 32 : long ? 8 + numeralSize * 0.3 : 22;
 
   return (
     <svg
@@ -84,6 +89,11 @@ export function HoldRing({
         <path className={styles.cool} d={arcPath(RADIUS - 3, clamp(cooldown))} strokeWidth={5} />
       ) : null}
       <circle className={styles.rim} r={RADIUS} strokeWidth={1} />
+      {glyph ? (
+        <foreignObject x={-18} y={-34} width={36} height={36}>
+          <PoseGlyph pose={glyph} size="fill" />
+        </foreignObject>
+      ) : null}
       {caption ? (
         <text className={styles.caption} y={-15} fontSize={9.5}>
           {caption}

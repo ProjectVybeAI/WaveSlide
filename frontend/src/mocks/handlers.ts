@@ -36,6 +36,7 @@ function frame() {
   const base = { ...examples.engineFrame };
   switch (state) {
     case "paused":
+    case "compact-paused":
       return { ...base, active: false, state: "PAUSED", ...noHold };
     case "going-live":
       return {
@@ -48,6 +49,7 @@ function frame() {
     case "active":
       return { ...base, state: "ACTIVE", ...noHold };
     case "cooldown":
+    case "compact-cooldown":
       return { ...base, state: "COOLDOWN", hold: null, cooldown_ms_left: 480 };
     case "nohand":
       return { ...base, state: "ACTIVE", hands: [], pose: "NONE", extended: null, ...noHold };
@@ -140,6 +142,8 @@ function events(): Array<{ after: number; event: object }> {
         },
       ];
     case "default":
+    case "camera-unavailable":
+    case "permissions-missing":
       // Only the Live screen shows a log; the overlay and deck do not need the history.
       return window.location.pathname === "/" ? sessionHistory() : [];
     default:
@@ -205,7 +209,8 @@ function snapshot() {
   const base = { ...examples.engineSnapshot };
   if (state === "camera-error" || state === "camera-unavailable") return { ...base, camera_ok: false };
   if (state === "replay") return { ...base, source: "replay", session_id: "synthetic-demo" };
-  if (state === "paused" || state === "going-live") return { ...base, active: false, state: "PAUSED" };
+  if (state === "paused" || state === "going-live" || state === "compact-paused")
+    return { ...base, active: false, state: "PAUSED" };
   return base;
 }
 
@@ -229,7 +234,7 @@ function health() {
 function settings() {
   const state = currentMockState();
   const base = examples.settings;
-  if (state === "compact") return { ...base, overlay: { ...base.overlay, compact: true } };
+  if (state.startsWith("compact")) return { ...base, overlay: { ...base.overlay, compact: true } };
   if (state === "practice-profile" || state === "jumped" || state === "blanked")
     return { ...base, profile_id: "practice" };
   return base;

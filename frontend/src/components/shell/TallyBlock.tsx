@@ -10,6 +10,9 @@ export function TallyBlock() {
   const snapshot = useEngineSnapshot();
   const queryClient = useQueryClient();
   const live = frame?.active ?? snapshot.data?.active ?? false;
+  // The same "No camera" state as the overlay band: gestures cannot act whatever the switch says.
+  const cameraLost = snapshot.data?.camera_ok === false;
+  const state = cameraLost ? "camera" : live ? "live" : "paused";
   const profile = snapshot.data?.profile_id === "google_slides" ? "Google Slides" : "your slides";
 
   const toggle = useMutation({
@@ -18,10 +21,10 @@ export function TallyBlock() {
   });
 
   return (
-    <section className={styles.tally} data-live={live} aria-label="Gesture control">
+    <section className={styles.tally} data-state={state} aria-label="Gesture control">
       <span className={styles.lamp} aria-hidden="true" />
       <p className={styles.word} aria-live="polite">
-        {live ? "Live" : "Paused"}
+        {cameraLost ? "No camera" : live ? "Live" : "Paused"}
       </p>
       <button
         type="button"
@@ -32,9 +35,11 @@ export function TallyBlock() {
         {live ? "Pause" : "Go live"}
       </button>
       <p className={styles.hint}>
-        {live
-          ? `Gestures send keys to ${profile}. Thumbs up for 1 s pauses.`
-          : "Gestures are ignored. Thumbs up for 1 s goes live."}
+        {cameraLost
+          ? "Gestures are off until the camera is back."
+          : live
+            ? `Gestures send keys to ${profile}. Thumbs up for 1 s pauses.`
+            : "Gestures are ignored. Thumbs up for 1 s goes live."}
       </p>
     </section>
   );

@@ -6,7 +6,13 @@ import { SectionTitle } from "./sectionKit";
 import { Missing } from "./sectionKit";
 import styles from "./sections.module.css";
 
-export function RatingsSection({ data }: { data: EvaluationReport["sections"]["e8_ratings"] }) {
+type Props = {
+  data: EvaluationReport["sections"]["e8_ratings"];
+  /** A synthetic run has no participants, so it cannot have ratings. */
+  synthetic: boolean;
+};
+
+export function RatingsSection({ data, synthetic }: Props) {
   const count = data?.rows.length ?? 0;
   return (
     <Section
@@ -40,6 +46,11 @@ export function RatingsSection({ data }: { data: EvaluationReport["sections"]["e
             ))}
           </TBody>
         </Table>
+      ) : synthetic ? (
+        <Missing title="Synthetic run: no ratings collected">
+          The participants in a synthetic run are generated, so nobody rated anything. Ratings appear when a
+          run uses recorded sessions and eval/feedback.csv.
+        </Missing>
       ) : (
         <Missing title="No ratings in this run">
           Ratings come from eval/feedback.csv, one row per study participant. Add the forms you collected,

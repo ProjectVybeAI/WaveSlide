@@ -4,6 +4,7 @@ import { describeCue, recogniserName, type Cue } from "@/components/hand/cue";
 import { HoldRing } from "@/components/hand/HoldRing";
 import { GESTURE_LABEL } from "@/components/hand/glyph";
 import { KeyValue, Skeleton } from "@/components/ui";
+import { AGREEMENT_WINDOW, useReadings } from "@/components/hand/readings";
 import type { EngineFrame, EngineSnapshot } from "@/api/types";
 import { formatFps } from "@/lib/format";
 import styles from "./CuePanel.module.css";
@@ -18,11 +19,22 @@ function extendedText(extended: boolean[] | null): string {
   return names.length === 0 ? "no finger extended" : `${names.join(", ")} extended`;
 }
 
-type Props = { cue: Cue; frame: EngineFrame | null; snapshot: EngineSnapshot | undefined };
+type Props = {
+  cue: Cue;
+  frame: EngineFrame | null;
+  snapshot: EngineSnapshot | undefined;
+  /** False when the camera is lost: the frame is the last one, so no reading is current. */
+  cameraOk: boolean;
+  /** Median key-to-slide time from the practice deck's acknowledgements; null until one arrives. */
+  keyToSlideMs: number | null;
+};
 
-export function CuePanel({ cue, frame, snapshot }: Props) {
-  const hands = frame?.hands.length ?? 0;
-  const fps = frame?.fps ?? snapshot?.fps;
+const NONE = "—";
+
+export function CuePanel({ cue, frame, snapshot, cameraOk, keyToSlideMs }: Props) {
+  const readings = useReadings(cameraOk ? frame : null);
+  const hands = cameraOk ? (frame?.hands.length ?? 0) : 0;
+  const fps = cameraOk ? (frame?.fps ?? snapshot?.fps) : undefined;
   return (
     <div className={styles.panel}>
       <div className={styles.now}>
@@ -54,30 +66,53 @@ export function CuePanel({ cue, frame, snapshot }: Props) {
             items={[
               {
                 label: "Pose",
-                value:
-                  hands > 0 ? (
-                    <>
-                      {GESTURE_LABEL[frame.pose]}{" "}
-                      <span className={styles.muted}>{extendedText(frame.extended)}</span>
-                    </>
-                  ) : (
-                    "No hand in view"
-                  ),
+                value: !cameraOk ? (
+                  NONE
+                ) : hands > 0 ? (
+                  <>
+                    {GESTURE_LABEL[frame.pose]}{" "}
+                    <span className={styles.muted}>{extendedText(frame.extended)}</span>
+                  </>
+                ) : (
+                  "No hand in view"
+                ),
               },
               {
                 label: "Confidence",
                 numeric: true,
                 value:
-                  hands > 0 ? (
+                  cameraOk && hands > 0 ? (
                     <>
                       {frame.confidence.toFixed(2)}{" "}
                       <span className={styles.muted}>{recogniserName(frame.recogniser).toLowerCase()}</span>
                     </>
                   ) : (
-                    "–"
+                    NONE
                   ),
               },
-              { label: "Hands", numeric: true, value: hands === 0 ? "None" : `${hands} in view` },
+              {
+                label: "Agreement",
+                numeric: true,
+                value:
+                  readings.agreement === null
+                    ? NONE
+                    : `${readings.agreement} of last ${AGREEMENT_WINDOW} frames`,
+              },
+              {
+                label: "Palm speed",
+                numeric: true,
+                value: readings.speed === null ? NONE : `${readings.speed.toFixed(1)} hand lengths/s`,
+              },
+              {
+                label: "Finger spread",
+                numeric: true,
+                value: readings.spread === null ? NONE : `${readings.spread.toFixed(2)} hand lengths`,
+              },
+              {
+                label: "Hands",
+                numeric: true,
+                value: !cameraOk ? NONE : hands === 0 ? "None" : `${hands} in view`,
+              },
               { label: "Recogniser", value: recogniserName(frame.recogniser) },
             ]}
           />
@@ -94,15 +129,22 @@ export function CuePanel({ cue, frame, snapshot }: Props) {
           <div>
             <dt className={styles.figureLabel}>{snapshot?.source === "replay" ? "Replay" : "Camera"}</dt>
             <dd className={styles.figure}>
-              {fps ? fps.toFixed(1) : "–"}
+              {fps ? fps.toFixed(1) : NONE}
               <small>fps</small>
             </dd>
           </div>
           <div>
             <dt className={styles.figureLabel}>Capture to key, p50</dt>
             <dd className={styles.figure}>
-              {snapshot?.pipeline_ms_p50 ? Math.round(snapshot.pipeline_ms_p50) : "–"}
+              {snapshot?.pipeline_ms_p50 ? Math.round(snapshot.pipeline_ms_p50) : NONE}
               <small>ms</small>
+            </dd>
+          </div>
+          <div>
+            <dt className={styles.figureLabel}>Key to slide, p50</dt>
+            <dd className={styles.figure}>
+              {keyToSlideMs === null ? NONE : Math.round(keyToSlideMs)}
+              {keyToSlideMs === null ? null : <small>ms</small>}
             </dd>
           </div>
         </dl>

@@ -21,7 +21,7 @@ test("dataset: with no sessions it explains what to do and offers a recording", 
 test("dataset: the session list shows the seeded sessions and a trained model card", async ({ page }) => {
   await page.goto("/dataset?state=default");
   await expect(page.getByRole("heading", { name: "Sessions", exact: true })).toBeVisible();
-  await expect(page.getByRole("cell", { name: "synthetic-gestures-p1" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Delete session synthetic-gestures-p1", exact: true })).toBeVisible();
   await expect(page.getByText("Macro-F1, leave one participant out")).toBeVisible();
   await expectNoSeriousViolations(page);
 });
@@ -48,7 +48,7 @@ test.describe("train, then switch the recogniser", () => {
 
   test("dataset: training on the seed data shows the model card", async ({ page }) => {
     await page.goto("/dataset");
-    await expect(page.getByRole("cell", { name: "synthetic-gestures-p1" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Delete session synthetic-gestures-p1", exact: true })).toBeVisible();
     await page.getByRole("button", { name: /^Train model$|^Train again$/ }).click();
     await expect(page.getByText("Macro-F1, leave one participant out")).toBeVisible({ timeout: 90_000 });
     await expect(page.getByText(/Participants: .*p1.*p2.*p3/)).toBeVisible();

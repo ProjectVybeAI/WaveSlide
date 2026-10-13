@@ -39,13 +39,14 @@
 }
 .figures {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   border-top: var(--border-width) solid var(--color-border);
 }
 .figures > div {
   display: flex;
   flex-direction: column-reverse;
-  padding: var(--space-3) var(--space-3) 0 0;
+  justify-content: flex-end;
+  padding: var(--space-3) var(--space-2) 0 0;
 }
 .figures > div + div {
   padding-left: var(--space-3);
