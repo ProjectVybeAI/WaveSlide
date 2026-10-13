@@ -20,7 +20,6 @@ class Config(BaseSettings):
     source: Literal["camera", "replay"] = "camera"
     replay_session: str = "synthetic-demo"
     keys: Literal["pyautogui", "record"] = "pyautogui"
-    camera_index: int = Field(0, ge=0, le=9)
     log_level: Literal["debug", "info", "warning", "error"] = "info"
 
     @property

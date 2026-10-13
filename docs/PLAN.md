@@ -56,7 +56,7 @@ docs/eval/            # committed charts (PNG) referenced by EVALUATION.md
 
 `.env.example`: `WAVESLIDE_PORT=8765`, `WAVESLIDE_UI_ORIGIN=http://localhost:5173`, `WAVESLIDE_DATA_DIR=./data`,
 `WAVESLIDE_SOURCE=camera|replay`, `WAVESLIDE_REPLAY_SESSION=synthetic-demo`, `WAVESLIDE_KEYS=pyautogui|record`,
-`WAVESLIDE_CAMERA_INDEX=0`, `WAVESLIDE_LOG_LEVEL=info`. No secrets exist in this project.
+`WAVESLIDE_LOG_LEVEL=info`. No secrets exist in this project.
 
 ## Demo screens
 The routes the demo script shows (at most 6). UI critique, visual baselines
